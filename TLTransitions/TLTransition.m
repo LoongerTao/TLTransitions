@@ -132,7 +132,7 @@ typedef enum : NSUInteger {
     }else if (showType == TLShowTypePoint){
         pt.showPoint = point;
     }
-    
+    pt.allowObserverForKeyBoard = YES;
     pt.allowTapDismiss = YES;
     pt.cornerRadius = 16;
     pt.popView = popView;

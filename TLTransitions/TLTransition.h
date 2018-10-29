@@ -38,7 +38,7 @@ typedef enum : NSUInteger {
 @property(nonatomic, assign) CGFloat cornerRadius;
 /// 隐藏阴影layer，默认NO
 @property(nonatomic, assign) BOOL hideShadowLayer;
-/// 键盘显示与隐藏监听，default：YES
+/// 键盘显示与隐藏监听，default：YES (TLPopTypeActionSheetb类型不支持)
 @property(nonatomic, assign) BOOL allowObserverForKeyBoard;
 
 /**
