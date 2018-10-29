@@ -148,13 +148,13 @@
 		142741B62186E18B0047EE09 /* TLTransitions */ = {
 			isa = PBXGroup;
 			children = (
-				142741B72186E18B0047EE09 /* TLTransition.h */,
+				142741BC2186E18B0047EE09 /* Scene Template */,
+				142741BB2186E18B0047EE09 /* TLGlobalConfig.h */,
 				142741B82186E18B0047EE09 /* TLGlobalConfig.m */,
 				142741B92186E18B0047EE09 /* TLPopViewController.h */,
-				142741BA2186E18B0047EE09 /* TLTransition.m */,
-				142741BB2186E18B0047EE09 /* TLGlobalConfig.h */,
-				142741BC2186E18B0047EE09 /* Scene Template */,
 				142741BF2186E18B0047EE09 /* TLPopViewController.m */,
+				142741B72186E18B0047EE09 /* TLTransition.h */,
+				142741BA2186E18B0047EE09 /* TLTransition.m */,
 			);
 			name = TLTransitions;
 			path = ../TLTransitions;
