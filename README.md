@@ -38,3 +38,18 @@ CGRect bounds = CGRectMake(0, 0, self.view.bounds.size.width, 240.f);
 [TLTransition showView:[self creatViewWithBounds:bounds color:tl_Color(218, 248, 120)]
                    popType:TLPopTypeActionSheet];
 ```
+
+3.动态更新size
+
+```
+/**
+ * 实时更新view的size ，显示后也可以更新
+ */
+- (void)updateContentSize;
+
+// 如：
+CGRect rect = _bView.bounds;
+rect.size.height += 1;
+_bView.bounds = rect;
+[_transition updateContentSize];
+```
