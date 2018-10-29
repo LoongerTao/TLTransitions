@@ -1,6 +1,6 @@
 //
-//  TLTransitionsTests.m
-//  TLTransitionsTests
+//  ExampleTests.m
+//  ExampleTests
 //
 //  Created by 故乡的云 on 2018/10/29.
 //  Copyright © 2018 故乡的云. All rights reserved.
@@ -8,11 +8,11 @@
 
 #import <XCTest/XCTest.h>
 
-@interface TLTransitionsTests : XCTestCase
+@interface ExampleTests : XCTestCase
 
 @end
 
-@implementation TLTransitionsTests
+@implementation ExampleTests
 
 - (void)setUp {
     // Put setup code here. This method is called before the invocation of each test method in the class.
