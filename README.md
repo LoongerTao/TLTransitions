@@ -5,10 +5,15 @@
 ### V 1.0.0
 
 #### 效果图
-![preview.gif（录屏效果不好，有重影）](https://upload-images.jianshu.io/upload_images/3333500-363b429b780964f3.gif?imageMogr2/auto-orient/strip)
+![preview.gif（录屏效果不好，有重影）](https://upload-images.jianshu.io/upload_images/3333500-363b429b780964f3.gif?imageMogr2/auto-orient/strip) ![preview2.gif(键盘监听)](https://upload-images.jianshu.io/upload_images/3333500-d02d308d81d693b6.gif?imageMogr2/auto-orient/strip)
+
+### pod
+`pod 'TLTransitions', '~> 1.0.0'`
 
 #### API与使用
 ```objc
+#import "TLTransition.h"
+
 /**
  * 转场形式显示popView
  * 自适应位置
