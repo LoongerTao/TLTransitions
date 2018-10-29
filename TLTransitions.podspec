@@ -5,8 +5,8 @@ Pod::Spec.new do |s|
   s.summary      = "Fast implement transitions for view or viewController "
   s.homepage     = "https://github.com/LoongerTao/TLTransitions"
   s.license      = "MIT"
-  s.author             = { "Gxdy" => "495285195@qq.com" }
+  s.author             = { "LoongerTao" => "495285195@qq.com" }
   s.source       = { :git => "https://github.com/LoongerTao/TLTransitions.git", :tag => s.version }
-  s.source_files  = "TLTransitions/TLTransitions"
+  s.source_files  = "TLTransitions"
   s.requires_arc = true
 end
