@@ -1,7 +1,12 @@
 # TLTransitions
-快速实现控制器/View的Present，并支持自定义动画
+
+基于`UIPresentationController`的组件，旨在快速实现控制器/View的转场，并支持自定义动画
 
 ### V 1.0.0
+
+#### 效果图
+![preview.gif（录屏效果不好，有重影）](https://upload-images.jianshu.io/upload_images/3333500-363b429b780964f3.gif?imageMogr2/auto-orient/strip)
+
 #### API与使用
 ```objc
 /**
