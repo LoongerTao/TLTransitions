@@ -4,7 +4,7 @@
 
 ### V 1.0.0
 
-#### 效果图
+#### 效果图（录屏效果不好，有重影）
 ![preview.gif（录屏效果不好，有重影）](https://upload-images.jianshu.io/upload_images/3333500-363b429b780964f3.gif?imageMogr2/auto-orient/strip) ![preview2.gif(键盘监听)](https://upload-images.jianshu.io/upload_images/3333500-d02d308d81d693b6.gif?imageMogr2/auto-orient/strip)
 
 ### pod
