@@ -27,21 +27,31 @@ typedef enum : NSUInteger {
     BOOL _isAnimating; // 响应键盘动画中
 }
 
+/**************** 通用 ******************/
 /** 蒙板 */
 @property(nonatomic, strong) UIView *coverView;
 @property (nonatomic, strong) UIView *presentationWrappingView;
 
-@property (nonatomic, weak) TLPopViewController *toVc;
-
-@property(nonatomic, assign) TLShowType showType;
-
 /** 最终显示坐标 */
 @property(nonatomic, assign) CGPoint showPoint;
-
 /** 最初显示坐标 */
 @property(nonatomic, assign) CGRect initialFrame;
 /** 最终显示坐标 */
 @property(nonatomic, assign) CGRect finalFrame;
+
+
+/**************** 面向view ******************/
+/// 辅助pop控制器
+@property (nonatomic, weak) TLPopViewController *toVc;
+/// 需要展示的View，布局以keyWindow坐标为标准
+@property(nonatomic, strong) UIView *popView;
+/// TLShowType类型
+@property(nonatomic, assign) TLShowType showType;
+/// 需要展示的View，自动水平居中，TLPopTypeAlert时，垂直居中
+@property(nonatomic, assign) TLPopType pType;
+
+
+/**************** 面向controller ******************/
 
 @end
 
@@ -70,10 +80,7 @@ typedef enum : NSUInteger {
 
 + (BOOL)isIPhoneX {
     // iPhoneX 系列(XR & X Max : 414, 896, X & Xs : 375, 812)
-    BOOL isIPhoneX = (CGSizeEqualToSize([UIScreen mainScreen].bounds.size, CGSizeMake(375, 812)) ||
-                      CGSizeEqualToSize([UIScreen mainScreen].bounds.size, CGSizeMake(812, 375)) ||
-                      CGSizeEqualToSize([UIScreen mainScreen].bounds.size, CGSizeMake(414, 896)) ||
-                      CGSizeEqualToSize([UIScreen mainScreen].bounds.size, CGSizeMake(896, 414)));
+    BOOL isIPhoneX = tl_isIPhoneX;
     return isIPhoneX;
 }
 
@@ -129,12 +136,14 @@ typedef enum : NSUInteger {
     if (showType == TLShowTypeFrame) {
         pt.initialFrame = iFrame;
         pt.finalFrame = fFrame;
+        pt.popView.bounds = CGRectMake(0, 0, fFrame.size.width, fFrame.size.height);
     }else if (showType == TLShowTypePoint){
         pt.showPoint = point;
     }
     pt.allowObserverForKeyBoard = YES;
+    pt.transitionDuration = 0.35;
     pt.allowTapDismiss = YES;
-    pt.cornerRadius = 16;
+    pt.cornerRadius = 16.f;
     pt.popView = popView;
     pt.pType = pType;
     pt.toVc = toVc;
@@ -310,23 +319,40 @@ typedef enum : NSUInteger {
     
     if(_showType == TLShowTypePoint){
         CGSize size = presentedViewContentSize;
-        // 越界
-        size.width = size.width > tl_ScreenW ? tl_ScreenW : size.width;
-        size.height = size.height > tl_ScreenH ? tl_ScreenH : size.height;
-       
-        // 边缘化计算
-        CGFloat x = self.showPoint.x;
-        CGFloat y = self.showPoint.y;
-        x = x + size.width > tl_ScreenW ? tl_ScreenW - size.width : x;
-        y = y + size.width > tl_ScreenH ? tl_ScreenH - size.width : y;
         
+        // size优化
+        BOOL isLandscape = tl_ScreenW > tl_ScreenH; // 横屏
+        if (tl_isIPhoneX) { // 越界
+            CGFloat W = isLandscape? tl_ScreenW - 44.f * 2 : tl_ScreenW;
+            CGFloat H = isLandscape ? tl_ScreenH - tl_iPhoneXHomeBarH : tl_ScreenH - tl_iPhoneXHomeBarH - tl_StatusBarH;
+            size.width = size.width > W ? W : size.width;
+            size.height = size.height > H ? H : size.height;
+        }else {
+            size.width = size.width > tl_ScreenW ? tl_ScreenW : size.width; // 越界
+            size.height = size.height > tl_ScreenH ? tl_ScreenH : size.height;
+        }
+        
+        // origin优化
+        CGFloat left = isLandscape ? 44.f : 0.f; // 44.f : tl_StatusBarH(横屏时为0，故写死)
+        CGFloat top = isLandscape ?  0.f : tl_StatusBarH;
+        CGFloat x = self.showPoint.x > left ? self.showPoint.x : left;
+        CGFloat y = self.showPoint.y > top ? self.showPoint.y : top;
+        x = x + size.width > tl_ScreenW ? tl_ScreenW - size.width : x;
+        if (tl_isIPhoneX) {
+            CGFloat H = tl_ScreenH - tl_iPhoneXHomeBarH;
+            y = y + size.height > H ? H - size.height : y;
+        }else {
+            y = y + size.height > tl_ScreenH ? tl_ScreenH - size.height : y;
+        }
+        
+        [_toVc viewDidLayoutSubviews];
         presentedViewControllerFrame.origin = CGPointMake(x, y);
         presentedViewControllerFrame.size = size;
         
     }else if(_showType == TLShowTypeFrame){
         
         presentedViewControllerFrame = self.finalFrame;
-        
+       
     }else { // default
         presentedViewControllerFrame.size = presentedViewContentSize;
         if(self.pType == TLPopTypeActionSheet){
@@ -347,7 +373,7 @@ typedef enum : NSUInteger {
 // MARK: - 关联键盘动画
 - (void)setAllowObserverForKeyBoard:(BOOL)allowObserverForKeyBoard {
     _allowObserverForKeyBoard = allowObserverForKeyBoard;
-    if (_allowObserverForKeyBoard) {
+    if (_allowObserverForKeyBoard ) { //&& _pType != 
         SEL sel = @selector(observerOfKeyBoard:);
         NSNotificationCenter *nCenter = [NSNotificationCenter defaultCenter];
         [nCenter addObserver:self selector:sel name:UIKeyboardWillShowNotification object:nil];
@@ -402,16 +428,17 @@ typedef enum : NSUInteger {
  */
 - (NSTimeInterval)transitionDuration:(id<UIViewControllerContextTransitioning>)transitionContext
 {
-    return [transitionContext isAnimated] ? 0.35 : 0;
+    return [transitionContext isAnimated] ? _transitionDuration : 0.f;
 }
 
 // 动画效果
 - (void)animateTransition:(nonnull id<UIViewControllerContextTransitioning>)transitionContext
 {
-    UIViewController *fromViewController = [transitionContext viewControllerForKey:UITransitionContextFromViewControllerKey];
-    UIViewController *toViewController = [transitionContext viewControllerForKey:UITransitionContextToViewControllerKey];
-    
-    UIView *containerView = transitionContext.containerView;
+    if(self.animateTransition){
+        
+        self.animateTransition(transitionContext);
+        return;
+    }
     
     // For a Presentation:
     //      fromView = The presenting view.
@@ -421,6 +448,10 @@ typedef enum : NSUInteger {
     //      toView   = The presenting view.
     UIView *fromView;
     UIView *toView;
+    UIViewController *fromViewController = [transitionContext viewControllerForKey:UITransitionContextFromViewControllerKey];
+    UIViewController *toViewController = [transitionContext viewControllerForKey:UITransitionContextToViewControllerKey];
+    
+    UIView *containerView = transitionContext.containerView;
     if ([transitionContext respondsToSelector:@selector(viewForKey:)]) {
         fromView = [transitionContext viewForKey:UITransitionContextFromViewKey];
         toView = [transitionContext viewForKey:UITransitionContextToViewKey];
@@ -485,7 +516,8 @@ typedef enum : NSUInteger {
     }else if (self.pType == TLPopTypeActionSheet){
         BOOL isPresenting = (fromViewController == self.presentingViewController);
         
-        // 我们定义了变量后，如果不使用就会出现警告.如果在变量前加__unused前缀，就可以免除警告。其原理是告诉编译器，如果变量未使用就不参与编译
+        // 我们定义了变量后，如果不使用就会出现警告.如果在变量前加__unused前缀，就可以免除警告。
+        // 其原理是告诉编译器，如果变量未使用就不参与编译
         CGRect __unused fromViewInitialFrame = [transitionContext initialFrameForViewController:fromViewController];
         CGRect fromViewFinalFrame = [transitionContext finalFrameForViewController:fromViewController];
         CGRect toViewInitialFrame = [transitionContext initialFrameForViewController:toViewController];
@@ -542,7 +574,35 @@ typedef enum : NSUInteger {
                               fromView:(UIView *)fromView
                                 toView:(UIView *)toView
 {
-    
+    BOOL isPresenting = (fromViewController == self.presentingViewController);
+    if(isPresenting){ // Present
+        
+//        toView.layer.anchorPoint = anchorPoint; // 重置锚点
+        [containerView addSubview:toView]; // 注意: 一定要将视图添加到容器上
+       
+        toView.frame = self.initialFrame;
+        self.popView.frame = self.finalFrame;
+        CGFloat duration = [self transitionDuration:transitionContext];
+        [UIView animateWithDuration:duration animations:^{
+            toView.frame = self.finalFrame;
+            
+        } completion:^(BOOL finished) {
+            // 告诉系统动画执行完毕    如果不写, 可能导致一些未知错误
+            [transitionContext completeTransition:YES];
+        }];
+        
+    }else { // dismiss
+        
+//        fromView.layer.anchorPoint = anchorPoint;
+        [containerView addSubview:fromView];
+        fromView.frame = self.finalFrame;
+        CGFloat duration = [self transitionDuration:transitionContext];
+        [UIView animateWithDuration:duration animations:^{
+            fromView.frame = self.initialFrame;
+        } completion:^(BOOL finished) {
+            [transitionContext completeTransition:YES];
+        }];
+    };
 }
 
 #pragma mark -
@@ -583,12 +643,4 @@ typedef enum : NSUInteger {
 }
 @end
 
-
-// MARK: -
-// MARK: - TLTransition (UIViewController)
-@implementation TLTransition (UIViewController)
-
-
-
-@end
 

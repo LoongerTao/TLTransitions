@@ -15,32 +15,43 @@
 // * 适用于弹出式界面(面向View)
 
 /**
- * 自适应位置情况下的显示样式
- */
+ * 自适应位置情况下的显示样式,可以配合animateTransition属性使用 */
 typedef enum : NSUInteger {
     TLPopTypeActionSheet = 0,    // ActionSheet动画样式，底部弹出，靠底部显示
     TLPopTypeAlert = 1,          // AlertView动画样式，淡化居中显示
-    
 } TLPopType;
 
+/// 自定义动画样式
+typedef void(^TLAnimateForTransition)(id <UIViewControllerContextTransitioning> transitionContext);
 
 @class TLPopViewController;
 @interface TLTransition : UIPresentationController <UIViewControllerTransitioningDelegate>
-
-/// 需要展示的View，自动水平居中，TLPopTypeAlert时，垂直居中
-@property(nonatomic, assign) TLPopType pType;
-
-/// 需要展示的View，布局以keyWindow坐标为标准
-@property(nonatomic, strong) UIView *popView;
 /// 是否允许点击灰色蒙板处来dismiss，默认YES
 @property(nonatomic, assign) BOOL allowTapDismiss;
+
 /// 圆角，默认16
 @property(nonatomic, assign) CGFloat cornerRadius;
-/// 隐藏阴影layer，默认NO
+/// 隐藏阴影layer，默认NO（针对View类型）
 @property(nonatomic, assign) BOOL hideShadowLayer;
-/// 键盘显示与隐藏监听，default：YES (TLPopTypeActionSheetb类型不支持)
+/// 键盘显示与隐藏监听，default：YES（针对View类型）
 @property(nonatomic, assign) BOOL allowObserverForKeyBoard;
 
+/// 转场动画时间，默认0.35s
+@property(nonatomic, assign) NSTimeInterval transitionDuration;
+/// 自定义动画样式(注意需要准守规则,可参考demo或文档)
+@property(nonatomic, copy) TLAnimateForTransition animateTransition;
+
+
+
+
+/**
+ * 当前设备是不是iPhone X系列  */
++ (BOOL)isIPhoneX;
+
+
+//================================================//
+// 面向View的API
+//================================================//
 /**
  * 转场形式显示popView
  * 自适应位置
@@ -54,11 +65,11 @@ typedef enum : NSUInteger {
 
 /**
  * 转场形式显示popView
- * 指定位置
+ * 指定位置(在view超出屏幕范围情况下会自动匹配边界【调整origin】，以保证view整体都在屏幕显示)
  * ⚠️调用该方法时，请先设定好popView的frame
  *
  * @param popView 要显示的View
- * @param point popView的最终坐标（相对mainScreen）
+ * @param point popView的最终坐标（origin相对mainScreen）
  * @return 返回转场代理TLPopTransition对象
  */
 + (instancetype)showView:(UIView *)popView toPoint:(CGPoint)point;
@@ -85,10 +96,13 @@ typedef enum : NSUInteger {
  */
 - (void)updateContentSize;
 
-/**
- * 当前设备是不是iPhone X
- */
-+ (BOOL)isIPhoneX;
+
+//================================================//
+// 面向View的API
+//================================================//
+
+
+
 @end
 
 

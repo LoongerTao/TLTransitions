@@ -59,15 +59,22 @@ alpha:alphaValue]
 
 
 /** 屏幕宽度 */
-#define tl_ScreenW [UIScreen mainScreen].bounds.size.width
+#define tl_ScreenW ([UIScreen mainScreen].bounds.size.width)
 /** 屏幕高度 */
-#define tl_ScreenH [UIScreen mainScreen].bounds.size.height
+#define tl_ScreenH ([UIScreen mainScreen].bounds.size.height)
 /** 状态栏高度 */
-#define tl_StatusBarH [UIApplication sharedApplication].statusBarFrame.size.height
-/** iPhone X home bar */
-#define tl_iPhoneXHomeBarH 34.f
+#define tl_StatusBarH ([UIApplication sharedApplication].statusBarFrame.size.height)
 /** Nav Bar高度 */
 #define tl_NavBarH (iMStatusBarH + 44.f)
 /** Tab Bar高度 */
 #define tl_TabBarH 44.f
+/** iPhone X home bar */
+#define tl_iPhoneXHomeBarH  (tl_isLandscape ? 21.f : 34.f)
 
+/** 横屏 */
+#define tl_isLandscape (tl_ScreenW > tl_ScreenH)
+/** iPhoneX 系列(XR & X Max : 414, 896, X & Xs : 375, 812) */
+#define tl_isIPhoneX (CGSizeEqualToSize([UIScreen mainScreen].bounds.size, CGSizeMake(375, 812)) || \
+                      CGSizeEqualToSize([UIScreen mainScreen].bounds.size, CGSizeMake(812, 375)) || \
+                      CGSizeEqualToSize([UIScreen mainScreen].bounds.size, CGSizeMake(414, 896)) || \
+                      CGSizeEqualToSize([UIScreen mainScreen].bounds.size, CGSizeMake(896, 414)))

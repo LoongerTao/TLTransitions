@@ -3,7 +3,7 @@
 //  OusiCanteen
 //
 //  Created by 故乡的云 on 2018/8/3.
-//  Copyright © 2018年 何青. All rights reserved.
+//  Copyright © 2018年 Gxdy. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>
