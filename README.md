@@ -142,7 +142,7 @@ UIView *bView = [self creatViewWithBounds:finalFrame color:tl_Color(250, 250, 25
             self->_transitionContext = transitionContext; 
             // 设置转场动画
             CATransition *anim = [CATransition animation];
-            anim.delegate = wself;
+            anim.delegate = wself; // 设置代理，监听动画进度
             anim.duration = duration;
             anim.type = @"push"; // 动画过渡效果
             anim.subtype = kCATransitionFromRight;
@@ -175,6 +175,11 @@ UIView *bView = [self creatViewWithBounds:finalFrame color:tl_Color(250, 250, 25
             [fromView.layer addAnimation:anim forKey:nil];
         };
     };
+}
+
+/// CAAnimationDelegate
+- (void)animationDidStop:(CAAnimation *)anim finished:(BOOL)flag {
+    [_transitionContext completeTransition:YES];
 }
 ```
 
