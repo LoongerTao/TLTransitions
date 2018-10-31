@@ -10,6 +10,7 @@
 #import "TLTransition.h"
 #import "TowViewController.h"
 #import "ThreeViewController.h"
+#import "UIViewController+Presenting.h"
 
 @interface ViewController ()<CAAnimationDelegate>{
     UIView *_bView;
@@ -38,8 +39,25 @@
 //    ThreeViewController *vc = [[ThreeViewController alloc] init];
 //    [TLTransition presentToViewController:vc animationType:kCATransitionReveal subtype:kCATransitionFromRight];
     
-    [self presentViewController:vc animated:YES completion:nil];
+//    [self presentViewController:vc animated:YES completion:nil];
+
     
+//    [self presentViewController:vc transitionStyle:3 completion:^{
+//        NSLog(@"----completion---");
+//    }];
+    
+    //    CA_EXTERN CATransitionType const kCATransitionFade
+    //    API_AVAILABLE(macos(10.5), ios(2.0), watchos(2.0), tvos(9.0));
+    //    CA_EXTERN CATransitionType const kCATransitionMoveIn
+    //    API_AVAILABLE(macos(10.5), ios(2.0), watchos(2.0), tvos(9.0));
+    //    CA_EXTERN CATransitionType const kCATransitionPush
+    //    API_AVAILABLE(macos(10.5), ios(2.0), watchos(2.0), tvos(9.0));
+    //    CA_EXTERN CATransitionType const kCATransitionReveal
+    //    API_AVAILABLE(macos(10.5), ios(2.0), watchos(2.0), tvos(9.0));
+
+    [self presentToViewController:vc transitionType:@"cube" subtype:kCATransitionFromRight completion:^{
+         NSLog(@"----completion---");
+    }];
 }
 
 

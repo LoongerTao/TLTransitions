@@ -7,7 +7,8 @@
 //
 
 #import "TowViewController.h"
-
+#import "UIViewController+Presenting.h"
+#import "ThreeViewController.h"
 @interface TowViewController ()
 
 @end
@@ -20,7 +21,10 @@
 }
 
 - (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
-    [self dismissViewControllerAnimated:YES completion:nil];
+    
+    [self presentViewController:[ThreeViewController new] transitionStyle:1 completion:^{
+        NSLog(@"----completion---");
+    }];
 }
 
 - (IBAction)dismiss:(id)sender {

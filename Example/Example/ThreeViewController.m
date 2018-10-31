@@ -24,7 +24,7 @@
 
     titleLabel.text = @"Controller C";
     titleLabel.font = [UIFont systemFontOfSize:40];
-    titleLabel.textColor = [UIColor cyanColor];
+    titleLabel.textColor = [UIColor greenColor];
     titleLabel.textAlignment = NSTextAlignmentCenter;
     titleLabel.frame = self.view.bounds;
     

@@ -12,14 +12,6 @@
 
 // MARK: - 全局常量配置
 
-/// 调试状态
-//UIKIT_EXTERN const BOOL isDebuging;
-
-/// 全局常量配置
-//UIKIT_EXTERN NSString *TL<#ConstName#> ;
-
-
-
 
 // MARK: - 宏定义
 #ifdef DEBUG

@@ -8,7 +8,7 @@
 
 
 //================================================//
-// 面向View
+// 面向UIView
 // * 通过modal方法，将一个View绑定到固定的控制器(TLPopViewController)进行显示
 // * 适用于弹出式界面(popover)
 //================================================//
@@ -43,9 +43,10 @@ typedef void(^TLAnimateForTransition)(id <UIViewControllerContextTransitioning> 
 /// 自定义动画样式(注意需要准守规则,可参考demo或文档)
 @property(nonatomic, copy) TLAnimateForTransition animateTransition;
 
+/// 栈顶控制器
++ (UIViewController *)topController;
 
-/**
- * 当前设备是不是iPhone X系列  */
+/// 当前设备是不是iPhone X系列
 + (BOOL)isIPhoneX;
 
 
