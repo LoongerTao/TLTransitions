@@ -6,13 +6,16 @@
 //  Copyright © 2018年 Gxdy. All rights reserved.
 //  present 转场
 
+
+//================================================//
+// 面向View
+// * 通过modal方法，将一个View绑定到固定的控制器(TLPopViewController)进行显示
+// * 适用于弹出式界面(popover)
+//================================================//
+
 #import "TLGlobalConfig.h"
 
-// MARK: -
-// MARK: - TLTransition
 
-// * 通过modal方法，将一个View绑定到固定的控制器(TLPopViewController)进行显示
-// * 适用于弹出式界面(面向View)
 
 /**
  * 自适应位置情况下的显示样式,可以配合animateTransition属性使用 */
@@ -28,12 +31,11 @@ typedef void(^TLAnimateForTransition)(id <UIViewControllerContextTransitioning> 
 @interface TLTransition : UIPresentationController <UIViewControllerTransitioningDelegate>
 /// 是否允许点击灰色蒙板处来dismiss，默认YES
 @property(nonatomic, assign) BOOL allowTapDismiss;
-
 /// 圆角，默认16
 @property(nonatomic, assign) CGFloat cornerRadius;
-/// 隐藏阴影layer，默认NO（针对View类型）
+/// 隐藏阴影layer，默认NO
 @property(nonatomic, assign) BOOL hideShadowLayer;
-/// 键盘显示与隐藏监听，default：YES（针对View类型）
+/// 键盘显示与隐藏监听，default：YES
 @property(nonatomic, assign) BOOL allowObserverForKeyBoard;
 
 /// 转场动画时间，默认0.35s
@@ -42,16 +44,11 @@ typedef void(^TLAnimateForTransition)(id <UIViewControllerContextTransitioning> 
 @property(nonatomic, copy) TLAnimateForTransition animateTransition;
 
 
-
-
 /**
  * 当前设备是不是iPhone X系列  */
 + (BOOL)isIPhoneX;
 
 
-//================================================//
-// 面向View的API
-//================================================//
 /**
  * 转场形式显示popView
  * 自适应位置
@@ -96,13 +93,6 @@ typedef void(^TLAnimateForTransition)(id <UIViewControllerContextTransitioning> 
  */
 - (void)updateContentSize;
 
-
-//================================================//
-// 面向View的API
-//================================================//
-
-
-
 @end
 
 
@@ -110,38 +100,5 @@ typedef void(^TLAnimateForTransition)(id <UIViewControllerContextTransitioning> 
 
 
 
-// * 自定义控制器的Present 动画 （面向UIViewController）
 
-/*
- typedef enum : NSUInteger {
- 
- TLAnimationTypeBottomMoveIn = 0,    // 新视图从旧视图底部平移进入，默认
- TLAnimationTypeTopMoveIn,           // 新视图从旧视图顶部平移进入
- TLAnimationTypeScale,               // 定点缩放（X、Y）
- TLAnimationTypeScale2,              // 定点缩放（X、Y）frame
- TLAnimationTypeSpread,              // 定点上下展开（Y）
- TLAnimationTypeBottomSpread,        // 新视图从旧视图底部向上撑开，
- TLAnimationTypeTopSpread,           // 新视图从旧视图顶部向下撑开
- TLAnimationTypeDownsweep,           // 幕布落下效果
- TLAnimationTypeRotation,            // 旋转翻页样式
- TLAnimationTypeRightMoveIn,         // 新视图从旧视图右边平移进入
- 
- 
- } TLAnimationType;
- */
 
-@interface TLTransition (UIViewController)
-///** 视图被展现的最终frame */
-//@property (nonatomic,assign) CGRect presentedFrame;
-///** 视图被展现前的初始frame */
-//@property (nonatomic,assign) CGRect willPresentFrame;
-//
-///** 转场动画类型 */
-//@property (nonatomic,assign) TLAnimationType aType;
-///** dismiss 使能,默认：YES */
-//@property (nonatomic,assign) BOOL dismissEnable;
-//
-///** anchorPoint 缩放/展开/旋转样式 锚点，默认中心(0.5,0.5) */
-//@property (nonatomic,assign) CGPoint anchorPoint;
-//
-@end

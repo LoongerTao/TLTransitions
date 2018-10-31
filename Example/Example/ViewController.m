@@ -8,6 +8,8 @@
 
 #import "ViewController.h"
 #import "TLTransition.h"
+#import "TowViewController.h"
+#import "ThreeViewController.h"
 
 @interface ViewController ()<CAAnimationDelegate>{
     UIView *_bView;
@@ -25,7 +27,21 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
+
 }
+
+
+- (IBAction)presentViewController {
+    TowViewController *vc = [[TowViewController alloc] init];
+//    [TLTransition presentToViewController:vc animationType:kCATransitionPush subtype:kCATransitionFromRight];
+    
+//    ThreeViewController *vc = [[ThreeViewController alloc] init];
+//    [TLTransition presentToViewController:vc animationType:kCATransitionReveal subtype:kCATransitionFromRight];
+    
+    [self presentViewController:vc animated:YES completion:nil];
+    
+}
+
 
 // TLPopTypeAlert
 - (IBAction)alertType:(UIButton *)sender {

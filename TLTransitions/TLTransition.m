@@ -16,10 +16,9 @@ typedef enum : NSUInteger {
     TLShowTypeDefault = 0,    // TLPopType样式
     TLShowTypePoint = 1,      // 定点显示
     TLShowTypeFrame = 2,      // 动态Frame显示：frame1 -> frame2
-    
 } TLShowType;
 
-// MARK: - TLTransition
+#pragma mark - TLTransition
 
 @interface TLTransition ()
 <UIViewControllerAnimatedTransitioning>
@@ -27,7 +26,7 @@ typedef enum : NSUInteger {
     BOOL _isAnimating; // 响应键盘动画中
 }
 
-/**************** 通用 ******************/
+
 /** 蒙板 */
 @property(nonatomic, strong) UIView *coverView;
 @property (nonatomic, strong) UIView *presentationWrappingView;
@@ -39,8 +38,6 @@ typedef enum : NSUInteger {
 /** 最终显示坐标 */
 @property(nonatomic, assign) CGRect finalFrame;
 
-
-/**************** 面向view ******************/
 /// 辅助pop控制器
 @property (nonatomic, weak) TLPopViewController *toVc;
 /// 需要展示的View，布局以keyWindow坐标为标准
@@ -50,13 +47,11 @@ typedef enum : NSUInteger {
 /// 需要展示的View，自动水平居中，TLPopTypeAlert时，垂直居中
 @property(nonatomic, assign) TLPopType pType;
 
-
-/**************** 面向controller ******************/
-
 @end
 
 @implementation TLTransition
-// MARK: - 辅助方法
+
+#pragma mark - 辅助方法
 /// 当前控制器
 + (UIViewController *)topController {
     UIWindow *keyW = [UIApplication sharedApplication].keyWindow;
@@ -84,7 +79,7 @@ typedef enum : NSUInteger {
     return isIPhoneX;
 }
 
-// MARK: - 创建实例并显示
+#pragma mark - 创建实例并显示
 + (instancetype)showView:(UIView *)popView popType:(TLPopType)pType {
     
     return [self showView:popView
@@ -130,7 +125,6 @@ typedef enum : NSUInteger {
     TLTransition *pt;
     pt = [[TLTransition alloc] initWithPresentedViewController:toVc
                                       presentingViewController:topVc];
-    toVc.transitioningDelegate = pt;
     pt.showType = showType;
     
     if (showType == TLShowTypeFrame) {
@@ -158,13 +152,14 @@ typedef enum : NSUInteger {
     
     if (self) {
         presentedViewController.modalPresentationStyle = UIModalPresentationCustom;
+        presentedViewController.transitioningDelegate = self;
     }
     
     return self;
 }
 
 
-// MARK: - lazy
+#pragma mark - lazy
 - (UIView *)coverView {
     if (_coverView == nil) {
         _coverView = [[UIView alloc] initWithFrame:self.containerView.bounds];
@@ -177,7 +172,7 @@ typedef enum : NSUInteger {
     return _coverView;
 }
 
-// MARK: - Actions
+#pragma mark - Actions
 - (void)tap:(UITapGestureRecognizer *)tap {
     if (self.allowTapDismiss) {
         [self dismiss];
@@ -189,7 +184,7 @@ typedef enum : NSUInteger {
 }
 
 
-// MARK: - 重写
+#pragma mark - 重写
 - (UIView*)presentedView
 {
     return self.presentationWrappingView;
@@ -198,7 +193,6 @@ typedef enum : NSUInteger {
 /** 即将布局转场子视图时调用 */
 - (void)containerViewWillLayoutSubviews {
     [super containerViewWillLayoutSubviews];
-    
     [self.containerView insertSubview:self.coverView atIndex:0];
     if(!_isAnimating) {
         self.presentationWrappingView.frame = self.frameOfPresentedViewInContainerView;
@@ -207,9 +201,7 @@ typedef enum : NSUInteger {
 
 - (void)presentationTransitionWillBegin
 {
-    
     UIView *presentedViewControllerView = [super presentedView];
-    
     {
         UIView *presentationWrapperView = [[UIView alloc] initWithFrame:self.frameOfPresentedViewInContainerView];
         
@@ -271,7 +263,6 @@ typedef enum : NSUInteger {
 - (void)dismissalTransitionWillBegin
 {
     id<UIViewControllerTransitionCoordinator> transitionCoordinator = self.presentingViewController.transitionCoordinator;
-    
     [transitionCoordinator animateAlongsideTransition:^(id<UIViewControllerTransitionCoordinatorContext> context) {
         self.coverView.alpha = 0.f;
     } completion:nil];
@@ -289,10 +280,12 @@ typedef enum : NSUInteger {
 #pragma mark -
 #pragma mark Layout
 /// 实时更新view的size
-- (void)updateContentSize {
+- (void)updateContentSize
+{
     [self.toVc updateContentSize];
 }
 
+// Method Of UIContentContainer Protocol
 - (void)preferredContentSizeDidChangeForChildContentContainer:(id<UIContentContainer>)container
 {
     [super preferredContentSizeDidChangeForChildContentContainer:container];
@@ -301,7 +294,7 @@ typedef enum : NSUInteger {
         [self.containerView setNeedsLayout];
 }
 
-
+// Method Of UIContentContainer Protocol
 - (CGSize)sizeForChildContentContainer:(id<UIContentContainer>)container withParentContainerSize:(CGSize)parentSize
 {
     if (container == self.presentedViewController)
@@ -369,54 +362,6 @@ typedef enum : NSUInteger {
     }
     return presentedViewControllerFrame;
 }
-
-// MARK: - 关联键盘动画
-- (void)setAllowObserverForKeyBoard:(BOOL)allowObserverForKeyBoard {
-    _allowObserverForKeyBoard = allowObserverForKeyBoard;
-    if (_allowObserverForKeyBoard ) { //&& _pType != 
-        SEL sel = @selector(observerOfKeyBoard:);
-        NSNotificationCenter *nCenter = [NSNotificationCenter defaultCenter];
-        [nCenter addObserver:self selector:sel name:UIKeyboardWillShowNotification object:nil];
-        [nCenter addObserver:self selector:sel name:UIKeyboardWillHideNotification object:nil];
-    }else {
-        [[NSNotificationCenter defaultCenter] removeObserver:self];
-    }
-}
-
-- (void)observerOfKeyBoard:(NSNotification *)notice {
-    UIView *view = self.presentedView;
-    
-    NSNotificationName name = notice.name;
-    NSDictionary *userInfo = notice.userInfo;
-    CGFloat duration = [userInfo[UIKeyboardAnimationDurationUserInfoKey] floatValue];
-    if ([name isEqualToString:@"UIKeyboardWillShowNotification"]) {
-        CGRect rect1 = view.frame;
-        CGRect rect2 = [userInfo[UIKeyboardFrameEndUserInfoKey] CGRectValue];
-        rect2.origin.y -= 40; // inputView
-        if(CGRectIntersectsRect(rect1, rect2)) {
-            _isAnimating = YES;
-            CGRect frame = view.frame;
-            CGFloat offsetY = CGRectGetMaxY(rect1) - CGRectGetMinY(rect2);
-            frame.origin.y -= offsetY;
-            [UIView animateWithDuration:duration animations:^{
-                view.frame = frame;
-            } completion:^(BOOL finished) {
-                self->_isAnimating = NO;
-            }];
-        }
-        
-    }else {
-        if (CGPointEqualToPoint(view.frame.origin, self.frameOfPresentedViewInContainerView.origin) ) {
-            return;
-        }
-        CGRect frame = view.frame;
-        frame.origin = self.frameOfPresentedViewInContainerView.origin;
-        [UIView animateWithDuration:duration animations:^{
-            view.frame = self.frameOfPresentedViewInContainerView;
-        }];
-    }
-}
-
 
 
 #pragma mark -
@@ -531,7 +476,7 @@ typedef enum : NSUInteger {
             toViewInitialFrame.size = toViewFinalFrame.size;
             toView.frame = toViewInitialFrame;
             
-        } else {
+        }else {
             fromViewFinalFrame = CGRectOffset(fromView.frame, 0, CGRectGetHeight(fromView.frame));
         }
         
@@ -578,7 +523,7 @@ typedef enum : NSUInteger {
     if(isPresenting){ // Present
         
 //        toView.layer.anchorPoint = anchorPoint; // 重置锚点
-        [containerView addSubview:toView]; // 注意: 一定要将视图添加到容器上
+        [containerView addSubview:toView];
        
         toView.frame = self.initialFrame;
         self.popView.frame = self.finalFrame;
@@ -587,7 +532,6 @@ typedef enum : NSUInteger {
             toView.frame = self.finalFrame;
             
         } completion:^(BOOL finished) {
-            // 告诉系统动画执行完毕    如果不写, 可能导致一些未知错误
             [transitionContext completeTransition:YES];
         }];
         
@@ -605,12 +549,14 @@ typedef enum : NSUInteger {
     };
 }
 
+
 #pragma mark -
 #pragma mark UIViewControllerTransitioningDelegate
 
 - (UIPresentationController*)presentationControllerForPresentedViewController:(UIViewController *)presented presentingViewController:(UIViewController *)presenting sourceViewController:(UIViewController *)source
 {
-    NSAssert(self.presentedViewController == presented, @"You didn't initialize %@ with the correct presentedViewController.  Expected %@, got %@.",
+    NSAssert(self.presentedViewController == presented,
+             @"You didn't initialize %@ with the correct presentedViewController.  Expected %@, got %@.",
              self, presented, self.presentedViewController);
     
     return self;
@@ -629,7 +575,7 @@ typedef enum : NSUInteger {
 }
 
 
-/** 告诉系统谁来负责Modal的 消失动画
+/** 告诉系统谁来负责Modal的 dismiss动画
  * @param dismissed 被关闭的视图
  * @return 谁来负责
  */
@@ -638,9 +584,57 @@ typedef enum : NSUInteger {
     return self;
 }
 
+#pragma mark -
+#pragma mark 关联键盘动画
+- (void)setAllowObserverForKeyBoard:(BOOL)allowObserverForKeyBoard {
+    _allowObserverForKeyBoard = allowObserverForKeyBoard;
+    if (_allowObserverForKeyBoard ) { //&& _pType !=
+        SEL sel = @selector(observerOfKeyBoard:);
+        NSNotificationCenter *nCenter = [NSNotificationCenter defaultCenter];
+        [nCenter addObserver:self selector:sel name:UIKeyboardWillShowNotification object:nil];
+        [nCenter addObserver:self selector:sel name:UIKeyboardWillHideNotification object:nil];
+    }else {
+        [[NSNotificationCenter defaultCenter] removeObserver:self];
+    }
+}
+
+- (void)observerOfKeyBoard:(NSNotification *)notice {
+    UIView *view = self.presentedView;
+    
+    NSNotificationName name = notice.name;
+    NSDictionary *userInfo = notice.userInfo;
+    CGFloat duration = [userInfo[UIKeyboardAnimationDurationUserInfoKey] floatValue];
+    if ([name isEqualToString:@"UIKeyboardWillShowNotification"]) {
+        CGRect rect1 = view.frame;
+        CGRect rect2 = [userInfo[UIKeyboardFrameEndUserInfoKey] CGRectValue];
+        rect2.origin.y -= 40; // inputView
+        if(CGRectIntersectsRect(rect1, rect2)) {
+            _isAnimating = YES;
+            CGRect frame = view.frame;
+            CGFloat offsetY = CGRectGetMaxY(rect1) - CGRectGetMinY(rect2);
+            frame.origin.y -= offsetY;
+            [UIView animateWithDuration:duration animations:^{
+                view.frame = frame;
+            } completion:^(BOOL finished) {
+                self->_isAnimating = NO;
+            }];
+        }
+        
+    }else {
+        if (CGPointEqualToPoint(view.frame.origin, self.frameOfPresentedViewInContainerView.origin) ) {
+            return;
+        }
+        CGRect frame = view.frame;
+        frame.origin = self.frameOfPresentedViewInContainerView.origin;
+        [UIView animateWithDuration:duration animations:^{
+            view.frame = self.frameOfPresentedViewInContainerView;
+        }];
+    }
+}
+
+
 - (void)dealloc{
     tl_LogFunc
 }
 @end
-
 

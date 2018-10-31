@@ -64,6 +64,14 @@
                                     <action selector="customAnimateTransition:" destination="BYZ-38-t0r" eventType="touchUpInside" id="liv-Dw-eMG"/>
                                 </connections>
                             </button>
+                            <button hidden="YES" opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="HNW-RA-2t1">
+                                <rect key="frame" x="216" y="230" width="99" height="30"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" title="viewController"/>
+                                <connections>
+                                    <action selector="presentViewController" destination="BYZ-38-t0r" eventType="touchUpInside" id="RJb-1L-jjB"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>

@@ -22,6 +22,7 @@
     
 }
 
+// 当视图控制器的特征集合被其父控件更改时，将调用此方法。
 - (void)willTransitionToTraitCollection:(UITraitCollection *)newCollection withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator
 {
     [super willTransitionToTraitCollection:newCollection withTransitionCoordinator:coordinator];
@@ -31,6 +32,7 @@
 
 - (void)updatePreferredContentSizeWithTraitCollection:(UITraitCollection *)traitCollection
 {
+    // 指定视图大小
     self.preferredContentSize = self.popView.bounds.size;
 }
 
