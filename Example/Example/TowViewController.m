@@ -8,7 +8,6 @@
 
 #import "TowViewController.h"
 #import "UIViewController+Presenting.h"
-#import "ThreeViewController.h"
 @interface TowViewController ()
 
 @end
@@ -22,9 +21,10 @@
 
 - (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
     
-    [self presentViewController:[ThreeViewController new] transitionStyle:1 completion:^{
-        NSLog(@"----completion---");
-    }];
+//    [self presentViewController:[ThreeViewController new] transitionStyle:1 completion:^{
+//        NSLog(@"----completion---");
+//    }];
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 - (IBAction)dismiss:(id)sender {
@@ -33,6 +33,8 @@
 
 - (void)dealloc {
     NSLog(@"%s",__func__);
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"TowViewControllerDidDealloc" object:nil];
 }
 
 @end

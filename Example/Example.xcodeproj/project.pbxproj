@@ -21,7 +21,6 @@
 		142741C32186E18B0047EE09 /* TLPopViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 142741BF2186E18B0047EE09 /* TLPopViewController.m */; };
 		142741C7218861CC0047EE09 /* TowViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 142741C5218861CB0047EE09 /* TowViewController.m */; };
 		142741C8218861CC0047EE09 /* TowViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 142741C6218861CC0047EE09 /* TowViewController.xib */; };
-		142741CB2189323A0047EE09 /* ThreeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 142741CA2189323A0047EE09 /* ThreeViewController.m */; };
 		142741D1218988B20047EE09 /* UIViewController+Presenting.m in Sources */ = {isa = PBXBuildFile; fileRef = 142741D0218988B20047EE09 /* UIViewController+Presenting.m */; };
 /* End PBXBuildFile section */
 
@@ -70,8 +69,6 @@
 		142741C4218861CB0047EE09 /* TowViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TowViewController.h; sourceTree = "<group>"; };
 		142741C5218861CB0047EE09 /* TowViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TowViewController.m; sourceTree = "<group>"; };
 		142741C6218861CC0047EE09 /* TowViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TowViewController.xib; sourceTree = "<group>"; };
-		142741C92189323A0047EE09 /* ThreeViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ThreeViewController.h; sourceTree = "<group>"; };
-		142741CA2189323A0047EE09 /* ThreeViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ThreeViewController.m; sourceTree = "<group>"; };
 		142741CF218988B20047EE09 /* UIViewController+Presenting.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UIViewController+Presenting.h"; sourceTree = "<group>"; };
 		142741D0218988B20047EE09 /* UIViewController+Presenting.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "UIViewController+Presenting.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -134,8 +131,6 @@
 				142741C4218861CB0047EE09 /* TowViewController.h */,
 				142741C5218861CB0047EE09 /* TowViewController.m */,
 				142741C6218861CC0047EE09 /* TowViewController.xib */,
-				142741C92189323A0047EE09 /* ThreeViewController.h */,
-				142741CA2189323A0047EE09 /* ThreeViewController.m */,
 				142741652186DEA10047EE09 /* Assets.xcassets */,
 				142741672186DEA10047EE09 /* LaunchScreen.storyboard */,
 				1427416A2186DEA10047EE09 /* Info.plist */,
@@ -325,7 +320,6 @@
 				142741C22186E18B0047EE09 /* TLSheetPicker.m in Sources */,
 				142741D1218988B20047EE09 /* UIViewController+Presenting.m in Sources */,
 				142741C02186E18B0047EE09 /* TLGlobalConfig.m in Sources */,
-				142741CB2189323A0047EE09 /* ThreeViewController.m in Sources */,
 				1427415E2186DEA00047EE09 /* AppDelegate.m in Sources */,
 				142741C7218861CC0047EE09 /* TowViewController.m in Sources */,
 			);
