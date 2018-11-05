@@ -1,6 +1,6 @@
 //
-//  UIViewController+Presenting.h
-//  
+//  UIViewController+Transitioning.h
+//  https://github.com/LoongerTao/TLTransitions
 //
 //  Created by 故乡的云 on 2018/10/31.
 //  Copyright © 2018 故乡的云. All rights reserved.
@@ -10,13 +10,17 @@
 //================================================//
 
 #import <UIKit/UIKit.h>
+#import "TLGlobalConfig.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface UIViewController (Presenting) 
-/// 转场动画时长，可以在执行present前根据不同动画类型进行调整。默认：0.35f,最小0.01。
+@interface UIViewController (Transitioning)<UINavigationControllerDelegate>
+//@property(nonatomic, strong) id <UIViewControllerAnimatedTransitioning> animator;
+
+/// 转场动画时长，可以在执行present前根据不同动画类型进行调整。默认：0.45f,最小0.01。
 @property(nonatomic, assign) NSTimeInterval transitionDuration;
 
+#pragma mark - Present / Dismiss
 /**
  * 转场控制器(官方原生类型)
  * @param vc 要转场的控制器
@@ -41,6 +45,20 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)presentViewController:(UIViewController *)vc
               swipeTargetEdge:(UIRectEdge)targetEdge
             reverseOfDismiss:(BOOL)isReverse
+                   completion:(void (^ __nullable)(void))completion TL_DEPRECATED("过期，请使用`-presentViewController: swipeType: pushDirection: popDirection: completion:`");
+
+/**
+ * 以滑动的方式转场控制器
+ * @param vc 要转场的控制器
+ * @param presentDirection present方向（指向）
+ * @param dismissDirection dismiss方向（指向）
+ * @param completion 完成转场的回调
+ * NOTE: 由于自定义情况下，系统不会将当前c控制器（self）从窗口移除，所以dismiss后，系统不会调用`- viewDidAppear:`和`- viewWillAppear:`等方法
+ */
+- (void)presentViewController:(UIViewController *)vc
+                    swipeType:(TLSwipeType)swipeType
+                presentDirection:(TLDirectionType)presentDirection
+                 dismissDirection:(TLDirectionType)dismissDirection
                    completion:(void (^ __nullable)(void))completion;
 
 /**
@@ -97,6 +115,20 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)presentToViewController:(UIViewController *)vc
                 customAnimation:(void (^)( id<UIViewControllerContextTransitioning> transitionContext, BOOL isPresenting))animation
                      completion:(void (^ __nullable)(void))completion;
+
+
+#pragma mark - Push / Pop
+/**
+ * 以滑动的方式转场控制器(Push / Pop)
+ * @param vc 要转场的控制器
+ * @param pushDirection push方向（指向）
+ * @param popDirection pop方向（指向）
+ * NOTE: 手动Pop --> [self.navigationController popViewControllerAnimated:YES];
+ */
+- (void)pushViewController:(UIViewController *)vc
+                 swipeType:(TLSwipeType)swipeType
+             pushDirection:(TLDirectionType)pushDirection
+              popDirection:(TLDirectionType)popDirection;
 @end
 
 NS_ASSUME_NONNULL_END

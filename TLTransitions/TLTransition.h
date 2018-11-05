@@ -1,6 +1,6 @@
 //
 //  TLTransition.h
-//  TLPopViewController
+//  https://github.com/LoongerTao/TLTransitions
 //
 //  Created by 故乡的云 on 2018/8/1.
 //  Copyright © 2018年 Gxdy. All rights reserved.

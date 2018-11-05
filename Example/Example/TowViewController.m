@@ -7,7 +7,7 @@
 //
 
 #import "TowViewController.h"
-#import "UIViewController+Presenting.h"
+
 @interface TowViewController ()
 
 @end
@@ -16,19 +16,23 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    // Do any additional setup after loading the view from its nib.
+    self.navigationItem.title = @"Controller B";
 }
 
 - (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
-    
-//    [self presentViewController:[ThreeViewController new] transitionStyle:1 completion:^{
-//        NSLog(@"----completion---");
-//    }];
-    [self dismissViewControllerAnimated:YES completion:nil];
+    if (self.navigationController.childViewControllers.count > 0) {
+        [self.navigationController popViewControllerAnimated:YES];
+    }else {
+        [self dismissViewControllerAnimated:YES completion:nil];
+    }
 }
 
 - (IBAction)dismiss:(id)sender {
-     [self dismissViewControllerAnimated:YES completion:nil];
+    if (self.navigationController.childViewControllers.count > 0) {
+        [self.navigationController popViewControllerAnimated:YES];
+    }else {
+        [self dismissViewControllerAnimated:YES completion:nil];
+    }
 }
 
 - (void)dealloc {

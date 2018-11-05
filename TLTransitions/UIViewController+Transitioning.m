@@ -1,12 +1,13 @@
 //
-//  UIViewController+Presenting.m
-//  
+//  UIViewController+Transitioning.m
+//  https://github.com/LoongerTao/TLTransitions
 //
 //  Created by 故乡的云 on 2018/10/31.
 //  Copyright © 2018 故乡的云. All rights reserved.
 //
 
-#import "UIViewController+Presenting.h"
+#import "UIViewController+Transitioning.h"
+#import "TLSwipeAnimator.h"
 #import <objc/runtime.h>
 
 /// 动画类型
@@ -61,13 +62,13 @@ typedef void(^TLAnimateTransition)(id <UIViewControllerContextTransitioning>, BO
 }
 
 
-#pragma mark - UIViewControllerTransitioningDelegate
+#pragma mark - UIViewControllerTransitioningDelegate (present)
 - (UIPresentationController*)presentationControllerForPresentedViewController:(UIViewController *)presented presentingViewController:(UIViewController *)presenting sourceViewController:(UIViewController *)source
 {
     NSAssert(self.presentedViewController == presented,
              @"You didn't initialize %@ with the correct presentedViewController.  Expected %@, got %@.",
              self, presented, self.presentedViewController);
-    
+
     return self;
 }
 
@@ -81,6 +82,12 @@ typedef void(^TLAnimateTransition)(id <UIViewControllerContextTransitioning>, BO
     return self;
 }
 
+#pragma mark UINavigationControllerDelegate - (push/pop)
+//  push/pop Animator.
+- (id<UIViewControllerAnimatedTransitioning>)navigationController:(UINavigationController *)navigationController animationControllerForOperation:(UINavigationControllerOperation)operation fromViewController:(UIViewController *)fromVC toViewController:(UIViewController *)toVC
+{
+    return self;
+}
 
 #pragma mark - UIViewControllerAnimatedTransitioning
 - (NSTimeInterval)transitionDuration:(nullable id<UIViewControllerContextTransitioning>)transitionContext {
@@ -168,6 +175,7 @@ typedef void(^TLAnimateTransition)(id <UIViewControllerContextTransitioning>, BO
             // 对于dismiss动画，我们希望From视图滑开，显示toView。
             // 因此，我们必须将toView放在containerView上，同时动画s结束后要将toView添加回原来的superview上
             toView = toViewController.view; // 保证有值
+            self.superviewOfPresentingView = toView.superview;
             [containerView addSubview:toView];
         }
         
@@ -205,9 +213,9 @@ typedef void(^TLAnimateTransition)(id <UIViewControllerContextTransitioning>, BO
 
 #pragma mark-
 #pragma mark -
-#pragma mark UIViewController (Presenting)
+#pragma mark UIViewController (Transitioning)
 
-@implementation UIViewController (Presenting)
+@implementation UIViewController (Transitioning) 
 #pragma mark Runtime 对象关联
 - (void)setTransitionDuration:(NSTimeInterval)transitionDuration
 {
@@ -217,7 +225,7 @@ typedef void(^TLAnimateTransition)(id <UIViewControllerContextTransitioning>, BO
 - (NSTimeInterval)transitionDuration
 {
     NSTimeInterval d = [objc_getAssociatedObject(self, _cmd) doubleValue];
-    return d <= 0 ? 0.35f : d;
+    return d <= 0 ? 0.45f : d;
 }
 
 #pragma mark API
@@ -244,6 +252,26 @@ typedef void(^TLAnimateTransition)(id <UIViewControllerContextTransitioning>, BO
     vc.transitioningDelegate = presentationController;
     [self presentViewController:vc animated:YES completion:completion];
 }
+
+- (void)presentViewController:(UIViewController *)vc
+                    swipeType:(TLSwipeType)swipeType
+             presentDirection:(TLDirectionType)presentDirection
+             dismissDirection:(TLDirectionType)dismissDirection
+                   completion:(void (^ __nullable)(void))completion
+{
+    _animator = [[TLSwipeAnimator alloc] init];
+    TLSwipeAnimator *animator = (TLSwipeAnimator *)_animator;
+    animator.isPushOrPop = NO;
+    animator.swipeType = swipeType;
+    animator.pushDirection = presentDirection;
+    animator.popDirection = dismissDirection;
+    animator.transitionDuration = self.transitionDuration;
+    
+    vc.modalPresentationStyle = UIModalPresentationCustom;
+    vc.transitioningDelegate = animator;
+    [self presentViewController:vc animated:YES completion:completion];
+}
+
 
 - (void)presentToViewController:(UIViewController *)vc
                   transitionType:(CATransitionType)tType
@@ -272,7 +300,6 @@ typedef void(^TLAnimateTransition)(id <UIViewControllerContextTransitioning>, BO
     presentationController.subtype = subtype;
     presentationController.tTypeOfDismiss = tTypeOfDismiss;
     presentationController.subtypeOfDismiss = subtypeOfDismiss;
-    presentationController.superviewOfPresentingView = self.view.superview;
     
     vc.transitioningDelegate = presentationController;
     [self presentViewController:vc animated:YES completion:completion];
@@ -290,5 +317,36 @@ typedef void(^TLAnimateTransition)(id <UIViewControllerContextTransitioning>, BO
     vc.transitioningDelegate = presentationController;
     [self presentViewController:vc animated:YES completion:completion];
 }
+
+
+// 临时保存，用于pop
+id <UIViewControllerAnimatedTransitioning,UINavigationControllerDelegate> _animator = nil;
+
+-(void)pushViewController:(UIViewController *)vc
+                swipeType:(TLSwipeType)swipeType
+            pushDirection:(TLDirectionType)pushDirection
+             popDirection:(TLDirectionType)popDirection
+{
+    BOOL falg = ![self isMemberOfClass:[UINavigationController class]]; // 不是UINavigationController
+    NSAssert(falg, @"%s 方法n不能用UINavigationController发起调用，请直接用view controllerd调用", __func__);
+    NSAssert(self.navigationController, (@"控制器 %@ 没有navigationController，无法push"), self);
+    
+    _animator = [[TLSwipeAnimator alloc] init];
+    TLSwipeAnimator *animator = (TLSwipeAnimator *)_animator;
+    animator.isPushOrPop = YES;
+    animator.swipeType = swipeType;
+    animator.pushDirection = pushDirection;
+    animator.popDirection = popDirection;
+    animator.transitionDuration = self.transitionDuration;
+    
+    self.navigationController.delegate = _animator;
+    [self.navigationController pushViewController:vc animated:YES];
+}
+
+- (void)dealloc{
+    _animator = nil;
+    tl_LogFunc;
+}
+
 
 @end

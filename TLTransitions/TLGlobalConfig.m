@@ -1,6 +1,6 @@
 //
 //  TLGlobalConfig.m
-//  GxdyKit
+//  https://github.com/LoongerTao/TLTransitions
 //
 //  Created by 故乡的云 on 2018/8/16.
 //  Copyright © 2018年 Gdxy. All rights reserved.

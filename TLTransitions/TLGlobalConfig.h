@@ -1,12 +1,28 @@
 //
 //  TLGlobalConfig.h
-//  GxdyKit
+//  https://github.com/LoongerTao/TLTransitions
 //
 //  Created by 故乡的云 on 2018/8/16.
 //  Copyright © 2018年 Gdxy. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>
+
+// 方向,指向的方向（Top：bottom --> top，动画由Top：bottom到top）
+typedef enum : NSUInteger {
+    TLDirectionTypeTop = 0,
+    TLDirectionTypeLeft,
+    TLDirectionTypeBottom,
+    TLDirectionTypeRight,
+} TLDirectionType;
+
+// 平滑动画类型：如有控制器A和B， 操作： A push to B Or B pop to A
+typedef enum : NSUInteger {
+    TLSwipeTypeInAndOut = 0, // push：B从A的上面滑入，pop：B从A的上面抽出
+    TLSwipeTypeIn,           // push：B从A的上面滑入，pop：A从B的上面滑入
+    TLSwipeTypeOut,          // push：A从B的上面抽出，pop：B从A的上面抽出
+} TLSwipeType;
+
 
 
 
@@ -21,6 +37,8 @@
 #endif
 
 #define tl_LogFunc tl_Log(@"%s", __func__);
+// 过期
+#define TL_DEPRECATED(instead) NS_DEPRECATED(2_0, 2_0, 2_0, 2_0, instead)
 
 
 /** RGB颜色 */

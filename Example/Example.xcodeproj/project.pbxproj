@@ -21,7 +21,11 @@
 		142741C32186E18B0047EE09 /* TLPopViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 142741BF2186E18B0047EE09 /* TLPopViewController.m */; };
 		142741C7218861CC0047EE09 /* TowViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 142741C5218861CB0047EE09 /* TowViewController.m */; };
 		142741C8218861CC0047EE09 /* TowViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 142741C6218861CC0047EE09 /* TowViewController.xib */; };
-		142741D1218988B20047EE09 /* UIViewController+Presenting.m in Sources */ = {isa = PBXBuildFile; fileRef = 142741D0218988B20047EE09 /* UIViewController+Presenting.m */; };
+		142741D1218988B20047EE09 /* UIViewController+Transitioning.m in Sources */ = {isa = PBXBuildFile; fileRef = 142741D0218988B20047EE09 /* UIViewController+Transitioning.m */; };
+		142741D8218BEBD70047EE09 /* TLSwipeAnimator.m in Sources */ = {isa = PBXBuildFile; fileRef = 142741D7218BEBD70047EE09 /* TLSwipeAnimator.m */; };
+		142741DB218BFBE40047EE09 /* TLFirstTableController.m in Sources */ = {isa = PBXBuildFile; fileRef = 142741DA218BFBE40047EE09 /* TLFirstTableController.m */; };
+		14B08832218FEE4B0001B3EB /* TLWheelTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 14B08830218FEE4B0001B3EB /* TLWheelTableViewCell.m */; };
+		14B08833218FEE4B0001B3EB /* TLWheelTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 14B08831218FEE4B0001B3EB /* TLWheelTableViewCell.xib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -69,8 +73,15 @@
 		142741C4218861CB0047EE09 /* TowViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TowViewController.h; sourceTree = "<group>"; };
 		142741C5218861CB0047EE09 /* TowViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TowViewController.m; sourceTree = "<group>"; };
 		142741C6218861CC0047EE09 /* TowViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TowViewController.xib; sourceTree = "<group>"; };
-		142741CF218988B20047EE09 /* UIViewController+Presenting.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UIViewController+Presenting.h"; sourceTree = "<group>"; };
-		142741D0218988B20047EE09 /* UIViewController+Presenting.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "UIViewController+Presenting.m"; sourceTree = "<group>"; };
+		142741CF218988B20047EE09 /* UIViewController+Transitioning.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UIViewController+Transitioning.h"; sourceTree = "<group>"; };
+		142741D0218988B20047EE09 /* UIViewController+Transitioning.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "UIViewController+Transitioning.m"; sourceTree = "<group>"; };
+		142741D6218BEBD70047EE09 /* TLSwipeAnimator.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TLSwipeAnimator.h; sourceTree = "<group>"; };
+		142741D7218BEBD70047EE09 /* TLSwipeAnimator.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TLSwipeAnimator.m; sourceTree = "<group>"; };
+		142741D9218BFBE40047EE09 /* TLFirstTableController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TLFirstTableController.h; sourceTree = "<group>"; };
+		142741DA218BFBE40047EE09 /* TLFirstTableController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TLFirstTableController.m; sourceTree = "<group>"; };
+		14B0882F218FEE4B0001B3EB /* TLWheelTableViewCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TLWheelTableViewCell.h; sourceTree = "<group>"; };
+		14B08830218FEE4B0001B3EB /* TLWheelTableViewCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TLWheelTableViewCell.m; sourceTree = "<group>"; };
+		14B08831218FEE4B0001B3EB /* TLWheelTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TLWheelTableViewCell.xib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -122,15 +133,21 @@
 		1427415B2186DEA00047EE09 /* Example */ = {
 			isa = PBXGroup;
 			children = (
+				142741D2218BEA850047EE09 /* Animator */,
 				142741BC2186E18B0047EE09 /* Scene Template */,
 				1427415C2186DEA00047EE09 /* AppDelegate.h */,
 				1427415D2186DEA00047EE09 /* AppDelegate.m */,
+				142741D9218BFBE40047EE09 /* TLFirstTableController.h */,
+				142741DA218BFBE40047EE09 /* TLFirstTableController.m */,
 				1427415F2186DEA00047EE09 /* ViewController.h */,
 				142741602186DEA00047EE09 /* ViewController.m */,
 				142741622186DEA00047EE09 /* Main.storyboard */,
 				142741C4218861CB0047EE09 /* TowViewController.h */,
 				142741C5218861CB0047EE09 /* TowViewController.m */,
 				142741C6218861CC0047EE09 /* TowViewController.xib */,
+				14B0882F218FEE4B0001B3EB /* TLWheelTableViewCell.h */,
+				14B08830218FEE4B0001B3EB /* TLWheelTableViewCell.m */,
+				14B08831218FEE4B0001B3EB /* TLWheelTableViewCell.xib */,
 				142741652186DEA10047EE09 /* Assets.xcassets */,
 				142741672186DEA10047EE09 /* LaunchScreen.storyboard */,
 				1427416A2186DEA10047EE09 /* Info.plist */,
@@ -166,8 +183,10 @@
 				142741BF2186E18B0047EE09 /* TLPopViewController.m */,
 				142741B72186E18B0047EE09 /* TLTransition.h */,
 				142741BA2186E18B0047EE09 /* TLTransition.m */,
-				142741CF218988B20047EE09 /* UIViewController+Presenting.h */,
-				142741D0218988B20047EE09 /* UIViewController+Presenting.m */,
+				142741CF218988B20047EE09 /* UIViewController+Transitioning.h */,
+				142741D0218988B20047EE09 /* UIViewController+Transitioning.m */,
+				142741D6218BEBD70047EE09 /* TLSwipeAnimator.h */,
+				142741D7218BEBD70047EE09 /* TLSwipeAnimator.m */,
 			);
 			name = TLTransitions;
 			path = ../TLTransitions;
@@ -180,6 +199,13 @@
 				142741BE2186E18B0047EE09 /* TLSheetPicker.h */,
 			);
 			path = "Scene Template";
+			sourceTree = "<group>";
+		};
+		142741D2218BEA850047EE09 /* Animator */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Animator;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -286,6 +312,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				142741692186DEA10047EE09 /* LaunchScreen.storyboard in Resources */,
+				14B08833218FEE4B0001B3EB /* TLWheelTableViewCell.xib in Resources */,
 				142741662186DEA10047EE09 /* Assets.xcassets in Resources */,
 				142741642186DEA00047EE09 /* Main.storyboard in Resources */,
 				142741C8218861CC0047EE09 /* TowViewController.xib in Resources */,
@@ -318,10 +345,13 @@
 				1427416C2186DEA10047EE09 /* main.m in Sources */,
 				142741C32186E18B0047EE09 /* TLPopViewController.m in Sources */,
 				142741C22186E18B0047EE09 /* TLSheetPicker.m in Sources */,
-				142741D1218988B20047EE09 /* UIViewController+Presenting.m in Sources */,
+				14B08832218FEE4B0001B3EB /* TLWheelTableViewCell.m in Sources */,
+				142741D1218988B20047EE09 /* UIViewController+Transitioning.m in Sources */,
 				142741C02186E18B0047EE09 /* TLGlobalConfig.m in Sources */,
 				1427415E2186DEA00047EE09 /* AppDelegate.m in Sources */,
 				142741C7218861CC0047EE09 /* TowViewController.m in Sources */,
+				142741DB218BFBE40047EE09 /* TLFirstTableController.m in Sources */,
+				142741D8218BEBD70047EE09 /* TLSwipeAnimator.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
