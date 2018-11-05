@@ -8,7 +8,7 @@
 
 ### V 1.1.0
 
-#### 效果图（录屏效果不好，有重影）
+#### 效果图（录屏效果不好，有重影图 1-3：view ，4：present， 5：push）
 ![preview.gif（录屏效果不好，有重影）](https://upload-images.jianshu.io/upload_images/3333500-363b429b780964f3.gif?imageMogr2/auto-orient/strip) ![preview2.gif(键盘监听)](https://upload-images.jianshu.io/upload_images/3333500-d02d308d81d693b6.gif?imageMogr2/auto-orient/strip) 
 ![view.gif](https://upload-images.jianshu.io/upload_images/3333500-86257a1a7e8239fc.gif?imageMogr2/auto-orient/strip) ![present/dismiss.gif](https://upload-images.jianshu.io/upload_images/3333500-ea5726ef46174f98.gif?imageMogr2/auto-orient/strip) ![push/pop.gif](https://upload-images.jianshu.io/upload_images/3333500-5738597b55a6eb2e.gif?imageMogr2/auto-orient/strip)
 
