@@ -2,15 +2,15 @@
 
 基于`UIPresentationController`的组件，旨在快速实现控制器/View的转场，并支持自定义动画
 
-### V 1.0.0
+### V 1.1.0
 
 #### 效果图（录屏效果不好，有重影）
 ![preview.gif（录屏效果不好，有重影）](https://upload-images.jianshu.io/upload_images/3333500-363b429b780964f3.gif?imageMogr2/auto-orient/strip) ![preview2.gif(键盘监听)](https://upload-images.jianshu.io/upload_images/3333500-d02d308d81d693b6.gif?imageMogr2/auto-orient/strip)
 
 ### pod
-`pod 'TLTransitions', '~> 1.0.0'`
+`pod 'TLTransitions', '~> 1.1.0'`
 
-#### API与使用
+#### 一.View的转场API与使用
 ```objc
 #import "TLTransition.h"
 
@@ -88,100 +88,8 @@ UIView *bView = [self creatViewWithBounds:finalFrame color:tl_Color(250, 250, 25
 /// 自定义动画样式(注意需要准守的规则)
 @property(nonatomic, copy) TLAnimateForTransition animateTransition;
 ```
-- 使用
-```objc
-- (IBAction)customAnimateTransition:(UIButton *)sender {
-    __weak typeof(self) wself = self;
-    CGRect bounds = CGRectMake(0, 0, self.view.bounds.size.width * 0.8, 200.f);
-    UIView *bView = [self creatViewWithBounds:bounds color:tl_Color(248, 218, 200)];
-    _transition = [TLTransition showView:bView popType:TLPopTypeAlert];
-    
-    NSTimeInterval duration = _transition.transitionDuration;
-    _transition.animateTransition = ^(id<UIViewControllerContextTransitioning> transitionContext) {
-        
-        // For a Presentation:
-        //      fromView = The presenting view.
-        //      toView   = The presented view.
-        // For a Dismissal:
-        //      fromView = The presented view.
-        //      toView   = The presenting view.
-        UIView *fromView;
-        UIView *toView;
-        UIViewController *fromViewController = [transitionContext viewControllerForKey:UITransitionContextFromViewControllerKey];
-        UIViewController *toViewController = [transitionContext viewControllerForKey:UITransitionContextToViewControllerKey];
-        
-        UIView *containerView = transitionContext.containerView;
-        if ([transitionContext respondsToSelector:@selector(viewForKey:)]) {
-            fromView = [transitionContext viewForKey:UITransitionContextFromViewKey];
-            toView = [transitionContext viewForKey:UITransitionContextToViewKey];
-        } else {
-            fromView = fromViewController.view;
-            toView = toViewController.view;
-        }
-        
-        if(toView){ // Present
-            // 注意1: 一定要将视图添加到容器上
-            [containerView addSubview:toView];
-            
-            // UIView动画
-            // 动画前的样式
-            // code...
-//            [UIView animateWithDuration:duration animations:^{
-//
-//                // 最终的样式
-//                // code...
-//
-//            } completion:^(BOOL finished) {
-//                // 注意2: 必须执行，告诉transitionContext 动画执行完毕
-//                [transitionContext completeTransition:YES];
-//            }];
-            
-            // 或CATransition
-            
-            // 保存transitionContext，等动画结束时调用[transitionContext completeTransition:YES];
-            self->_transitionContext = transitionContext; 
-            // 设置转场动画
-            CATransition *anim = [CATransition animation];
-            anim.delegate = wself; // 设置代理，监听动画进度
-            anim.duration = duration;
-            anim.type = @"push"; // 动画过渡效果
-            anim.subtype = kCATransitionFromRight;
-            [toView.layer addAnimation:anim forKey:nil];
-            
-        }else { // dismiss
-            [containerView addSubview:fromView];
-            
-            // UIView动画
-            // 动画前的样式
-            // code...
-//            [UIView animateWithDuration:duration animations:^{
-//
-//                // 最终的样式
-//                // code...
-//
-//            } completion:^(BOOL finished) {
-//                [transitionContext completeTransition:YES];
-//            }];
-            
-            // 或CATransition
-            
-            self->_transitionContext = transitionContext;
-            // 设置转场动画
-            CATransition *anim = [CATransition animation];
-            anim.delegate = wself;
-            anim.duration = duration;
-            anim.type = @"cube"; // 动画过渡效果
-            anim.subtype = kCATransitionFromRight;
-            [fromView.layer addAnimation:anim forKey:nil];
-        };
-    };
-}
+- 使用见demo
 
-/// CAAnimationDelegate
-- (void)animationDidStop:(CAAnimation *)anim finished:(BOOL)flag {
-    [_transitionContext completeTransition:YES];
-}
-```
 
 6.动态更新size
 - API
@@ -211,6 +119,115 @@ _bView.bounds = rect;
 ```
 
 - 使用
-```
+```objc
 [_transition dismiss];
 ```
+
+#### 一.控制器的转场API（present/push）
+- 具体使用见demo 案列
+
+```objc
+/// 转场动画时长，可以在执行present前根据不同动画类型进行调整。默认：0.45f,最小0.01。
+@property(nonatomic, assign) NSTimeInterval transitionDuration;
+```
+
+##### 1.Present / Dismiss
+```objc
+/**
+ * 转场控制器(官方原生类型)
+ * @param vc 要转场的控制器
+ * @param style 转场动画类型
+ *          `UIModalTransitionStyleCoverVertical=0, 默认方式，竖向上推`
+ *          `UIModalTransitionStyleFlipHorizontal, 水平反转`
+ *          `UIModalTransitionStyleCrossDissolve, 隐出隐现`
+ *          `UIModalTransitionStylePartialCurl, 部分翻页效果`
+ * @param completion 完成转场的回调
+ */
+- (void)presentViewController:(UIViewController *)vc
+              transitionStyle:(UIModalTransitionStyle)style
+                   completion:(void (^ __nullable)(void))completion;
+
+/**
+ * 以滑动的方式转场控制器
+ * @param vc 要转场的控制器
+ * @param presentDirection present方向（指向）
+ * @param dismissDirection dismiss方向（指向）
+ * @param completion 完成转场的回调
+ * NOTE: 由于自定义情况下，系统不会将当前c控制器（self）从窗口移除，所以dismiss后，系统不会调用`- viewDidAppear:`和`- viewWillAppear:`等方法
+ */
+- (void)presentViewController:(UIViewController *)vc
+                    swipeType:(TLSwipeType)swipeType
+                presentDirection:(TLDirectionType)presentDirection
+                 dismissDirection:(TLDirectionType)dismissDirection
+                   completion:(void (^ __nullable)(void))completion;
+
+/**
+ * 转场控制器
+ * @param vc 要转场的控制器
+ * @param tType 转场动画类型（本质NSString类型）
+ *          `kCATransitionFade`
+ *          `kCATransitionMoveIn`
+ *          `kCATransitionPush`
+ *          `kCATransitionReveal`
+ *          其它官方私有API：@"cube"、@"suckEffect"、@"oglFlip"、@"rippleEffect"、@"pageCurl"、@"pageUnCurl"、
+ *          @"cameraIrisHollowOpen"、@"cameraIrisHollowClose"
+ * @param subtype 转场方向（本质NSString类型）
+ *          `kCATransitionFromRight`
+ *          `kCATransitionFromLeft`
+ *          `kCATransitionFromTop`
+ *          `kCATransitionFromBottom`
+  * @param completion 完成转场的回调
+ * NOTE: 由于自定义情况下，系统不会将当前c控制器（self）从窗口移除，所以dismiss后，系统不会调用`- viewDidAppear:`和`- viewWillAppear:`等方法
+ */
+- (void)presentToViewController:(UIViewController *)vc
+                  transitionType:(CATransitionType)tType
+                        subtype:(CATransitionSubtype)subtype
+                     completion:(void (^ __nullable)(void))completion;
+
+/**
+ * 转场控制器
+ * @param vc 要转场的控制器
+ * @param tType present动画类型
+ * @param subtype present方向
+ * @param tTypeForDismiss dismiss动画类型
+ * @param subtypeForDismiss dismiss方向
+ * @param completion 完成转场的回调
+ * NOTE: 由于自定义情况下，系统不会将当前c控制器（self）从窗口移除，所以dismiss后，系统不会调用`- viewDidAppear:`和`- viewWillAppear:`等方法
+ */
+- (void)presentToViewController:(UIViewController *)vc
+                 transitionType:(CATransitionType)tType
+                        subtype:(CATransitionSubtype)subtype
+          dismissTransitionType:(CATransitionType)tTypeForDismiss
+                 dismissSubtype:(CATransitionSubtype)subtypeForDismiss
+                     completion:(void (^ __nullable)(void))completion;
+
+/**
+ * 转场控制器
+ * @param vc 要转场的控制器
+ * @param animation 自定义动画（分presenting和dismiss）
+ *        isPresenting = YES，Present；isPresenting = NO，Dismiss，
+          不需要再给transitionContext.containerView添加subview
+ *        ⚠️ 动画结束一定要调用[transitionContext completeTransition:YES];
+ *
+ * @param completion 完成转场的回调
+ * NOTE: 由于自定义情况下，系统不会将当前c控制器（self）从窗口移除，所以dismiss后，系统不会调用`- viewDidAppear:`和`- viewWillAppear:`等方法
+ */
+- (void)presentToViewController:(UIViewController *)vc
+                customAnimation:(void (^)( id<UIViewControllerContextTransitioning> transitionContext, BOOL isPresenting))animation
+                     completion:(void (^ __nullable)(void))completion;
+```
+
+##### 2.Push / Pop
+```objc
+/**
+ * 以滑动的方式转场控制器(Push / Pop)
+ * @param vc 要转场的控制器
+ * @param pushDirection push方向（指向）
+ * @param popDirection pop方向（指向）
+ * NOTE: 手动Pop --> [self.navigationController popViewControllerAnimated:YES];
+ */
+- (void)pushViewController:(UIViewController *)vc
+                 swipeType:(TLSwipeType)swipeType
+             pushDirection:(TLDirectionType)pushDirection
+              popDirection:(TLDirectionType)popDirection;
+```              
