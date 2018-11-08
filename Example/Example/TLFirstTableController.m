@@ -573,11 +573,11 @@
     TowViewController *vc = [[TowViewController alloc] init];
     [self presentToViewController:vc customAnimation:^(id<UIViewControllerContextTransitioning>  _Nonnull transitionContext, BOOL isPresenting) {
         
-        if (indexPath.row == 18) {
+        if (indexPath.row == 17) {
             [self checkerboardAnimateTransition:transitionContext isPresenting:isPresenting];
-        }else if (indexPath.row == 19) {
+        }else if (indexPath.row == 18) {
             [self heartbeatAnimateTransition:transitionContext isPresenting:isPresenting];
-        }else if (indexPath.row == 20) {
+        }else if (indexPath.row == 19) {
             [self bounceAnimateTransition:transitionContext isPresenting:isPresenting];
         }
         
