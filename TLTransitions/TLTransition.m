@@ -526,11 +526,11 @@ typedef enum : NSUInteger {
         [containerView addSubview:toView];
        
         toView.frame = self.initialFrame;
-        self.popView.frame = self.finalFrame;
+        self.popView.frame = self.initialFrame;
         CGFloat duration = [self transitionDuration:transitionContext];
         [UIView animateWithDuration:duration animations:^{
+            self->_popView.frame = self.finalFrame;
             toView.frame = self.finalFrame;
-            
         } completion:^(BOOL finished) {
             [transitionContext completeTransition:YES];
         }];
@@ -540,8 +540,10 @@ typedef enum : NSUInteger {
 //        fromView.layer.anchorPoint = anchorPoint;
         [containerView addSubview:fromView];
         fromView.frame = self.finalFrame;
+        self.popView.frame = self.finalFrame;
         CGFloat duration = [self transitionDuration:transitionContext];
         [UIView animateWithDuration:duration animations:^{
+            self->_popView.frame = self.initialFrame;
             fromView.frame = self.initialFrame;
         } completion:^(BOOL finished) {
             [transitionContext completeTransition:YES];
