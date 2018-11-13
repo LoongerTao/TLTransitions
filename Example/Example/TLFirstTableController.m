@@ -48,7 +48,7 @@
     
     TLSectionModel *presentSection = [TLSectionModel new];
     presentSection.title = @"Present view controller";
-    presentSection.show = NO;
+    presentSection.show = YES;
     // “·”开始的表示需要设置方向
     presentSection.rows = @[@"原生: 默认", @"原生: 水平翻转", @"原生: 隐出隐现",@"原生: 翻页",
                             
@@ -63,7 +63,7 @@
     
     TLSectionModel *pushSection = [TLSectionModel new];
     pushSection.title = @"A Push To B Or B Pop To A";
-    pushSection.show = YES;
+    pushSection.show = NO;
     pushSection.rows = @[@"·push：B从A的上面滑入，pop：B从A的上面抽出", @"·push：B从A的上面滑入，pop：A从B的上面滑入", @"·push：A从B的上面抽出，pop：B从A的上面抽出"];
     _data = @[viewSection, presentSection, pushSection];
     

@@ -24,6 +24,7 @@
 		142741D1218988B20047EE09 /* UIViewController+Transitioning.m in Sources */ = {isa = PBXBuildFile; fileRef = 142741D0218988B20047EE09 /* UIViewController+Transitioning.m */; };
 		142741D8218BEBD70047EE09 /* TLSwipeAnimator.m in Sources */ = {isa = PBXBuildFile; fileRef = 142741D7218BEBD70047EE09 /* TLSwipeAnimator.m */; };
 		142741DB218BFBE40047EE09 /* TLFirstTableController.m in Sources */ = {isa = PBXBuildFile; fileRef = 142741DA218BFBE40047EE09 /* TLFirstTableController.m */; };
+		149AA6B321955F2600F03EE6 /* TLPercentDrivenInteractiveTransition.m in Sources */ = {isa = PBXBuildFile; fileRef = 149AA6B221955F2600F03EE6 /* TLPercentDrivenInteractiveTransition.m */; };
 		14B08832218FEE4B0001B3EB /* TLWheelTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 14B08830218FEE4B0001B3EB /* TLWheelTableViewCell.m */; };
 		14B08833218FEE4B0001B3EB /* TLWheelTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 14B08831218FEE4B0001B3EB /* TLWheelTableViewCell.xib */; };
 /* End PBXBuildFile section */
@@ -79,6 +80,8 @@
 		142741D7218BEBD70047EE09 /* TLSwipeAnimator.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TLSwipeAnimator.m; sourceTree = "<group>"; };
 		142741D9218BFBE40047EE09 /* TLFirstTableController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TLFirstTableController.h; sourceTree = "<group>"; };
 		142741DA218BFBE40047EE09 /* TLFirstTableController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TLFirstTableController.m; sourceTree = "<group>"; };
+		149AA6B121955F2600F03EE6 /* TLPercentDrivenInteractiveTransition.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TLPercentDrivenInteractiveTransition.h; sourceTree = "<group>"; };
+		149AA6B221955F2600F03EE6 /* TLPercentDrivenInteractiveTransition.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TLPercentDrivenInteractiveTransition.m; sourceTree = "<group>"; };
 		14B0882F218FEE4B0001B3EB /* TLWheelTableViewCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TLWheelTableViewCell.h; sourceTree = "<group>"; };
 		14B08830218FEE4B0001B3EB /* TLWheelTableViewCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TLWheelTableViewCell.m; sourceTree = "<group>"; };
 		14B08831218FEE4B0001B3EB /* TLWheelTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TLWheelTableViewCell.xib; sourceTree = "<group>"; };
@@ -187,6 +190,8 @@
 				142741D0218988B20047EE09 /* UIViewController+Transitioning.m */,
 				142741D6218BEBD70047EE09 /* TLSwipeAnimator.h */,
 				142741D7218BEBD70047EE09 /* TLSwipeAnimator.m */,
+				149AA6B121955F2600F03EE6 /* TLPercentDrivenInteractiveTransition.h */,
+				149AA6B221955F2600F03EE6 /* TLPercentDrivenInteractiveTransition.m */,
 			);
 			name = TLTransitions;
 			path = ../TLTransitions;
@@ -344,6 +349,7 @@
 				142741C12186E18B0047EE09 /* TLTransition.m in Sources */,
 				1427416C2186DEA10047EE09 /* main.m in Sources */,
 				142741C32186E18B0047EE09 /* TLPopViewController.m in Sources */,
+				149AA6B321955F2600F03EE6 /* TLPercentDrivenInteractiveTransition.m in Sources */,
 				142741C22186E18B0047EE09 /* TLSheetPicker.m in Sources */,
 				14B08832218FEE4B0001B3EB /* TLWheelTableViewCell.m in Sources */,
 				142741D1218988B20047EE09 /* UIViewController+Transitioning.m in Sources */,

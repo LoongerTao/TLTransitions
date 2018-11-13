@@ -211,21 +211,79 @@ typedef void(^TLAnimateTransition)(id <UIViewControllerContextTransitioning>, BO
 @end
 
 
+
 #pragma mark-
 #pragma mark -
 #pragma mark UIViewController (Transitioning)
 
-@implementation UIViewController (Transitioning) 
+@implementation UIViewController (Transitioning)
+/*
+#pragma mark Runtime 方法交换
++ (void)load{
+    // 保证只能交换一次，避免多次交换导致最终又交换回来了
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        Class cls = NSClassFromString(@"UIViewController");
+        Method method1 = class_getInstanceMethod(cls, @selector(dismissViewControllerAnimated:completion:));
+        Method method2 = class_getInstanceMethod(cls, @selector(tl_dismissViewControllerAnimated:completion:));
+        method_exchangeImplementations(method1, method2);
+    });
+}
+
+- (void)tl_dismissViewControllerAnimated:(BOOL)flag completion:(void (^)(void))completion {
+    ((TLSwipeAnimator *)_animator).gestureRecognizer = nil;
+    [self tl_dismissViewControllerAnimated:flag completion:completion];
+}
+*/
+
 #pragma mark Runtime 对象关联
 - (void)setTransitionDuration:(NSTimeInterval)transitionDuration
 {
-    objc_setAssociatedObject(self, @selector(transitionDuration), @(transitionDuration), OBJC_ASSOCIATION_COPY_NONATOMIC);
+    objc_setAssociatedObject(self, @selector(transitionDuration), @(transitionDuration), OBJC_ASSOCIATION_ASSIGN);
 }
 
 - (NSTimeInterval)transitionDuration
 {
     NSTimeInterval d = [objc_getAssociatedObject(self, _cmd) doubleValue];
     return d <= 0 ? 0.45f : d;
+}
+
+- (void)setDisableInteractivePopGestureRecognizer:(BOOL)disableInteractivePopGestureRecognizer {
+    objc_setAssociatedObject(self,
+                             @selector(disableInteractivePopGestureRecognizer),
+                             @(disableInteractivePopGestureRecognizer),
+                             OBJC_ASSOCIATION_ASSIGN);
+}
+
+- (BOOL)disableInteractivePopGestureRecognizer {
+    return [objc_getAssociatedObject(self, _cmd) boolValue];;
+}
+
+#pragma mark 注册手势
+// pop / dismiss interactive recognizer for transition
+- (void)registerInteractivePopRecognizerDirectionType:(TLDirectionType)directionType {
+    if (self.disableInteractivePopGestureRecognizer) return;
+    UIScreenEdgePanGestureRecognizer *interactiveTransitionRecognizer;
+    interactiveTransitionRecognizer = [[UIScreenEdgePanGestureRecognizer alloc] initWithTarget:self action:@selector(interactivePopRecognizerAction:)];
+    interactiveTransitionRecognizer.edges = [self getEdgeWithDirectionType:directionType];
+    [self.view addGestureRecognizer:interactiveTransitionRecognizer];
+}
+
+- (void)interactivePopRecognizerAction:(UIScreenEdgePanGestureRecognizer *)gestureRecognizer {
+//    if (self.disableInteractivePopGestureRecognizer) return;
+    
+    if (gestureRecognizer.state == UIGestureRecognizerStateBegan) {
+        ((TLSwipeAnimator *)_animator).gestureRecognizer = gestureRecognizer;
+        if (((TLSwipeAnimator *)_animator).isPushOrPop) {
+            [self.navigationController popViewControllerAnimated:YES];
+        }else {
+            [self dismissViewControllerAnimated:YES completion:nil];
+        }
+    }
+}
+
+- (UIRectEdge)getEdgeWithDirectionType:(TLDirectionType)directionType {
+    return directionType == TLDirectionTypeLeft ? UIRectEdgeRight : UIRectEdgeLeft;
 }
 
 #pragma mark API
@@ -266,6 +324,7 @@ typedef void(^TLAnimateTransition)(id <UIViewControllerContextTransitioning>, BO
     animator.pushDirection = presentDirection;
     animator.popDirection = dismissDirection;
     animator.transitionDuration = self.transitionDuration;
+    [vc registerInteractivePopRecognizerDirectionType: dismissDirection];
     
     vc.modalPresentationStyle = UIModalPresentationCustom;
     vc.transitioningDelegate = animator;
@@ -338,9 +397,11 @@ id <UIViewControllerAnimatedTransitioning,UINavigationControllerDelegate> _anima
     animator.pushDirection = pushDirection;
     animator.popDirection = popDirection;
     animator.transitionDuration = self.transitionDuration;
-    
+    [vc registerInteractivePopRecognizerDirectionType: popDirection];
+
     self.navigationController.delegate = _animator;
     [self.navigationController pushViewController:vc animated:YES];
+    
 }
 
 - (void)dealloc{

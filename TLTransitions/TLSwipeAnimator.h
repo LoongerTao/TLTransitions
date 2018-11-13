@@ -20,15 +20,17 @@ UINavigationControllerDelegate
 
 /// 动画时间
 @property(nonatomic, assign) NSTimeInterval transitionDuration;
-/// push方向
+/// push方向/present
 @property (nonatomic, readwrite) TLDirectionType pushDirection;
-/// pop方向
+/// pop方向/dismiss
 @property (nonatomic, readwrite) TLDirectionType popDirection;
 /// 滑入方式
 @property (nonatomic, assign) TLSwipeType swipeType;
 /// Push Or Pop(default: NO ,present)
 @property (nonatomic, assign) BOOL isPushOrPop;
 
+// 交互手势(滑动方向即动画方向)
+@property (nonatomic, strong) UIScreenEdgePanGestureRecognizer * _Nullable gestureRecognizer;
 @end
 
 

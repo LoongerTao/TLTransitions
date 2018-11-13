@@ -7,6 +7,7 @@
 //
 
 #import "TLSwipeAnimator.h"
+#import "TLPercentDrivenInteractiveTransition.h"
 
 @implementation TLSwipeAnimator
 
@@ -15,6 +16,19 @@
 - (id<UIViewControllerAnimatedTransitioning>)navigationController:(UINavigationController *)navigationController animationControllerForOperation:(UINavigationControllerOperation)operation fromViewController:(UIViewController *)fromVC toViewController:(UIViewController *)toVC
 {
     return self;
+}
+
+- (nullable id <UIViewControllerInteractiveTransitioning>)navigationController:(UINavigationController *)navigationController interactionControllerForAnimationController:(id <UIViewControllerAnimatedTransitioning>) animationController
+{
+    if (_gestureRecognizer) {
+        UIRectEdge edge = [self getEdgeWithDirectionType:_popDirection];
+        TLPercentDrivenInteractiveTransition *interactiveTransition;
+        interactiveTransition = [[TLPercentDrivenInteractiveTransition alloc] initWithGestureRecognizer:_gestureRecognizer edgeForDragging: edge];
+        _gestureRecognizer = nil; // 防止交互取消后，采用按钮等直接返回的情况冲突
+        return interactiveTransition;
+    } else {
+        return nil;
+    }
 }
 
 // present / dismiss
@@ -29,6 +43,44 @@
     return self;
 }
 
+#pragma mark 转场手势交互管理者
+- (id<UIViewControllerInteractiveTransitioning>)interactionControllerForPresentation:(id<UIViewControllerAnimatedTransitioning>)animator
+{
+    if (_gestureRecognizer) {
+        UIRectEdge edge = [self getEdgeWithDirectionType:_pushDirection];
+        TLPercentDrivenInteractiveTransition *interactiveTransition;
+        interactiveTransition = [[TLPercentDrivenInteractiveTransition alloc] initWithGestureRecognizer:_gestureRecognizer edgeForDragging: edge];
+        _gestureRecognizer = nil;
+        return interactiveTransition;
+    } else {
+        return nil;
+    }
+}
+
+- (id<UIViewControllerInteractiveTransitioning>)interactionControllerForDismissal:(id<UIViewControllerAnimatedTransitioning>)animator
+{
+    if (_gestureRecognizer) {
+        UIRectEdge edge = [self getEdgeWithDirectionType:_popDirection];
+        TLPercentDrivenInteractiveTransition *interactiveTransition;
+        interactiveTransition = [[TLPercentDrivenInteractiveTransition alloc] initWithGestureRecognizer:_gestureRecognizer edgeForDragging: edge];
+        _gestureRecognizer = nil;
+        return interactiveTransition;
+    } else {
+        return nil;
+    }
+}
+
+- (UIRectEdge)getEdgeWithDirectionType:(TLDirectionType)directionType {
+    UIRectEdge edge = UIRectEdgeTop;
+    if (directionType == TLDirectionTypeTop) {
+        edge = UIRectEdgeBottom;
+    }else if (directionType == TLDirectionTypeLeft){
+        edge = UIRectEdgeRight;
+    }else if (directionType == TLDirectionTypeRight){
+        edge = UIRectEdgeLeft;
+    }
+    return edge;
+}
 
 #pragma mark - UIViewControllerAnimatedTransitioning
 - (NSTimeInterval)transitionDuration:(nullable id<UIViewControllerContextTransitioning>)transitionContext {
@@ -40,18 +92,8 @@
     UIViewController *toViewController = [transitionContext viewControllerForKey:UITransitionContextToViewControllerKey];
     
     UIView *containerView = transitionContext.containerView;
-    UIView *fromView;
-    UIView *toView;
-    // 需保证 fromView和toView都不为nil（present情况下可能为nil）
-    if (self.isPushOrPop && [transitionContext respondsToSelector:@selector(viewForKey:)]) {
-        fromView = [transitionContext viewForKey:UITransitionContextFromViewKey];
-        toView = [transitionContext viewForKey:UITransitionContextToViewKey];
-    } else {
-        fromView = fromViewController.view;
-        toView = toViewController.view;
-    }
-    
-    NSTimeInterval transitionDuration = [self transitionDuration:transitionContext];
+    UIView *fromView = [transitionContext viewForKey:UITransitionContextFromViewKey];
+    UIView *toView = [transitionContext viewForKey:UITransitionContextToViewKey];
     BOOL isPresentingOrPush;
     if(self.isPushOrPop) {
         NSInteger toIndex = [toViewController.navigationController.viewControllers indexOfObject:toViewController];
@@ -60,6 +102,17 @@
     }else {
         isPresentingOrPush = (toViewController.presentingViewController == fromViewController);
     }
+    
+    // 1. TLSwipeTypeIn 在dismiss时需保证fromView和toView都有值
+    // 2. TLSwipeTypeOut 在presetting和dismiss时需保证fromView和toView都有值
+    if (!self.isPushOrPop && ((self.swipeType == TLSwipeTypeIn && !isPresentingOrPush) || self.swipeType == TLSwipeTypeOut)) {
+        fromView = [self getViewWithConetoller:fromViewController];
+        toView = [self getViewWithConetoller:toViewController];
+    }
+    
+    tl_Log(@"to:%p, fromV:%p, toSuper:%p, fromSuper: %p",toView,fromView,toView.superview,fromView.superview);
+    
+    
     
     // CGVector 向量
     CGVector offset = [self getOffsetIsPush:isPresentingOrPush];
@@ -80,9 +133,9 @@
                 break;
             case TLSwipeTypeOut:
                 [containerView addSubview:fromView];
-                [containerView insertSubview:toView belowSubview:fromView];
                 topView = fromView;
                 bottomView = toView;
+                [containerView insertSubview:bottomView belowSubview:topView];
                 break;
             default:
                 NSAssert(NO, @"swipeType: %zi 越界[0...2]", self.swipeType);
@@ -113,29 +166,46 @@
         topView.frame = [self initialFrameWhithFrame:fromFrame offset:offset presentOrPush:isPresentingOrPush];
         bottomView.frame = toFrame;
     }
-
-    [UIView animateWithDuration:transitionDuration animations:^{
+    
+    [UIView animateWithDuration:[self transitionDuration:transitionContext] animations:^{
         
         CGRect frame = [topView isEqual:toView] ? toFrame : fromFrame;
         topView.frame = [self finalFrameWhithFrame:frame offset:offset presentOrPush:isPresentingOrPush];
         
     } completion:^(BOOL finished) {
-        if (!self->_isPushOrPop) {
-            if (isPresentingOrPush) {
-                if (self->_swipeType == TLSwipeTypeOut) {
-                    [superViewOfFromView addSubview:fromView];
-                }
-            }else {
+        BOOL wasCancelled = [transitionContext transitionWasCancelled];
+        if (wasCancelled) {
+            if (self->_swipeType != TLSwipeTypeInAndOut) {
                 [superViewOfToView addSubview:toView];
+            }else{
+                [toView removeFromSuperview];
+            }
+        }else {
+            // presenting or dismiss
+            if (!self->_isPushOrPop) {
+                // presenting
+                if (isPresentingOrPush) {
+                    if (self->_swipeType == TLSwipeTypeOut) {
+                        [superViewOfFromView addSubview:fromView];
+                    }
+                }else { // dismiss
+                    if (self->_swipeType != TLSwipeTypeInAndOut) {
+                        [superViewOfToView addSubview:toView];
+                    }
+                }
             }
         }
-        
-        BOOL wasCancelled = [transitionContext transitionWasCancelled];
-        if (wasCancelled)
-            [toView removeFromSuperview];
-        
         [transitionContext completeTransition:!wasCancelled];
     }];
+}
+
+- (UIView *)getViewWithConetoller:(UIViewController *)viewController {
+    if ([viewController isMemberOfClass:[UINavigationController class]]) {
+        UINavigationController *nav = (UINavigationController *)viewController;
+        return nav.topViewController.view;
+    }else{
+        return viewController.view;
+    }
 }
 
 - (CGVector)getOffsetIsPush:(BOOL)isPush {
