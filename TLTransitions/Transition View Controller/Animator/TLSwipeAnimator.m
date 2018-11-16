@@ -7,79 +7,15 @@
 //
 
 #import "TLSwipeAnimator.h"
-#import "TLPercentDrivenInteractiveTransition.h"
 
 @implementation TLSwipeAnimator
 
-// push / pop
-#pragma mark - UINavigationControllerDelegate
-- (id<UIViewControllerAnimatedTransitioning>)navigationController:(UINavigationController *)navigationController animationControllerForOperation:(UINavigationControllerOperation)operation fromViewController:(UIViewController *)fromVC toViewController:(UIViewController *)toVC
-{
-    return self;
-}
+#pragma mark - TLAnimatorProtocol
+@synthesize transitionDuration;
+@synthesize isPushOrPop;
 
-- (nullable id <UIViewControllerInteractiveTransitioning>)navigationController:(UINavigationController *)navigationController interactionControllerForAnimationController:(id <UIViewControllerAnimatedTransitioning>) animationController
-{
-    if (_gestureRecognizer) {
-        UIRectEdge edge = [self getEdgeWithDirectionType:_popDirection];
-        TLPercentDrivenInteractiveTransition *interactiveTransition;
-        interactiveTransition = [[TLPercentDrivenInteractiveTransition alloc] initWithGestureRecognizer:_gestureRecognizer edgeForDragging: edge];
-        _gestureRecognizer = nil; // 防止交互取消后，采用按钮等直接返回的情况冲突
-        return interactiveTransition;
-    } else {
-        return nil;
-    }
-}
-
-// present / dismiss
-#pragma mark - UIViewControllerTransitioningDelegate
-- (id<UIViewControllerAnimatedTransitioning>)animationControllerForPresentedController:(UIViewController *)presented presentingController:(UIViewController *)presenting sourceController:(UIViewController *)source
-{
-    return self;
-}
-
-- (id<UIViewControllerAnimatedTransitioning>)animationControllerForDismissedController:(UIViewController *)dismissed
-{
-    return self;
-}
-
-#pragma mark 转场手势交互管理者
-- (id<UIViewControllerInteractiveTransitioning>)interactionControllerForPresentation:(id<UIViewControllerAnimatedTransitioning>)animator
-{
-    if (_gestureRecognizer) {
-        UIRectEdge edge = [self getEdgeWithDirectionType:_pushDirection];
-        TLPercentDrivenInteractiveTransition *interactiveTransition;
-        interactiveTransition = [[TLPercentDrivenInteractiveTransition alloc] initWithGestureRecognizer:_gestureRecognizer edgeForDragging: edge];
-        _gestureRecognizer = nil;
-        return interactiveTransition;
-    } else {
-        return nil;
-    }
-}
-
-- (id<UIViewControllerInteractiveTransitioning>)interactionControllerForDismissal:(id<UIViewControllerAnimatedTransitioning>)animator
-{
-    if (_gestureRecognizer) {
-        UIRectEdge edge = [self getEdgeWithDirectionType:_popDirection];
-        TLPercentDrivenInteractiveTransition *interactiveTransition;
-        interactiveTransition = [[TLPercentDrivenInteractiveTransition alloc] initWithGestureRecognizer:_gestureRecognizer edgeForDragging: edge];
-        _gestureRecognizer = nil;
-        return interactiveTransition;
-    } else {
-        return nil;
-    }
-}
-
-- (UIRectEdge)getEdgeWithDirectionType:(TLDirectionType)directionType {
-    UIRectEdge edge = UIRectEdgeTop;
-    if (directionType == TLDirectionTypeTop) {
-        edge = UIRectEdgeBottom;
-    }else if (directionType == TLDirectionTypeLeft){
-        edge = UIRectEdgeRight;
-    }else if (directionType == TLDirectionTypeRight){
-        edge = UIRectEdgeLeft;
-    }
-    return edge;
+- (TLDirection)directionForDragging; {
+    return _popDirection;
 }
 
 #pragma mark - UIViewControllerAnimatedTransitioning
@@ -110,9 +46,7 @@
         toView = [self getViewWithConetoller:toViewController];
     }
     
-    tl_Log(@"to:%p, fromV:%p, toSuper:%p, fromSuper: %p",toView,fromView,toView.superview,fromView.superview);
-    
-    
+//    tl_Log(@"to:%p, fromV:%p, toSuper:%p, fromSuper: %p",toView,fromView,toView.superview,fromView.superview);
     
     // CGVector 向量
     CGVector offset = [self getOffsetIsPush:isPresentingOrPush];
@@ -182,7 +116,7 @@
             }
         }else {
             // presenting or dismiss
-            if (!self->_isPushOrPop) {
+            if (!self->isPushOrPop) {
                 // presenting
                 if (isPresentingOrPush) {
                     if (self->_swipeType == TLSwipeTypeOut) {
@@ -209,21 +143,21 @@
 }
 
 - (CGVector)getOffsetIsPush:(BOOL)isPush {
-    TLDirectionType directionType = isPush ? self.pushDirection : self.popDirection;
+    TLDirection direction = isPush ? self.pushDirection : self.popDirection;
     CGVector offset;
-    if (directionType == TLDirectionTypeTop){ // 坐标轴为第四象限（为正数）
+    if (direction == TLDirectionToTop){ // 坐标轴为第四象限（为正数）
         offset = CGVectorMake(0.f, -1.f);
-    }else if (directionType == TLDirectionTypeBottom){
+    }else if (direction == TLDirectionToBottom){
         offset = CGVectorMake(0.f, 1.f);
-    }else if (directionType == TLDirectionTypeLeft){
+    }else if (direction == TLDirectionToLeft){
         offset = CGVectorMake(-1.f, 0.f);
-    }else if (directionType == TLDirectionTypeRight){
+    }else if (direction == TLDirectionToRight){
         offset = CGVectorMake(1.f, 0.f);
     }else{
         if (isPush) {
-             NSAssert(NO, @"pushDirection: %zi 越界[0...3]", directionType);
+             NSAssert(NO, @"pushDirection: %zi 越界[0...3]", direction);
         }else {
-            NSAssert(NO, @"popDirection: %zi 越界[0...3]", directionType);
+            NSAssert(NO, @"popDirection: %zi 越界[0...3]", direction);
         }
         offset = CGVectorMake(0.f, 1.f); // 这句代码去警告
     }
@@ -265,4 +199,5 @@
 -(void)dealloc {
     tl_LogFunc;
 }
+
 @end

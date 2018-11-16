@@ -1,16 +1,16 @@
 //
 //  TLPercentDrivenInteractiveTransition.m
-//  Example
+//  https://github.com/LoongerTao/TLTransitions
 //
 //  Created by 故乡的云 on 2018/11/9.
 //  Copyright © 2018 故乡的云. All rights reserved.
-//
+//  手势交互百分比控制
 
 #import "TLPercentDrivenInteractiveTransition.h"
 
 @interface TLPercentDrivenInteractiveTransition ()
 @property (nonatomic, weak) id<UIViewControllerContextTransitioning> transitionContext;
-@property (nonatomic, strong, readonly) UIScreenEdgePanGestureRecognizer *gestureRecognizer;
+@property (nonatomic, weak, readonly) UIScreenEdgePanGestureRecognizer *gestureRecognizer;
 @property (nonatomic, readonly) UIRectEdge edge;
 @end
 

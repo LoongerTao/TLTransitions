@@ -1,8 +1,8 @@
 //
-//  TowViewController.h
+//  TLMenuViewController.h
 //  Example
 //
-//  Created by 故乡的云 on 2018/10/30.
+//  Created by 故乡的云 on 2018/11/16.
 //  Copyright © 2018 故乡的云. All rights reserved.
 //
 
@@ -10,7 +10,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface TowViewController : UIViewController
+@interface TLMenuViewController : UITableViewController
 
 @end
 

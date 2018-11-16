@@ -1,18 +1,18 @@
 //
-//  TowViewController.m
-//  Example
+//  TLSecondViewController.m
+//  https://github.com/LoongerTao/TLTransitions
 //
 //  Created by 故乡的云 on 2018/10/30.
 //  Copyright © 2018 故乡的云. All rights reserved.
 //
 
-#import "TowViewController.h"
+#import "TLSecondViewController.h"
 
-@interface TowViewController ()
+@interface TLSecondViewController ()
 
 @end
 
-@implementation TowViewController
+@implementation TLSecondViewController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -38,7 +38,7 @@
 - (void)dealloc {
     NSLog(@"%s",__func__);
     
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"TowViewControllerDidDealloc" object:nil];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"TLSecondViewControllerDidDealloc" object:nil];
 }
 
 @end

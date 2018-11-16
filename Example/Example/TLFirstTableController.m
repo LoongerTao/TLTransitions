@@ -1,37 +1,25 @@
 //
 //  TLFirstTableController.m
-//  Example
+//  https://github.com/LoongerTao/TLTransitions
 //
 //  Created by 故乡的云 on 2018/11/2.
 //  Copyright © 2018 故乡的云. All rights reserved.
 //
 
 #import "TLFirstTableController.h"
-#import "TLTransition.h"
-#import "TowViewController.h"
-#import "UIViewController+Transitioning.h"
+#import "TLTransitionHeader.h"
+#import "TLSecondViewController.h"
 #import "TLWheelTableViewCell.h"
-
-@interface TLSectionModel : NSObject
-@property(nonatomic, copy) NSString *title;
-@property(nonatomic, assign) BOOL show;
-@property(nonatomic, strong) NSArray *rows;
-@end
-
-@implementation TLSectionModel
-@end
+#import "TLSection.h"
 
 
 @interface TLFirstTableController ()<CAAnimationDelegate>{
-    UIView *_bView;
-    UILabel *_titleLabel;
-    TLTransition *_transition;
     
     id<UIViewControllerContextTransitioning> _transitionContext;
     CATransition *_anim1;
 }
 
-@property(nonatomic, strong) NSArray <TLSectionModel *>*data;
+@property(nonatomic, strong) NSArray <TLSection *>*data;
 @end
 
 @implementation TLFirstTableController
@@ -41,31 +29,47 @@
     
     self.navigationItem.title = @"A";
     
-    TLSectionModel *viewSection = [TLSectionModel new];
-    viewSection.title = @"Popover（View）";
-    viewSection.show = NO;
-    viewSection.rows = @[@"Alert", @"Action Sheet", @"定点显示",@"由 frame1 到 frame2" ,@"自定义动画"];
+    NSString *title = @"CuStom Animator";
+    NSArray *rows = @[@"Checkerboard", @"Heartbeat", @"Bounce"];
+    switch (_type) {
+        case TLContentTypeSystemAnimator:
+            title = @"System Animator";
+            rows = @[@"Cover Vertical", @"Flip Horizontal", @"Cross Dissolve",@"Partial Curl"];
+            break;
+        case TLContentTypeSwipeAnimator:
+            title = @"SwipeA Animator";
+            rows = @[@"·InAndOut: A->B,B从A的上面滑入; B->A,B从A的上面抽出", // “·”开始的表示需要设置方向
+                     @"·In: B从A的上面滑入; B->A,A从B的上面滑入",
+                     @"·Out: A->B,A从B的上面抽出; B->A,B从A的上面抽）"];
+            break;
+        case TLContentTypeCATransitionAnimator:
+            title = @"CATransition Animator";
+            rows = @[@"Fade", @"·Move in", @"·Push",
+                     @"·Reveal", @"·Cube (私有API)",
+                     @"Suck Effect (私有API)", @"·Ogl Flip (私有API)",
+                     @"Ripple Effect (私有API)", @"·Page Curl (私有API)",
+                     @"Camera Iris Hollow (私有API)",];
+            break;
+        case TLContentTypeUIViewTransitionAnimator:
+            title = @"UIView Transition Animator";
+            rows = @[@"Flip", @"Curl", @"CrossDissolve", @"Flip"];
+            break;
+        default:
+            title = @"System Animator";
+            rows = @[@"Checkerboard", @"Heartbeat", @"Bounce"];
+            break;
+    }
     
-    TLSectionModel *presentSection = [TLSectionModel new];
-    presentSection.title = @"Present view controller";
-    presentSection.show = YES;
-    // “·”开始的表示需要设置方向
-    presentSection.rows = @[@"原生: 默认", @"原生: 水平翻转", @"原生: 隐出隐现",@"原生: 翻页",
-                            
-                            @"·平滑: A->B,B从A的上面滑入; B->A,B从A的上面抽出", @"·平滑: A->B,B从A的上面滑入; B->A,A从B的上面滑入", @"·平滑: A->B,A从B的上面抽出; B->A,B从A的上面抽）",
-                            @"CATransition: fade", @"·CATransition: move in", @"·CATransition: push",
-                            @"·CATransition: reveal", @"·CATransition: cube (私有API)",
-                            @"CATransition: suckEffect (私有API)", @"·CATransition: oglFlip (私有API)",
-                            @"CATransition: rippleEffect (私有API)", @"·CATransition: pageCurl (私有API)",
-                            @"CATransition: cameraIrisHollow (私有API)",
-                            
-                            @"Custom: checkerboard", @"Custom: heartbeat", @"Custom: bounce"];
-    
-    TLSectionModel *pushSection = [TLSectionModel new];
-    pushSection.title = @"A Push To B Or B Pop To A";
-    pushSection.show = NO;
-    pushSection.rows = @[@"·push：B从A的上面滑入，pop：B从A的上面抽出", @"·push：B从A的上面滑入，pop：A从B的上面滑入", @"·push：A从B的上面抽出，pop：B从A的上面抽出"];
-    _data = @[viewSection, presentSection, pushSection];
+    TLSection *section = [TLSection new];
+    if (_isPush) {
+        section.title = [NSString stringWithFormat:@"Push : %@",title];
+    }else {
+        section.title = [NSString stringWithFormat:@"Present : %@",title];
+    }
+    section.show = YES;
+    section.rows = rows;
+
+    _data = @[section];
     
     self.tableView.tableFooterView = [UIView new];
     [self.tableView registerNib:[UINib nibWithNibName:@"TLWheelTableViewCell" bundle:nil] forCellReuseIdentifier:@"TLWheelTableViewCell"];
@@ -158,426 +162,204 @@
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (indexPath.section == 0) {
-        switch (indexPath.row) {
-            case 0:
-                [self alertType:[tableView cellForRowAtIndexPath:indexPath]];
-                break;
-            case 1:
-                [self actionSheetType:[tableView cellForRowAtIndexPath:indexPath]];
-                break;
-            case 2:
-                [self pointType:[tableView cellForRowAtIndexPath:indexPath]];
-                break;
-            case 3:
-                [self frameType:[tableView cellForRowAtIndexPath:indexPath]];
-                break;
-            case 4:
-                [self customAnimateTransition:[tableView cellForRowAtIndexPath:indexPath]];
-                break;
-            default:
-                break;
-        }
-    }else if (indexPath.section == 1) {
-//        UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
-        NSString *text = self.data[indexPath.section].rows[indexPath.row];
-        if ([text containsString:@"原生:"]) {
+     if (_isPush == NO) {
+        if (_type == TLContentTypeSystemAnimator) {
             [self systemTransitions:indexPath];
-        }else if ([text containsString:@"平滑:"]){
+        }else if (_type == TLContentTypeSwipeAnimator){
             [self swipeTransitions:indexPath];
-        }else if ([text containsString:@"CATransition:"]){
+        }else if (_type == TLContentTypeCATransitionAnimator){
             [self CATransitionType:indexPath];
-        }else if ([text containsString:@"Custom:"]){
+        }else if (_type == TLContentTypeUIViewTransitionAnimator) {
+            
+        }else if (_type == TLContentTypeCuStomAnimator){
             [self customTransitions:indexPath];
         }
-    }else if (indexPath.section == 2) {
-        [self pushBySwipe: indexPath];
+    }else {
+        
+        if (_type == TLContentTypeSwipeAnimator){
+            [self pushBySwipe:indexPath];
+        }else if (_type == TLContentTypeCATransitionAnimator){
+            [self pushByCATransition:indexPath];
+        }else if (_type == TLContentTypeUIViewTransitionAnimator) {
+            
+        }else if (_type == TLContentTypeCuStomAnimator){
+            
+        }
     }
 }
 
-
-#pragma mark - Transitions Of View
-// TLPopTypeAlert
-- (void)alertType:(UIView *)sender {
-    CGRect bounds = CGRectMake(0, 0, self.view.bounds.size.width * 0.8f, 200.f);
-    UIView *bView = [self creatViewWithBounds:bounds color:tl_Color(218, 248, 120)];
-    
-    UITextField *textFiled = [[UITextField alloc] init];
-    textFiled.backgroundColor = tl_Color(255, 255, 255);
-    textFiled.bounds = CGRectMake(0, 0, bView.bounds.size.width * 0.8f, 30.f);
-    textFiled.center = CGPointMake(bView.bounds.size.width * 0.5, bView.bounds.size.height * 0.2);
-    [bView addSubview:textFiled];
-    
-    [TLTransition showView:bView popType:TLPopTypeAlert];
-}
-
-// TLPopTypeActionSheet
-- (void)actionSheetType:(UIView *)sender {
-    
-    
-    CGRect bounds = CGRectMake(0, 0, self.view.bounds.size.width, 200.f);
-    UIView *bView = [self creatViewWithBounds:bounds color:tl_Color(248, 218, 200)];
-    _transition = [TLTransition showView:bView popType:TLPopTypeActionSheet];
-    
-    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tap)];
-    [bView addGestureRecognizer:tap];
-}
-
-// to point
-- (void)pointType:(UIView *)sender {
-    
-    CGRect bounds = CGRectMake(0, 0, self.view.bounds.size.width * 0.8f, 100.f);
-    UIView *bView = [self creatViewWithBounds:bounds color:tl_Color(120, 248, 180)];
-    [TLTransition showView:bView toPoint:CGPointMake(-50, -50)];
-}
-
-// frame1->frame2
-- (void)frameType:(UIView *)sender {
-    
-    CGRect initialFrame = sender.frame;
-    CGRect finalFrame = CGRectMake(30, 400, self.view.bounds.size.width * 0.8f, 200.f);
-    UIView *bView = [self creatViewWithBounds:initialFrame color:tl_Color(250, 250, 250)];
-    [TLTransition showView:bView initialFrame:initialFrame finalFrame:finalFrame];
-}
-
-// 自定义动画
-- (void)customAnimateTransition:(UIView *)sender {
-    __weak typeof(self) wself = self;
-    CGRect bounds = CGRectMake(0, 0, self.view.bounds.size.width * 0.8, 200.f);
-    UIView *bView = [self creatViewWithBounds:bounds color:tl_Color(248, 218, 200)];
-    _transition = [TLTransition showView:bView popType:TLPopTypeAlert];
-    
-    NSTimeInterval duration = _transition.transitionDuration;
-    _transition.animateTransition = ^(id<UIViewControllerContextTransitioning> transitionContext) {
-        
-        // For a Presentation:
-        //      fromView = The presenting view.
-        //      toView   = The presented view.
-        // For a Dismissal:
-        //      fromView = The presented view.
-        //      toView   = The presenting view.
-        UIView *fromView;
-        UIView *toView;
-        UIViewController *fromViewController = [transitionContext viewControllerForKey:UITransitionContextFromViewControllerKey];
-        UIViewController *toViewController = [transitionContext viewControllerForKey:UITransitionContextToViewControllerKey];
-        
-        UIView *containerView = transitionContext.containerView;
-        if ([transitionContext respondsToSelector:@selector(viewForKey:)]) {
-            fromView = [transitionContext viewForKey:UITransitionContextFromViewKey];
-            toView = [transitionContext viewForKey:UITransitionContextToViewKey];
-        } else {
-            fromView = fromViewController.view;
-            toView = toViewController.view;
-        }
-        
-        if(toView){ // Present
-            
-            // 注意: 一定要将视图添加到容器上
-            [containerView addSubview:toView];
-            
-            // UIView动画
-            // 动画前的样式
-            // code...
-            //            [UIView animateWithDuration:duration animations:^{
-            //
-            //                // 最终的样式
-            //                // code...
-            //
-            //            } completion:^(BOOL finished) {
-            //                // 必须执行：告诉transitionContext 动画执行完毕
-            //                [transitionContext completeTransition:YES];
-            //            }];
-            
-            // 或CATransition
-            self->_transitionContext = transitionContext;
-            // 设置转场动画
-            CATransition *anim = [CATransition animation];
-            anim.delegate = wself;
-            anim.duration = duration;
-            anim.type = @"push"; // 动画过渡效果
-            anim.subtype = kCATransitionFromRight;
-            [toView.layer addAnimation:anim forKey:nil];
-            
-        }else { // dismiss
-            
-            [containerView addSubview:fromView];
-            // UIView动画
-            // 动画前的样式
-            // code...
-            //            [UIView animateWithDuration:duration animations:^{
-            //
-            //                // 最终的样式
-            //                // code...
-            //
-            //            } completion:^(BOOL finished) {
-            //                [transitionContext completeTransition:YES];
-            //            }];
-            
-            // 或CATransition
-            self->_transitionContext = transitionContext;
-            // 设置转场动画
-            CATransition *anim = [CATransition animation];
-            anim.delegate = wself;
-            anim.duration = 1.0;//duration;
-            anim.type = @"cube"; // 动画过渡效果
-            anim.subtype = kCATransitionFromRight;
-            [fromView.layer addAnimation:anim forKey:nil];
-        };
-    };
-}
-
-- (UIView *)creatViewWithBounds:(CGRect)bounds color:(UIColor *)color {
-    UIView *BView = [[UIView alloc] initWithFrame:CGRectZero];
-    BView.backgroundColor = color;
-    BView.bounds = bounds;
-    
-    UILabel *titleLabel = [[UILabel alloc] init];
-    [BView addSubview:titleLabel];
-    _titleLabel = titleLabel;
-    titleLabel.text = @"View B";
-    titleLabel.font = [UIFont systemFontOfSize:80];
-    titleLabel.textColor = [UIColor orangeColor];
-    titleLabel.textAlignment = NSTextAlignmentCenter;
-    titleLabel.frame = BView.bounds;
-    
-    _bView = BView;
-    [BView addObserver:self forKeyPath:@"frame" options:NSKeyValueObservingOptionNew context:nil];
-    return BView;
-}
-
-- (void)tap {
-    CGRect rect = _bView.bounds;
-    rect.size.height += 1;
-    _bView.bounds = rect;
-    [_transition updateContentSize];
-    
-}
-
-
 #pragma mark - Presenting Of View Controller
-
+#pragma mark 原生动画效果
 - (void)systemTransitions:(NSIndexPath *)indexPath {
    
-    TowViewController *vc = [[TowViewController alloc] init];
+    TLSecondViewController *vc = [[TLSecondViewController alloc] init];
     [self presentViewController:vc transitionStyle:indexPath.row completion:^{
         NSLog(@"system : completion---%zi",indexPath.row);
     }];
 }
 
+#pragma mark 平滑效果
 - (void)swipeTransitions:(NSIndexPath *)indexPath  {
  
-    TowViewController *vc = [[TowViewController alloc] init];
-    //    UIRectEdgeTop    = 1 << 0,
-    //    UIRectEdgeLeft   = 1 << 1,
-    //    UIRectEdgeBottom = 1 << 2,
-    //    UIRectEdgeRight  = 1 << 3,
-//    UIRectEdge targetEdge = 1 << (indexPath.row - 4);
-//    [self presentViewController:vc
-//                swipeTargetEdge:targetEdge
-//               reverseOfDismiss:indexPath.row > 1
-//                     completion:^{
-//                         NSLog(@"system : completion---%zi",indexPath.row);
-//                     }];
+    TLSecondViewController *vc = [[TLSecondViewController alloc] init];
     
-
-    if (indexPath.row - 4 < 3) {
-        TLWheelTableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
-        TLSwipeType type;
-        if (indexPath.row - 4 == 0) {
-            type = TLSwipeTypeInAndOut;
-        }else if (indexPath.row - 4 == 1) {
-            type = TLSwipeTypeIn;
-        }else {
-            type = TLSwipeTypeOut;
-        }
-        [self presentViewController:vc
-                          swipeType:type
-                   presentDirection:cell.sgmtA.selectedSegmentIndex
-                   dismissDirection:cell.sgmtB.selectedSegmentIndex
-                         completion:^
-        {
-            NSLog(@"system : completion---%zi",indexPath.row);
-        }];
+    // 关闭侧滑pop手势
+//    vc.disableInteractivePopGestureRecognizer = YES;
+    TLWheelTableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
+    TLSwipeType type;
+    if (indexPath.row == 0) {
+        type = TLSwipeTypeInAndOut;
+    }else if (indexPath.row == 1) {
+        type = TLSwipeTypeIn;
+    }else {
+        type = TLSwipeTypeOut;
     }
+    [self presentViewController:vc
+                      swipeType:type
+               presentDirection:cell.sgmtA.selectedSegmentIndex
+               dismissDirection:cell.sgmtB.selectedSegmentIndex
+                     completion:^
+    {
+        NSLog(@"system : completion---%zi",indexPath.row);
+    }];
+    
 }
 
 
-
-- (void)CATransitionType:(NSIndexPath *)indexPath {
-    TowViewController *vc = [[TowViewController alloc] init];
+#pragma mark CAtransion 类型动画效果
+- (TLCATransitonAnimator *)CATransitionAnimatorWithIndexPath:(NSIndexPath *)indexPath toViewController:(UIViewController *)vc {
     TLWheelTableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
     NSString *text = self.data[indexPath.section].rows[indexPath.row];
     
-    CATransitionSubtype subtype = kCATransitionFromTop;
-    CATransitionType subtypeOfDismiss = kCATransitionFromTop;
+    TLDirection direction = TLDirectionToBottom;
+    TLDirection dismissDirection = TLDirectionToBottom;
     if ([text hasPrefix:@"·"]) {
-        
         switch (cell.sgmtA.selectedSegmentIndex) {
             case 0:
-                subtype = kCATransitionFromTop;
+                direction = TLDirectionToTop;
                 break;
             case 1:
-                subtype = kCATransitionFromLeft;
+                direction = TLDirectionToLeft;
                 break;
             case 2:
-                subtype = kCATransitionFromBottom;
+                direction = TLDirectionToBottom;
                 break;
             default:
-                subtype = kCATransitionFromRight;
+                direction = TLDirectionToRight;
                 break;
         }
         
         switch (cell.sgmtB.selectedSegmentIndex) {
             case 0:
-                subtypeOfDismiss = kCATransitionFromTop;
+                dismissDirection = TLDirectionToTop;
                 break;
             case 1:
-                subtypeOfDismiss = kCATransitionFromLeft;
+                dismissDirection = TLDirectionToLeft;
                 break;
             case 2:
-                subtypeOfDismiss = kCATransitionFromBottom;
+                dismissDirection = TLDirectionToBottom;
                 break;
             default:
-                subtypeOfDismiss = kCATransitionFromRight;
+                dismissDirection = TLDirectionToRight;
                 break;
         }
     }
     
-    switch (indexPath.row - 7) {
+    CATransitionType transitionType = kCATransitionFade;
+    CATransitionType transitionTypeOfDismiss = kCATransitionFade;
+    switch (indexPath.row) {
         case 0:
         {
-            [self presentToViewController:vc
-                           transitionType:kCATransitionFade
-                                  subtype:subtype
-                    dismissTransitionType:kCATransitionFade
-                           dismissSubtype:subtypeOfDismiss
-                               completion:^{
-                                   NSLog(@"CATransition : completion---%zi",indexPath.row);
-                               }];
+            transitionType = kCATransitionFade;
+            transitionTypeOfDismiss = kCATransitionFade;
         }
             break;
         case 1:
         {
-            [self presentToViewController:vc
-                           transitionType:kCATransitionMoveIn
-                                  subtype:subtype
-                    dismissTransitionType:kCATransitionMoveIn
-                           dismissSubtype:subtypeOfDismiss
-                               completion:^{
-                                   NSLog(@"CATransition (左进右) : completion---%zi",indexPath.row);
-                               }];
+            transitionType = kCATransitionMoveIn;
+            transitionTypeOfDismiss = kCATransitionMoveIn;
         }
             break;
         case 2:
         {
-            [self presentToViewController:vc
-                           transitionType:kCATransitionPush
-                                  subtype:subtype
-                    dismissTransitionType:kCATransitionPush
-                           dismissSubtype:subtypeOfDismiss
-                               completion:^{
-                                   NSLog(@"CATransition : completion---%zi",indexPath.row);
-                               }];
+            transitionType = kCATransitionPush;
+            transitionTypeOfDismiss = kCATransitionPush;
         }
             break;
         case 3:
         {
-            [self presentToViewController:vc
-                           transitionType:kCATransitionReveal
-                                  subtype:subtype
-                    dismissTransitionType:kCATransitionReveal
-                           dismissSubtype:subtypeOfDismiss
-                               completion:^{
-                                   NSLog(@"CATransition : completion---%zi",indexPath.row);
-                               }];
+            transitionType = kCATransitionReveal;
+            transitionTypeOfDismiss = kCATransitionReveal;
         }
             break;
         case 4:
         {
-            [self presentToViewController:vc
-                           transitionType:@"cube"
-                                  subtype:subtype
-                    dismissTransitionType:@"cube"
-                           dismissSubtype:subtypeOfDismiss
-                               completion:^{
-                                   NSLog(@"CATransition-cube : completion---%zi",indexPath.row);
-                               }];
+            transitionType = @"cube";
+            transitionTypeOfDismiss = @"cube";
         }
             break;
         case 5:
         {
-            [self presentToViewController:vc
-                           transitionType:@"suckEffect"
-                                  subtype:subtype
-                    dismissTransitionType:@"suckEffect"
-                           dismissSubtype:subtypeOfDismiss
-                               completion:^{
-                                   NSLog(@"CATransition-suckEffect : completion---%zi",indexPath.row);
-                               }];
+            transitionType = @"suckEffect";
+            transitionTypeOfDismiss = @"suckEffect";
         }
-            break;
         case 6:
         {
-            [self presentToViewController:vc
-                           transitionType:@"oglFlip"
-                                  subtype:subtype
-                    dismissTransitionType:@"oglFlip"
-                           dismissSubtype:subtypeOfDismiss
-                               completion:^{
-                                   NSLog(@"CATransition-oglFlip : completion---%zi",indexPath.row);
-                               }];
+            transitionType = @"oglFlip";
+            transitionTypeOfDismiss = @"oglFlip";
         }
             break;
         case 7:
         {
-            [self presentToViewController:vc
-                           transitionType:@"rippleEffect"
-                                  subtype:subtype
-                    dismissTransitionType:@"rippleEffect"
-                           dismissSubtype:subtypeOfDismiss
-                               completion:^{
-                                   NSLog(@"CATransition-rippleEffect : completion---%zi",indexPath.row);
-                               }];
+            transitionType = @"rippleEffect";
+            transitionTypeOfDismiss = @"rippleEffect";
         }
             break;
         case 8:
         {
-            [self presentToViewController:vc
-                           transitionType:@"pageCurl"
-                                  subtype:subtype
-                    dismissTransitionType:@"pageUnCurl"
-                           dismissSubtype:subtypeOfDismiss
-                               completion:^{
-                                   NSLog(@"CATransition-pageCurl-pageUnCurl : completion---%zi",indexPath.row);
-                               }];
+            transitionType = @"pageCurl";
+            transitionTypeOfDismiss = @"pageUnCurl";
         }
             break;
         case 9:
         {
-            [self presentToViewController:vc
-                           transitionType:@"cameraIrisHollowOpen"
-                                  subtype:subtype
-                    dismissTransitionType:@"cameraIrisHollowClose"
-                           dismissSubtype:subtypeOfDismiss
-                               completion:^{
-                                   NSLog(@"CATransition-cameraIrisHollowOpen-cameraIrisHollowClose : completion---%zi",indexPath.row);
-                               }];
+            transitionType = @"cameraIrisHollowOpen";
+            transitionTypeOfDismiss = @"cameraIrisHollowClose";
         }
             break;
         default:
             break;
     }
+    
+    TLCATransitonAnimator *animator;
+    animator = [TLCATransitonAnimator animatorWithPresentedViewController:self
+                                                 presentingViewController:vc
+                                                           transitionType:transitionType
+                                                                direction:direction
+                                                  transitionTypeOfDismiss:transitionTypeOfDismiss
+                                                       directionOfDismiss:dismissDirection];
+    
+    return animator;
 }
 
+- (void)CATransitionType:(NSIndexPath *)indexPath {
+    TLSecondViewController *vc = [[TLSecondViewController alloc] init];
+    TLCATransitonAnimator *animator = [self CATransitionAnimatorWithIndexPath:indexPath toViewController:vc];
+    [self presentViewController:vc animator:animator completion:^{
+        NSLog(@"CATransition : completion---%zi",indexPath.row);
+    }];
+}
+
+#pragma mark 自定义动画
 - (void)customTransitions:(NSIndexPath *)indexPath {
-    TowViewController *vc = [[TowViewController alloc] init];
+    TLSecondViewController *vc = [[TLSecondViewController alloc] init];
     [self presentToViewController:vc customAnimation:^(id<UIViewControllerContextTransitioning>  _Nonnull transitionContext, BOOL isPresenting) {
         
-        if (indexPath.row == 17) {
+        if (indexPath.row == 0) {
             [self checkerboardAnimateTransition:transitionContext isPresenting:isPresenting];
-        }else if (indexPath.row == 18) {
+        }else if (indexPath.row == 1) {
             [self heartbeatAnimateTransition:transitionContext isPresenting:isPresenting];
-        }else if (indexPath.row == 19) {
+        }else if (indexPath.row == 2) {
             [self bounceAnimateTransition:transitionContext isPresenting:isPresenting];
         }
         
@@ -597,6 +379,10 @@
     if ([transitionContext respondsToSelector:@selector(viewForKey:)]) { // iOS 8+ fromView/toView可能为nil
         fromView = [transitionContext viewForKey:UITransitionContextFromViewKey];
         toView = [transitionContext viewForKey:UITransitionContextToViewKey];
+    }
+    
+    if (isPresenting) {
+        [transitionContext.containerView addSubview:toView];
     }
     
     UIView *targetView = isPresenting  ? toView : fromView;
@@ -620,6 +406,10 @@
     if ([transitionContext respondsToSelector:@selector(viewForKey:)]) { // iOS 8+ fromView/toView可能为nil
         fromView = [transitionContext viewForKey:UITransitionContextFromViewKey];
         toView = [transitionContext viewForKey:UITransitionContextToViewKey];
+    }
+    
+    if (isPresenting) {
+        [transitionContext.containerView addSubview:toView];
     }
     
     UIView *targetView = isPresenting  ? toView : fromView;
@@ -667,6 +457,9 @@
     
     UIImage *fromViewSnapshot;
     __block UIImage *toViewSnapshot;
+    if (isPresenting) {
+        [transitionContext.containerView addSubview:toView];
+    }
     
     UIGraphicsBeginImageContextWithOptions(containerView.bounds.size, YES, containerView.window.screen.scale);
     [fromView drawViewHierarchyInRect:containerView.bounds afterScreenUpdates:NO];
@@ -797,39 +590,35 @@
 
 #pragma mark - push Of View Controller
 - (void)pushBySwipe:(NSIndexPath *)indexPath {
-    TowViewController *vc = [[TowViewController alloc] init];
-    vc.view.frame = CGRectMake(37.50, 100, 300, 400);
-    vc.preferredContentSize = CGSizeMake(300, 400);
-    if (indexPath.row < 3) {
-        TLWheelTableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
-        TLSwipeType type;
-        if (indexPath.row == 0) {
-            type = TLSwipeTypeInAndOut;
-        }else if (indexPath.row == 1) {
-            type = TLSwipeTypeIn;
-        }else {
-            type = TLSwipeTypeOut;
-        }
-        [self pushViewController:vc swipeType:type pushDirection:cell.sgmtA.selectedSegmentIndex popDirection:cell.sgmtB.selectedSegmentIndex];
+    TLSecondViewController *vc = [[TLSecondViewController alloc] init];
+    
+    // 关闭侧滑pop手势
+//    vc.disableInteractivePopGestureRecognizer = YES;
+
+    TLWheelTableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
+    TLSwipeType type;
+    if (indexPath.row == 0) {
+        type = TLSwipeTypeInAndOut;
+    }else if (indexPath.row == 1) {
+        type = TLSwipeTypeIn;
+    }else {
+        type = TLSwipeTypeOut;
     }
+    [self pushViewController:vc swipeType:type pushDirection:cell.sgmtA.selectedSegmentIndex popDirection:cell.sgmtB.selectedSegmentIndex];
+    
 }
 
-
-#pragma mark - Other
-/// KVO
-- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSKeyValueChangeKey,id> *)change context:(void *)context {
-    if ([keyPath isEqualToString:@"frame"]) {
-        _titleLabel.frame = _titleLabel.superview.bounds;
-    }
+- (void)pushByCATransition:(NSIndexPath *)indexPath {
+   
+    TLSecondViewController *vc = [[TLSecondViewController alloc] init];
+    TLCATransitonAnimator *animator = [self CATransitionAnimatorWithIndexPath:indexPath toViewController:vc];
+    [self pushViewController:vc animator:animator];
+    
 }
+
 
 /// CAAnimationDelegate
 - (void)animationDidStop:(CAAnimation *)anim finished:(BOOL)flag {
     [_transitionContext completeTransition:YES];
 }
-
-- (void)dealloc {
-    [_bView removeObserver:self forKeyPath:@"frame"];
-}
-
 @end

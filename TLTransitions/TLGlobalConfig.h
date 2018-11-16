@@ -10,20 +10,18 @@
 
 // 方向,指向的方向（Top：bottom --> top，动画由Top：bottom到top）
 typedef enum : NSUInteger {
-    TLDirectionTypeTop = 0,
-    TLDirectionTypeLeft,
-    TLDirectionTypeBottom,
-    TLDirectionTypeRight,
-} TLDirectionType;
+    TLDirectionToTop = 0,
+    TLDirectionToLeft,
+    TLDirectionToBottom,
+    TLDirectionToRight,
+} TLDirection;
 
 // 平滑动画类型：如有控制器A和B， 操作： A push to B Or B pop to A
 typedef enum : NSUInteger {
-    TLSwipeTypeInAndOut = 0, // push：B从A的上面滑入，pop：B从A的上面抽出
-    TLSwipeTypeIn,           // push：B从A的上面滑入，pop：A从B的上面滑入
-    TLSwipeTypeOut,          // push：A从B的上面抽出，pop：B从A的上面抽出
+    TLSwipeTypeInAndOut = 0, // push：B从A的上面滑入，pop：B从A的上面抽出.
+    TLSwipeTypeIn,           // push：B从A的上面滑入，pop：A从B的上面滑入.效果类似CATransition动画中的kCATransitionMoveIn
+    TLSwipeTypeOut,          // push：A从B的上面抽出，pop：B从A的上面抽出.效果类似CATransition动画中的kCATransitionReveal
 } TLSwipeType;
-
-
 
 
 // MARK: - 全局常量配置
@@ -88,3 +86,9 @@ alpha:alphaValue]
                       CGSizeEqualToSize([UIScreen mainScreen].bounds.size, CGSizeMake(812, 375)) || \
                       CGSizeEqualToSize([UIScreen mainScreen].bounds.size, CGSizeMake(414, 896)) || \
                       CGSizeEqualToSize([UIScreen mainScreen].bounds.size, CGSizeMake(896, 414)))
+
+
+#pragma mark - 函数
+CATransitionSubtype getSubtype(TLDirection direction);
+UIRectEdge getRectEdge(TLDirection direction);
+UIImage * snapshotImage(UIView *view);  // 快照，将View转换成图片
