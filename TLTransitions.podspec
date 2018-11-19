@@ -25,6 +25,6 @@ s.subspec 'Transition View Controller' do |ss|
 end
 
 s.subspec 'Animator' do |ss|
-    ss.source_files = 'TLTransitions/Transition View/Animator.{h,m}.{h,m}'
+    ss.source_files = 'TLTransitions/Transition View Controller/Animator.{h,m}.{h,m}'
     ss.frameworks = 'Animator'
 end
