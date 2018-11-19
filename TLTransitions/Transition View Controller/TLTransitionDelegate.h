@@ -12,18 +12,15 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface TLTransitionDelegate : NSObject <UIViewControllerTransitioningDelegate, UINavigationControllerDelegate>
 
-/// 动画负责者
-@property(nonatomic, strong, readonly) id<TLAnimatorProtocol> animator;
-/// Push Or Pop(default: NO ,present)
-@property (nonatomic, assign, readonly) BOOL isPushOrPop;
-
-
-// 交互手势(滑动方向即动画方向)。 必须在手势唤醒的时候赋值，否则提前赋值会导致转场失败
+// 交互手势(滑动方向即动画方向)。 必须在手势唤醒的时候(UIGestureRecognizerStateBegan)赋值，否则提前赋值会导致转场失败
 @property (nonatomic, weak) UIScreenEdgePanGestureRecognizer * _Nullable popGestureRecognizer;
 
-- (instancetype)initWithAnimator:(nonnull id <TLAnimatorProtocol>)animator isPushOrPop:(BOOL)isPushOrPop NS_DESIGNATED_INITIALIZER;
+/// 采用单例模式是为了实现，多级Push转场，防止后面的转场覆盖前面的，导致pop动画被后面的取代
++ (instancetype)sharedInstace;
++ (void)addAnimator:(id<TLAnimatorProtocol>)animator  forKey:(UIViewController *)key;
++ (void)removeAnimatorForKey:(UIViewController *)key;
++ (id<TLAnimatorProtocol>)animatorForKey:(UIViewController *)key;
 
-- (instancetype)init NS_UNAVAILABLE;
 @end
 
 NS_ASSUME_NONNULL_END

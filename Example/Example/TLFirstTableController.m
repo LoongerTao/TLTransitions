@@ -46,7 +46,7 @@
             title = @"CATransition Animator";
             rows = @[@"Fade", @"·Move in", @"·Push",
                      @"·Reveal", @"·Cube (私有API)",
-                     @"Suck Effect (私有API)", @"·Ogl Flip (私有API)",
+                     @"·Suck Effect (私有API)", @"·Ogl Flip (私有API)",
                      @"Ripple Effect (私有API)", @"·Page Curl (私有API)",
                      @"Camera Iris Hollow (私有API)",];
             break;
@@ -56,7 +56,7 @@
             break;
         default:
             title = @"System Animator";
-            rows = @[@"Checkerboard", @"Heartbeat", @"Bounce"];
+            rows = @[@"Checkerboard", @"Heartbeat"];
             break;
     }
     
@@ -170,7 +170,7 @@
         }else if (_type == TLContentTypeCATransitionAnimator){
             [self CATransitionType:indexPath];
         }else if (_type == TLContentTypeUIViewTransitionAnimator) {
-            
+            [self viewTransition:indexPath];
         }else if (_type == TLContentTypeCuStomAnimator){
             [self customTransitions:indexPath];
         }
@@ -181,9 +181,9 @@
         }else if (_type == TLContentTypeCATransitionAnimator){
             [self pushByCATransition:indexPath];
         }else if (_type == TLContentTypeUIViewTransitionAnimator) {
-            
+            [self pushByViewTransition:indexPath];
         }else if (_type == TLContentTypeCuStomAnimator){
-            
+            [self pushByCustomAnimation:indexPath];
         }
     }
 }
@@ -332,12 +332,10 @@
     }
     
     TLCATransitonAnimator *animator;
-    animator = [TLCATransitonAnimator animatorWithPresentedViewController:self
-                                                 presentingViewController:vc
-                                                           transitionType:transitionType
-                                                                direction:direction
-                                                  transitionTypeOfDismiss:transitionTypeOfDismiss
-                                                       directionOfDismiss:dismissDirection];
+    animator = [TLCATransitonAnimator animatorWithTransitionType:transitionType
+                                                       direction:direction
+                                         transitionTypeOfDismiss:transitionTypeOfDismiss
+                                              directionOfDismiss:dismissDirection];
     
     return animator;
 }
@@ -350,15 +348,27 @@
     }];
 }
 
+#pragma mark UIView Transition
+- (void)viewTransition:(NSIndexPath *)indexPath {
+   /*
+    TLSecondViewController *vc = [[TLSecondViewController alloc] init];
+    TLViewTransitionAnimator *animator = [TLViewTransitionAnimator new];
+    animator.transitionDuration = 1.0;
+    [self presentViewController:vc animator:animator completion:^{
+        NSLog(@"CATransition : completion---%zi",indexPath.row);
+    }];
+    */
+}
+
 #pragma mark 自定义动画
 - (void)customTransitions:(NSIndexPath *)indexPath {
     TLSecondViewController *vc = [[TLSecondViewController alloc] init];
     [self presentToViewController:vc customAnimation:^(id<UIViewControllerContextTransitioning>  _Nonnull transitionContext, BOOL isPresenting) {
         
         if (indexPath.row == 0) {
-            [self checkerboardAnimateTransition:transitionContext isPresenting:isPresenting];
+            [self checkerboardAnimateTransition:transitionContext isPresenting:isPresenting isPush:NO];
         }else if (indexPath.row == 1) {
-            [self heartbeatAnimateTransition:transitionContext isPresenting:isPresenting];
+            [self heartbeatAnimateTransition:transitionContext isPresenting:isPresenting isPush:NO];
         }else if (indexPath.row == 2) {
             [self bounceAnimateTransition:transitionContext isPresenting:isPresenting];
         }
@@ -371,7 +381,7 @@
 /// 心跳动画
 - (void)heartbeatAnimateTransition:(id<UIViewControllerContextTransitioning>)transitionContext
                       isPresenting:(BOOL)isPresenting
-
+                            isPush:(BOOL)isPush
 {
     
     UIView *fromView;
@@ -381,7 +391,7 @@
         toView = [transitionContext viewForKey:UITransitionContextToViewKey];
     }
     
-    if (isPresenting) {
+    if (isPresenting || isPush) {
         [transitionContext.containerView addSubview:toView];
     }
     
@@ -447,6 +457,7 @@
 /// 官方demo动画
 - (void)checkerboardAnimateTransition:(id<UIViewControllerContextTransitioning>)transitionContext
                          isPresenting:(BOOL)isPresenting
+                               isPush:(BOOL)isPush
 {
     UIViewController *fromViewController = [transitionContext viewControllerForKey:UITransitionContextFromViewControllerKey];
     UIViewController *toViewController = [transitionContext viewControllerForKey:UITransitionContextToViewControllerKey];
@@ -457,7 +468,7 @@
     
     UIImage *fromViewSnapshot;
     __block UIImage *toViewSnapshot;
-    if (isPresenting) {
+    if (isPresenting || isPush) {
         [transitionContext.containerView addSubview:toView];
     }
     
@@ -612,13 +623,42 @@
    
     TLSecondViewController *vc = [[TLSecondViewController alloc] init];
     TLCATransitonAnimator *animator = [self CATransitionAnimatorWithIndexPath:indexPath toViewController:vc];
+    animator.transitionDuration = 3.0;
     [self pushViewController:vc animator:animator];
     
+}
+
+- (void)pushByViewTransition:(NSIndexPath *)indexPath {
+    /*
+    TLSecondViewController *vc = [[TLSecondViewController alloc] init];
+    TLViewTransitionAnimator *animator = [TLViewTransitionAnimator new];
+    animator.transitionDuration = 1.0;
+    [self pushViewController:vc animator:animator];
+     */
+}
+
+- (void)pushByCustomAnimation:(NSIndexPath *)indexPath {
+    TLSecondViewController *vc = [[TLSecondViewController alloc] init];
+    [self pushViewController:vc customAnimation:^(id<UIViewControllerContextTransitioning>  _Nonnull transitionContext, BOOL isPush) {
+        
+        if (indexPath.row == 0) {
+            [self checkerboardAnimateTransition:transitionContext isPresenting:isPush isPush:YES];
+        }else if (indexPath.row == 1) {
+            [self heartbeatAnimateTransition:transitionContext isPresenting:isPush isPush:YES];
+        }else if (indexPath.row == 2) {
+//            [self bounceAnimateTransition:transitionContext isPresenting:isPush isPush:YES];
+        }
+        
+    }];
 }
 
 
 /// CAAnimationDelegate
 - (void)animationDidStop:(CAAnimation *)anim finished:(BOOL)flag {
     [_transitionContext completeTransition:YES];
+}
+
+- (void)dealloc {
+    NSLog(@"%s",__func__);
 }
 @end

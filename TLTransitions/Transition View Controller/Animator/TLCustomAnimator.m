@@ -18,16 +18,11 @@
     return TLDirectionToRight;
 }
 
-#pragma mark - init
-- (instancetype)initWithPresentedViewController:(UIViewController *)presentedViewController presentingViewController:(UIViewController *)presentingViewController
-{
-    self = [super initWithPresentedViewController:presentedViewController presentingViewController:presentingViewController];
++ (instancetype)animatorWithAnimation:(void (^)(id<UIViewControllerContextTransitioning> transitionContext, BOOL isPresenting))animation {
+    TLCustomAnimator *animator = [self new];
+    animator.animation = animation;
     
-    if (self) {
-        presentedViewController.modalPresentationStyle = UIModalPresentationCustom;
-    }
-    
-    return self;
+    return animator;
 }
 
 #pragma mark - UIViewControllerAnimatedTransitioning

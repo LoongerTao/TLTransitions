@@ -9,7 +9,9 @@
 #import "TLAnimatorProtocol.h"
 
 NS_ASSUME_NONNULL_BEGIN
-
+/**
+ * CATransiton类型动画不支持交互百分比控制，所以侧滑只能唤起dismiss/pop，不能控制进度
+ */
 @interface TLViewTransitionAnimator : NSObject <TLAnimatorProtocol>
 
 @end

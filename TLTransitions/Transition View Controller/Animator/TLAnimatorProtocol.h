@@ -14,7 +14,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @required
 
-/// 动画时间
+/// 动画时间(默认值：0.45s，最小值必须大于0.01f)
 @property(nonatomic, assign) NSTimeInterval transitionDuration;
 /// Push Or Pop(default: NO ,present)
 @property (nonatomic, assign) BOOL isPushOrPop;

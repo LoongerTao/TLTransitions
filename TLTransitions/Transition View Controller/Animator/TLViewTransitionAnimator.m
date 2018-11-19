@@ -40,16 +40,21 @@
         isPresentingOrPush = (toViewController.presentingViewController == fromViewController);
     }
     
-    // add sub view to containerView
-   
-//    UIViewAnimationOptionTransitionNone            = 0 << 20, // default
-//    UIViewAnimationOptionTransitionFlipFromLeft    = 1 << 20,
-//    UIViewAnimationOptionTransitionFlipFromRight   = 2 << 20,
-//    UIViewAnimationOptionTransitionCurlUp          = 3 << 20,
-//    UIViewAnimationOptionTransitionCurlDown        = 4 << 20,
-//    UIViewAnimationOptionTransitionCrossDissolve   = 5 << 20,
-//    UIViewAnimationOptionTransitionFlipFromTop     = 6 << 20,
-//    UIViewAnimationOptionTransitionFlipFromBottom  = 7 << 20,
+    if (!isPushOrPop) {
+        if (isPresentingOrPush) {
+            fromView = [[UIImageView alloc] initWithImage:snapshotImage(fromViewController.view)];
+        }else {
+            toView = [[UIImageView alloc] initWithImage:snapshotImage(toViewController.view)];
+        }
+    }
+    
+    if (isPresentingOrPush) {
+        [containerView addSubview:fromView];
+        [containerView insertSubview:toView belowSubview:fromView];
+    }else {
+        [containerView insertSubview:toView belowSubview:fromView];
+    }
+
     [UIView transitionFromView:fromView
                         toView:toView
                       duration:[self transitionDuration:transitionContext]
@@ -59,29 +64,42 @@
         BOOL wasCancelled = [transitionContext transitionWasCancelled];
         if (wasCancelled) {
             [toView removeFromSuperview];
-            
-            [transitionContext completeTransition:!wasCancelled];
         }
-    }];
-    
-    /*
-    [UIView transitionWithView:toView
-                      duration:[self transitionDuration:transitionContext]
-                       options:UIViewAnimationOptionTransitionFlipFromLeft
-                    animations:^
-    {
-        
-    } completion:^(BOOL finished) {
-        BOOL wasCancelled = [transitionContext transitionWasCancelled];
-        if (wasCancelled) {
-            [toView removeFromSuperview];
-            
-            [transitionContext completeTransition:!wasCancelled];
+        if (!self->isPushOrPop) {
+            if (isPresentingOrPush) {
+                [fromView removeFromSuperview];
+            }else {
+                [toView removeFromSuperview];
+            }
         }
+        [transitionContext completeTransition:!wasCancelled];
     }];
-    */
+
 }
 
+//    UIViewAnimationOptionTransitionNone            = 0 << 20, // default
+//    UIViewAnimationOptionTransitionFlipFromLeft    = 1 << 20,
+//    UIViewAnimationOptionTransitionFlipFromRight   = 2 << 20,
+//    UIViewAnimationOptionTransitionCurlUp          = 3 << 20,
+//    UIViewAnimationOptionTransitionCurlDown        = 4 << 20,
+//    UIViewAnimationOptionTransitionCrossDissolve   = 5 << 20,
+//    UIViewAnimationOptionTransitionFlipFromTop     = 6 << 20,
+//    UIViewAnimationOptionTransitionFlipFromBottom  = 7 << 20,
+
+//    [UIView transitionWithView:toView
+//                      duration:[self transitionDuration:transitionContext]
+//                       options:UIViewAnimationOptionTransitionFlipFromLeft
+//                    animations:^
+//    {
+//
+//    } completion:^(BOOL finished) {
+//        BOOL wasCancelled = [transitionContext transitionWasCancelled];
+//        if (wasCancelled) {
+//            [toView removeFromSuperview];
+//
+//            [transitionContext completeTransition:!wasCancelled];
+//        }
+//    }];
 -(void)dealloc {
     tl_LogFunc;
 }

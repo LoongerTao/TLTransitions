@@ -19,20 +19,6 @@
 }
 
 
-#pragma mark - init
-/** 如果继承 UIPresentationController 就需要实现下面方法
-- (instancetype)initWithPresentedViewController:(UIViewController *)presentedViewController presentingViewController:(UIViewController *)presentingViewController
-{
-    self = [super initWithPresentedViewController:presentedViewController presentingViewController:presentingViewController];
-
-    if (self) {
-        presentedViewController.modalPresentationStyle = UIModalPresentationCustom;
-    }
-
-    return self;
-}
-*/
-
 #pragma mark - UIViewControllerAnimatedTransitioning
 - (NSTimeInterval)transitionDuration:(nullable id<UIViewControllerContextTransitioning>)transitionContext {
     return [transitionContext isAnimated] ? self.transitionDuration : 0.f;

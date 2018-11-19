@@ -1,6 +1,6 @@
 //
 //  TLMenuViewController.m
-//  Example
+//  https://github.com/LoongerTao/TLTransitions
 //
 //  Created by 故乡的云 on 2018/11/16.
 //  Copyright © 2018 故乡的云. All rights reserved.
@@ -40,12 +40,14 @@
     TLSection *presentSection = [TLSection new];
     presentSection.title = @"Present view controller";
     presentSection.show = YES;
-    presentSection.rows = @[@"System Animator", @"Swipe Animator", @"CATransition Animator",@"UIView Transition Animator",@"CuStom Animator"];
+    presentSection.rows = @[@"System Animator", @"Swipe Animator" ,@"CATransition Animator"//,@"UIView Transition Animator"
+                            ,@"CuStom Animator"];
     
     TLSection *pushSection = [TLSection new];
     pushSection.title = @"A push to B or B pop to A";
     pushSection.show = NO;
-    pushSection.rows = @[@"Swipe Animator", @"CATransition Animator",@"UIView Transition Animator",@"CuStom Animator"];
+    pushSection.rows = @[@"Swipe Animator", @"CATransition Animator"//,@"UIView Transition Animator"
+                         ,@"CuStom Animator"];
     _data = @[viewSection, presentSection, pushSection];
     
     self.tableView.tableFooterView = [UIView new];
@@ -145,8 +147,9 @@
     }
     vc.type = type;
     
-//    [self pushViewController:vc transitionType:@"cube" direction:TLDirectionToLeft dismissDirection:TLDirectionToRight];
-    [self pushViewController:vc swipeType:TLSwipeTypeInAndOut pushDirection:TLDirectionToLeft popDirection:TLDirectionToRight];
+    [self pushViewController:vc transitionType:@"cube" direction:TLDirectionToLeft dismissDirection:TLDirectionToRight];
+//    [self pushViewController:vc swipeType:TLSwipeTypeInAndOut pushDirection:TLDirectionToLeft popDirection:TLDirectionToRight];
+//    [self.navigationController pushViewController:vc animated:YES];
 }
 
 #pragma mark - Transitions Of View

@@ -10,7 +10,8 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface TLAnimatorTemplate : NSObject <TLAnimatorProtocol> // 也可以继承 UIPresentationController
+@interface TLAnimatorTemplate : NSObject <TLAnimatorProtocol>
+// 在本方案下继承 UIPresentationController 可能导致循环引用
 
 @end
 

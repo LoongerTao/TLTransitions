@@ -10,40 +10,88 @@
 #import "TLGlobalConfig.h"
 #import "TLPercentDrivenInteractiveTransition.h"
 
+@interface TLTransitionDelegate ()
+@property(nonatomic, strong) id<TLAnimatorProtocol> currentAnimator;
+/// 动画负责者集合
+@property(nonatomic, strong) NSMutableDictionary <NSString *, id<TLAnimatorProtocol>>*animators;
+@end
+
 @implementation TLTransitionDelegate
 
-- (instancetype)initWithAnimator:(nonnull id<TLAnimatorProtocol>)animator isPushOrPop:(BOOL)isPushOrPop{
-    
-    self = [super init];
-    if (self) {
-        _animator = animator;
-        if ([animator respondsToSelector:@selector(setTransitionDuration:)]) {
-            animator.transitionDuration = 0.45;
-        }
-        _isPushOrPop = isPushOrPop;
-        if ([self.animator respondsToSelector:@selector(setIsPushOrPop:)]) {
-            _animator.isPushOrPop = isPushOrPop;
-        }
-    }
-    return self;
+static TLTransitionDelegate *_instace;
+
++ (instancetype)allocWithZone:(struct _NSZone *)zone
+{
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        _instace = [super allocWithZone:zone];
+    });
+    return _instace;
 }
 
-- (instancetype)init {
-    NSString *reason = @"Use -initWithAnimator:popGestureRecognizer:";
-    @throw [NSException exceptionWithName:NSInvalidArgumentException reason:reason userInfo:nil];
++ (instancetype)sharedInstace {
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        _instace = [[self alloc] init];
+    });
+    return _instace;
+}
+
+- (NSMutableDictionary<NSString *,id<TLAnimatorProtocol>> *)animators {
+    if (_animators == nil) {
+        _animators = [NSMutableDictionary dictionary];
+    }
+    return  _animators;
+}
+
++ (void)addAnimator:(id<TLAnimatorProtocol>)animator  forKey:(UIViewController *)key {
+    NSString *KEY = [self keyWithViewController:key];
+    [[[self sharedInstace] animators] setObject:animator forKey:KEY];
+    _instace.currentAnimator = animator;
+}
+
++ (void)removeAnimatorForKey:(UIViewController *)key {
+    NSString *KEY = [self keyWithViewController:key];
+    if ([[[[self sharedInstace] animators] allKeys] containsObject:KEY]) {
+        [[[self sharedInstace] animators] removeObjectForKey:KEY];
+        _instace.currentAnimator = nil;
+    }
+}
+
++ (id<TLAnimatorProtocol>)animatorForKey:(UIViewController *)key {
+    NSString *KEY = [self keyWithViewController:key];
+    if ([[[[self sharedInstace] animators] allKeys] containsObject:KEY]) {
+        _instace.currentAnimator = [[[self sharedInstace] animators] objectForKey:KEY];
+        return  _instace.currentAnimator;
+    }
+    return nil;
+}
+
++ (NSString *)keyWithViewController:(UIViewController *)viewController {
+    BOOL flag = [viewController isKindOfClass:[UIViewController class]];
+    NSAssert(flag, @"key: %@ 不是UIViewController类型]", viewController);
+
+    return [NSString stringWithFormat:@"%p", viewController];
 }
 
 // push / pop
 #pragma mark - UINavigationControllerDelegate
 - (id<UIViewControllerAnimatedTransitioning>)navigationController:(UINavigationController *)navigationController animationControllerForOperation:(UINavigationControllerOperation)operation fromViewController:(UIViewController *)fromVC toViewController:(UIViewController *)toVC
 {
-    return _animator;
+    UIViewController *key;
+    if(operation == UINavigationControllerOperationPush) {
+        key = toVC;
+    }else if (operation == UINavigationControllerOperationPop) {
+        key = fromVC;
+    }else {
+        return nil;
+    }
+    return [[self class] animatorForKey:key];
 }
 
 #pragma mark 转场手势交互管理者（push / pop）
 - (nullable id <UIViewControllerInteractiveTransitioning>)navigationController:(UINavigationController *)navigationController interactionControllerForAnimationController:(id <UIViewControllerAnimatedTransitioning>) animationController
 {
-#warning push 或者 pop 判断
     if (_popGestureRecognizer) {
         UIRectEdge edge =  [self getPopEdge];
         TLPercentDrivenInteractiveTransition *interactiveTransition;
@@ -59,12 +107,12 @@
 #pragma mark - UIViewControllerTransitioningDelegate
 - (id<UIViewControllerAnimatedTransitioning>)animationControllerForPresentedController:(UIViewController *)presented presentingController:(UIViewController *)presenting sourceController:(UIViewController *)source
 {
-    return _animator;
+    return [[self class] animatorForKey:presented];
 }
 
 - (id<UIViewControllerAnimatedTransitioning>)animationControllerForDismissedController:(UIViewController *)dismissed
 {
-    return _animator;
+    return [[self class] animatorForKey:dismissed];
 }
 
 #pragma mark 转场手势交互管理者（present / dismiss）
@@ -96,8 +144,8 @@
 
 - (UIRectEdge)getPopEdge {
     UIRectEdge edge = UIRectEdgeLeft;
-    if ([_animator respondsToSelector:@selector(directionForDragging)]) {
-        edge = getRectEdge([_animator directionForDragging]);
+    if ([_instace.currentAnimator respondsToSelector:@selector(directionForDragging)]) {
+        edge = getRectEdge([ _instace.currentAnimator directionForDragging]);
     }
     return edge;
 }

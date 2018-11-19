@@ -26,32 +26,20 @@
     return _directionOfDismiss;
 }
 
-#pragma mark - init
-- (instancetype)initWithPresentedViewController:(UIViewController *)presentedViewController presentingViewController:(UIViewController *)presentingViewController
-{
-    self = [super initWithPresentedViewController:presentedViewController presentingViewController:presentingViewController];
-    
-    if (self) {
-        presentedViewController.modalPresentationStyle = UIModalPresentationCustom;
-    }
-    
-    return self;
-}
-
-+ (instancetype)animatorWithPresentedViewController:(UIViewController *)presentedViewController
-                           presentingViewController:(UIViewController *)presentingViewController
-                                     transitionType:(CATransitionType)tType
+#pragma mark - creat instancetype
++ (instancetype)animatorWithTransitionType:(CATransitionType)tType
                                           direction:(TLDirection)direction
                             transitionTypeOfDismiss:(CATransitionType)tTypeOfDismiss
                                  directionOfDismiss:(TLDirection)directionOfDismiss
 {
-    TLCATransitonAnimator *animator = [[self alloc] initWithPresentedViewController:presentedViewController presentingViewController: presentingViewController];
+    TLCATransitonAnimator *animator = [self new];
     animator.tType = tType;
     animator.direction = direction;
     animator.tTypeOfDismiss = tTypeOfDismiss;
     animator.directionOfDismiss = directionOfDismiss;
     return animator;
 }
+
 
 #pragma mark - UIViewControllerAnimatedTransitioning
 - (NSTimeInterval)transitionDuration:(nullable id<UIViewControllerContextTransitioning>)transitionContext {
@@ -91,7 +79,7 @@
         if (self.isPushOrPop) {
             [containerView addSubview:toView];
         }else {
-            // 对于dismiss动画，我们希望From视图滑开，显示toView。
+            // 对于dismiss动画，我们希望fromView滑开，显示toView。
             // 因此，我们必须将toView放在containerView上，下面则是创建一个toView快照，并将其当作toView
             UIImage *toViewSnapshot = snapshotImage(toViewController.view);
             toView = [[UIImageView alloc] initWithImage:toViewSnapshot];
@@ -108,7 +96,7 @@
     animation.type = isPresenting ? self.tType : self.tTypeOfDismiss;
     animation.subtype = getSubtype(isPresenting ? self.direction : self.directionOfDismiss);
     animation.delegate = self;
-    animation.repeatCount = 1;
+    animation.removedOnCompletion = YES;
     
     UIView *targetView = _isPresenting ? toView : fromView; // 目标
     [targetView.window.layer addAnimation:animation forKey:nil];
@@ -126,13 +114,14 @@
     if(flag){
         BOOL wasCancelled = [_transitionContext transitionWasCancelled];
         [_transitionContext completeTransition:!wasCancelled];
-        _transitionContext = nil;
     }else {
         [_transitionContext completeTransition:NO];
-        _transitionContext = nil;
     }
+    
+    _transitionContext = nil;
 }
 
-
-
+-(void)dealloc {
+    tl_LogFunc;
+}
 @end

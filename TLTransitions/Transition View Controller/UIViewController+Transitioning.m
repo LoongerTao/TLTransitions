@@ -59,11 +59,22 @@
 
 - (void)interactivePopRecognizerAction:(UIScreenEdgePanGestureRecognizer *)gestureRecognizer {
     if (gestureRecognizer.state == UIGestureRecognizerStateBegan) {
+        
+        if (self.transitionDelegate == nil) {
+            [self dismissViewControllerAnimated:YES completion:nil];
+            return;
+        }
+        
+        id <TLAnimatorProtocol>animator = [TLTransitionDelegate animatorForKey:self];
+        NSAssert(animator, @"animator = nil,异常");
+        if (animator == nil) return;
+        
         // TLCATransitonAnimator 不支持百分比控制
-        if (![self.transitionDelegate.animator isMemberOfClass:[TLCATransitonAnimator class]]) {
+        if (![animator isMemberOfClass:[TLCATransitonAnimator class]] ||
+            ![animator isMemberOfClass:[TLCATransitonAnimator class]]) {
             self.transitionDelegate.popGestureRecognizer = gestureRecognizer;
         }
-        if (self.transitionDelegate && self.transitionDelegate.isPushOrPop){ // dismiss
+        if (animator.isPushOrPop){
             [self.navigationController popViewControllerAnimated:YES];
         }else {
             [self dismissViewControllerAnimated:YES completion:nil];
@@ -88,11 +99,17 @@
                      animator:(id<TLAnimatorProtocol>)animator
                    completion:(void (^)(void))completion
 {
+    animator.isPushOrPop = NO;
+    if(animator.transitionDuration == 0){ // 默认值
+        animator.transitionDuration = 0.45f;
+    }
+    
     TLDirection dir = TLDirectionToRight;
     if ([animator respondsToSelector:@selector(directionForDragging)]) {
         dir = [animator directionForDragging];
     }
-    TLTransitionDelegate *tDelegate = [[TLTransitionDelegate alloc] initWithAnimator:animator isPushOrPop:NO];
+    TLTransitionDelegate *tDelegate = [TLTransitionDelegate sharedInstace];
+    [TLTransitionDelegate addAnimator:animator forKey:viewController];
     
     [viewController registerInteractivePopRecognizerWithDirection: dir];
     viewController.transitionDelegate = tDelegate;
@@ -123,12 +140,10 @@
                      completion:(void (^ __nullable)(void))completion
 {
     TLCATransitonAnimator *animator;
-    animator = [[TLCATransitonAnimator alloc] initWithPresentedViewController:vc
-                                                     presentingViewController:self];
-    animator.tType = tType;
-    animator.direction = direction;
-    animator.tTypeOfDismiss = tType;
-    animator.directionOfDismiss = directionOfDismiss;
+    animator = [TLCATransitonAnimator animatorWithTransitionType:tType
+                                                       direction:direction
+                                         transitionTypeOfDismiss:tType
+                                              directionOfDismiss:directionOfDismiss];
     
     [self presentViewController:vc animator:animator completion:completion];
 }
@@ -137,9 +152,7 @@
                 customAnimation:(void (^)(id<UIViewControllerContextTransitioning> transitionContext, BOOL isPresenting))animation
                      completion:(void (^ __nullable)(void))completion
 {
-    TLCustomAnimator *animator = [[TLCustomAnimator alloc] initWithPresentedViewController:vc presentingViewController:self];
-    animator.animation = animation;
-    
+    TLCustomAnimator *animator = [TLCustomAnimator animatorWithAnimation:animation];
     [self presentViewController:vc animator:animator completion:completion];
 }
 
@@ -150,12 +163,20 @@
     NSAssert(falg, @"%s 方法n不能用UINavigationController发起调用，请直接用view controllerd调用", __func__);
     NSAssert(self.navigationController, (@"控制器 %@ 没有navigationController，无法push"), self);
     
+    animator.isPushOrPop = YES;
+    if(animator.transitionDuration == 0){ // 默认值
+        animator.transitionDuration = 0.45f;
+    }
+    
     TLDirection dir = TLDirectionToRight;
     if ([animator respondsToSelector:@selector(directionForDragging)]) {
         dir = [animator directionForDragging];
     }
     [viewController registerInteractivePopRecognizerWithDirection: dir];
-    TLTransitionDelegate *tDelegate = [[TLTransitionDelegate alloc] initWithAnimator:animator isPushOrPop:YES];
+    
+    [TLTransitionDelegate addAnimator:animator forKey:viewController];
+    TLTransitionDelegate *tDelegate = [TLTransitionDelegate sharedInstace];
+    
     viewController.transitionDelegate = tDelegate;
     self.navigationController.delegate = tDelegate;
     [self.navigationController pushViewController:viewController animated:YES];
@@ -181,20 +202,17 @@
           dismissDirection:(TLDirection)directionOfPop
 {
     TLCATransitonAnimator *animator;
-    animator = [[TLCATransitonAnimator alloc] initWithPresentedViewController:vc
-                                                     presentingViewController:self];
-    animator.tType = tType;
-    animator.direction = direction;
-    animator.tTypeOfDismiss = tType;
-    animator.directionOfDismiss = directionOfPop;
-    
+    animator = [TLCATransitonAnimator animatorWithTransitionType:tType
+                                                       direction:direction
+                                         transitionTypeOfDismiss:tType
+                                              directionOfDismiss:directionOfPop];    
     [self pushViewController:vc animator:animator];
 }
 
 - (void)pushViewController:(UIViewController *)vc
            customAnimation:(void (^)( id<UIViewControllerContextTransitioning> transitionContext, BOOL isPush))animation
 {    
-    TLCustomAnimator *animator = [[TLCustomAnimator alloc] initWithPresentedViewController:vc presentingViewController:self];
+    TLCustomAnimator *animator = [TLCustomAnimator animatorWithAnimation:animation];
     animator.animation = animation;
    
     [self pushViewController:vc animator:animator];
@@ -202,7 +220,8 @@
 
 - (void)dealloc{
     tl_Log(@"%@ %s", [self class], __func__);
-//    tl_LogFunc;
+
+    [TLTransitionDelegate removeAnimatorForKey:self];
 }
 
 

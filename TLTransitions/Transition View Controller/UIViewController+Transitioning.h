@@ -19,7 +19,7 @@ NS_ASSUME_NONNULL_BEGIN
 @interface UIViewController (Transitioning)
 
 /// 转场动画(面向present/push To View Controller)
-@property(nonatomic, strong, readonly) TLTransitionDelegate *transitionDelegate;
+@property(nonatomic, weak, readonly) TLTransitionDelegate *transitionDelegate;
 
 /** 侧滑pop/dismiss交互手势启用开关。默认开启（NO）
  * 1.特性：当pop/dismiss的方向为TLDirectionToLeft（向左动画退场）时，通过右侧滑（屏幕右侧向左滑动）启动交互；

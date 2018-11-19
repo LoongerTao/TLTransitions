@@ -9,15 +9,14 @@
 #import "TLAnimatorProtocol.h"
 
 /// 自定义动画样式
-typedef void(^TLAnimateTransition)(id <UIViewControllerContextTransitioning>, BOOL);
+typedef void(^TLTransitionAnimation)(id <UIViewControllerContextTransitioning>, BOOL);
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface TLCustomAnimator : UIPresentationController <TLAnimatorProtocol>
-@property(nonatomic, copy) TLAnimateTransition animation;
+@interface TLCustomAnimator : NSObject <TLAnimatorProtocol>
+@property(nonatomic, copy) TLTransitionAnimation animation;
 
-// 请用 - initWithPresentedViewController: presentingViewController: 方法创建实例
-- (instancetype)init NS_UNAVAILABLE;
++ (instancetype)animatorWithAnimation:(void (^)(id<UIViewControllerContextTransitioning> transitionContext, BOOL isPresenting))animation;
 @end
 
 NS_ASSUME_NONNULL_END
