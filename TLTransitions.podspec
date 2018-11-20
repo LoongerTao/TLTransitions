@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name         = "TLTransitions"
-  s.version      = "1.2.0"
+  s.version      = "1.2.1"
   s.ios.deployment_target = '8.0'
   s.platform     = :ios, '8.0'
   s.summary      = "Fast implement transitions for view or viewController "
@@ -13,15 +13,15 @@ Pod::Spec.new do |s|
   s.requires_arc = true
 
 
-  s.subspec 'TransitionView' do |ss|
-      ss.source_files = 'TLTransitions/Transition View/*.{h,m}'
-  end
+  # s.subspec 'TransitionView' do |ss|
+  #     ss.source_files = 'TLTransitions/TransitionView/*.{h,m}'
+  # end
 
-  s.subspec 'TransitionViewController' do |ss|
-      ss.source_files = 'TLTransitions/Transition View Controller/*.{h,m}'
-  end
+  # s.subspec 'TransitionViewController' do |ss|
+  #     ss.source_files = 'TLTransitions/TransitionViewController/*.{h,m}'
+  # end
 
-  s.subspec 'Animator' do |ss|
-      ss.source_files = 'TLTransitions/Transition View Controller/Animator/*.{h,m}'
-  end
+  # s.subspec 'Animator' do |ss|
+  #     ss.source_files = 'TLTransitions/TransitionViewController/Animator/*.{h,m}'
+  # end
 end
