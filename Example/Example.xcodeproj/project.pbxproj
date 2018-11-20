@@ -198,8 +198,8 @@
 		142741B62186E18B0047EE09 /* TLTransitions */ = {
 			isa = PBXGroup;
 			children = (
-				14D39411219D581A00F61677 /* Transition View Controller */,
-				14D39410219D57F600F61677 /* Transition View */,
+				14D39411219D581A00F61677 /* TransitionViewController */,
+				14D39410219D57F600F61677 /* TransitionView */,
 				142741BB2186E18B0047EE09 /* TLGlobalConfig.h */,
 				142741B82186E18B0047EE09 /* TLGlobalConfig.m */,
 				14D3941B219EC55700F61677 /* TLTransitionHeader.h */,
@@ -235,7 +235,7 @@
 			path = Animator;
 			sourceTree = "<group>";
 		};
-		14D39410219D57F600F61677 /* Transition View */ = {
+		14D39410219D57F600F61677 /* TransitionView */ = {
 			isa = PBXGroup;
 			children = (
 				142741B72186E18B0047EE09 /* TLTransition.h */,
@@ -243,10 +243,10 @@
 				142741B92186E18B0047EE09 /* TLPopViewController.h */,
 				142741BF2186E18B0047EE09 /* TLPopViewController.m */,
 			);
-			path = "Transition View";
+			path = TransitionView;
 			sourceTree = "<group>";
 		};
-		14D39411219D581A00F61677 /* Transition View Controller */ = {
+		14D39411219D581A00F61677 /* TransitionViewController */ = {
 			isa = PBXGroup;
 			children = (
 				142741CF218988B20047EE09 /* UIViewController+Transitioning.h */,
@@ -257,7 +257,7 @@
 				149AA6B221955F2600F03EE6 /* TLPercentDrivenInteractiveTransition.m */,
 				14D3940E219D57BC00F61677 /* Animator */,
 			);
-			path = "Transition View Controller";
+			path = TransitionViewController;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

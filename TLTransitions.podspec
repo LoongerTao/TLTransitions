@@ -9,18 +9,19 @@ Pod::Spec.new do |s|
   s.author       = { "LoongerTao" => "495285195@qq.com" }
   s.source       = { :git => "https://github.com/LoongerTao/TLTransitions.git", :tag => s.version }
   s.source_files  = "TLTransitions/*.{h,m}"
-  s.public_header_files = 'TLTransitions/TLTransitionsHeader.h'
+  # s.public_header_files = 'TLTransitions/TLTransitionsHeader.h'
   s.requires_arc = true
-end
 
-s.subspec 'Transition View' do |ss|
-    ss.source_files = 'TLTransitions/Transition View/*.{h,m}'
-end
 
-s.subspec 'Transition View Controller' do |ss|
-    ss.source_files = 'TLTransitions/Transition View Controller/*.{h,m}'
-end
+  s.subspec 'TransitionView' do |ss|
+      ss.source_files = 'TLTransitions/Transition View/*.{h,m}'
+  end
 
-s.subspec 'Animator' do |ss|
-    ss.source_files = 'TLTransitions/Transition View Controller/Animator/*.{h,m}'
+  s.subspec 'TransitionViewController' do |ss|
+      ss.source_files = 'TLTransitions/Transition View Controller/*.{h,m}'
+  end
+
+  s.subspec 'Animator' do |ss|
+      ss.source_files = 'TLTransitions/Transition View Controller/Animator/*.{h,m}'
+  end
 end
