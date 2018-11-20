@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name         = 'TLTransitions'
-  s.version      = '1.3.2'
+  s.version      = '1.3.4'
   s.license      = 'MIT'
   s.ios.deployment_target = '8.0'
   s.platform     = :ios, '8.0'
@@ -31,7 +31,6 @@ Pod::Spec.new do |s|
 
   # s.subspec 'TransitionController' do |tc|
   #     tc.source_files = 'TLTransitions/TransitionController/*.{h,m}'
-  #     # tc.ios.frameworks = 'runtime'
   #     tc.dependency 'TLTransitions/Config' 
   #     tc.dependency 'TLTransitions/Animator'
   # end
