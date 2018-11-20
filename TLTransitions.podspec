@@ -9,7 +9,7 @@ Pod::Spec.new do |s|
   s.author       = { "LoongerTao" => "495285195@qq.com" }
   s.source       = { :git => "https://github.com/LoongerTao/TLTransitions.git", :tag => s.version }
   s.source_files  = "TLTransitions/*.{h,m}"
-  # s.public_header_files = 'TLTransitions/TLTransitionsHeader.h'
+  s.public_header_files = 'TLTransitions/TLTransitionsHeader.h'
   s.requires_arc = true
 
 
