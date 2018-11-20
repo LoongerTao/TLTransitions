@@ -199,29 +199,9 @@
 			isa = PBXGroup;
 			children = (
 				14D3941B219EC55700F61677 /* TLTransitions.h */,
-				142741BB2186E18B0047EE09 /* TLGlobalConfig.h */,
-				142741B82186E18B0047EE09 /* TLGlobalConfig.m */,
-				142741B72186E18B0047EE09 /* TLTransition.h */,
-				142741BA2186E18B0047EE09 /* TLTransition.m */,
-				142741B92186E18B0047EE09 /* TLPopViewController.h */,
-				142741BF2186E18B0047EE09 /* TLPopViewController.m */,
-				142741CF218988B20047EE09 /* UIViewController+Transitioning.h */,
-				142741D0218988B20047EE09 /* UIViewController+Transitioning.m */,
-				14D39405219D0D1000F61677 /* TLTransitionDelegate.h */,
-				14D39406219D0D1000F61677 /* TLTransitionDelegate.m */,
-				149AA6B121955F2600F03EE6 /* TLPercentDrivenInteractiveTransition.h */,
-				149AA6B221955F2600F03EE6 /* TLPercentDrivenInteractiveTransition.m */,
-				14A539CB219C1BF400DB5CE6 /* TLAnimatorProtocol.h */,
-				142741D6218BEBD70047EE09 /* TLSwipeAnimator.h */,
-				142741D7218BEBD70047EE09 /* TLSwipeAnimator.m */,
-				14A539C8219C139B00DB5CE6 /* TLCATransitonAnimator.h */,
-				14A539C9219C139B00DB5CE6 /* TLCATransitonAnimator.m */,
-				14D39412219D787800F61677 /* TLViewTransitionAnimator.h */,
-				14D39413219D787800F61677 /* TLViewTransitionAnimator.m */,
-				14D39408219D22FD00F61677 /* TLCustomAnimator.h */,
-				14D39409219D22FD00F61677 /* TLCustomAnimator.m */,
-				14D3940B219D543F00F61677 /* TLAnimatorTemplate.h */,
-				14D3940C219D543F00F61677 /* TLAnimatorTemplate.m */,
+				14469F8321A3E432007525BA /* TransitionController */,
+				14469F8221A3E405007525BA /* TransitionView */,
+				14469F8121A3E3CB007525BA /* Config */,
 			);
 			name = TLTransitions;
 			path = ../TLTransitions;
@@ -234,6 +214,58 @@
 				142741BE2186E18B0047EE09 /* TLSheetPicker.h */,
 			);
 			path = "Scene Template";
+			sourceTree = "<group>";
+		};
+		14469F8121A3E3CB007525BA /* Config */ = {
+			isa = PBXGroup;
+			children = (
+				142741BB2186E18B0047EE09 /* TLGlobalConfig.h */,
+				142741B82186E18B0047EE09 /* TLGlobalConfig.m */,
+			);
+			path = Config;
+			sourceTree = "<group>";
+		};
+		14469F8221A3E405007525BA /* TransitionView */ = {
+			isa = PBXGroup;
+			children = (
+				142741B72186E18B0047EE09 /* TLTransition.h */,
+				142741BA2186E18B0047EE09 /* TLTransition.m */,
+				142741B92186E18B0047EE09 /* TLPopViewController.h */,
+				142741BF2186E18B0047EE09 /* TLPopViewController.m */,
+			);
+			path = TransitionView;
+			sourceTree = "<group>";
+		};
+		14469F8321A3E432007525BA /* TransitionController */ = {
+			isa = PBXGroup;
+			children = (
+				14469F8421A3E463007525BA /* Animator */,
+				142741CF218988B20047EE09 /* UIViewController+Transitioning.h */,
+				142741D0218988B20047EE09 /* UIViewController+Transitioning.m */,
+				14D39405219D0D1000F61677 /* TLTransitionDelegate.h */,
+				14D39406219D0D1000F61677 /* TLTransitionDelegate.m */,
+				149AA6B121955F2600F03EE6 /* TLPercentDrivenInteractiveTransition.h */,
+				149AA6B221955F2600F03EE6 /* TLPercentDrivenInteractiveTransition.m */,
+			);
+			path = TransitionController;
+			sourceTree = "<group>";
+		};
+		14469F8421A3E463007525BA /* Animator */ = {
+			isa = PBXGroup;
+			children = (
+				14A539CB219C1BF400DB5CE6 /* TLAnimatorProtocol.h */,
+				142741D6218BEBD70047EE09 /* TLSwipeAnimator.h */,
+				142741D7218BEBD70047EE09 /* TLSwipeAnimator.m */,
+				14A539C8219C139B00DB5CE6 /* TLCATransitonAnimator.h */,
+				14A539C9219C139B00DB5CE6 /* TLCATransitonAnimator.m */,
+				14D39412219D787800F61677 /* TLViewTransitionAnimator.h */,
+				14D39413219D787800F61677 /* TLViewTransitionAnimator.m */,
+				14D39408219D22FD00F61677 /* TLCustomAnimator.h */,
+				14D39409219D22FD00F61677 /* TLCustomAnimator.m */,
+				14D3940B219D543F00F61677 /* TLAnimatorTemplate.h */,
+				14D3940C219D543F00F61677 /* TLAnimatorTemplate.m */,
+			);
+			path = Animator;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
