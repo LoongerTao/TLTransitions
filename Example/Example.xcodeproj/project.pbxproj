@@ -102,7 +102,7 @@
 		14D39416219EAC2300F61677 /* TLMenuViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TLMenuViewController.m; sourceTree = "<group>"; };
 		14D39418219EB0C200F61677 /* TLSection.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TLSection.h; sourceTree = "<group>"; };
 		14D39419219EB0C200F61677 /* TLSection.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TLSection.m; sourceTree = "<group>"; };
-		14D3941B219EC55700F61677 /* TLTransitionHeader.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TLTransitionHeader.h; sourceTree = "<group>"; };
+		14D3941B219EC55700F61677 /* TLTransitions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TLTransitions.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -198,6 +198,9 @@
 		142741B62186E18B0047EE09 /* TLTransitions */ = {
 			isa = PBXGroup;
 			children = (
+				14D3941B219EC55700F61677 /* TLTransitions.h */,
+				142741BB2186E18B0047EE09 /* TLGlobalConfig.h */,
+				142741B82186E18B0047EE09 /* TLGlobalConfig.m */,
 				142741B72186E18B0047EE09 /* TLTransition.h */,
 				142741BA2186E18B0047EE09 /* TLTransition.m */,
 				142741B92186E18B0047EE09 /* TLPopViewController.h */,
@@ -219,9 +222,6 @@
 				14D39409219D22FD00F61677 /* TLCustomAnimator.m */,
 				14D3940B219D543F00F61677 /* TLAnimatorTemplate.h */,
 				14D3940C219D543F00F61677 /* TLAnimatorTemplate.m */,
-				142741BB2186E18B0047EE09 /* TLGlobalConfig.h */,
-				142741B82186E18B0047EE09 /* TLGlobalConfig.m */,
-				14D3941B219EC55700F61677 /* TLTransitionHeader.h */,
 			);
 			name = TLTransitions;
 			path = ../TLTransitions;

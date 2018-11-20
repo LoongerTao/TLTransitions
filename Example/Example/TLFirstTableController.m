@@ -7,7 +7,7 @@
 //
 
 #import "TLFirstTableController.h"
-#import "TLTransitionHeader.h"
+#import "TLTransitions.h"
 #import "TLSecondViewController.h"
 #import "TLWheelTableViewCell.h"
 #import "TLSection.h"
