@@ -24,17 +24,16 @@ Pod::Spec.new do |s|
       tv.dependency 'TLTransitions/Config'
   end
 
-  s.subspec 'Animator' do |anm|
-          anm.source_files = 'TLTransitions/TransitionController/Animator/*.{h,m}'
-          anm.dependency 'TLTransitions/Config'
-  end
+  # s.subspec 'Animator' do |anm|
+  #         anm.source_files = 'TLTransitions/TransitionController/Animator/*.{h,m}'
+  #         anm.dependency 'TLTransitions/Config'
+  # end
 
-  s.subspec 'TransitionController' do |tc|
-      tc.source_files = 'TLTransitions/TransitionController/.{h,m}'
-      tc.ios.frameworks = 'runtime'
-      tc.dependency 'TLTransitions/Config' 
-      anm.dependency 'TLTransitions/Animator'
-  end
-
+  # s.subspec 'TransitionController' do |tc|
+  #     tc.source_files = 'TLTransitions/TransitionController/*.{h,m}'
+  #     # tc.ios.frameworks = 'runtime'
+  #     tc.dependency 'TLTransitions/Config' 
+  #     tc.dependency 'TLTransitions/Animator'
+  # end
   
 end
