@@ -12,10 +12,10 @@
 #import "TLTransition.h"
 //#import "UIViewController+Transitioning.h"
 #import "TLGlobalConfig.h"
-//#import "TLSwipeAnimator.h"
-//#import "TLCATransitonAnimator.h"
+#import "TLSwipeAnimator.h"
+#import "TLCATransitonAnimator.h"
 //#import "TLViewTransitionAnimator.h" // 不完善，暂不开放
-//#import "TLCustomAnimator.h"
+#import "TLCustomAnimator.h"
 
 
 #endif /* TLTransitionHeader_h */
