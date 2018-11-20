@@ -11,8 +11,8 @@
 
 
 #import "TLGlobalConfig.h"
-@class TLTransitionDelegate;
 @protocol TLAnimatorProtocol;
+@class TLTransitionDelegate;
 
 NS_ASSUME_NONNULL_BEGIN
 

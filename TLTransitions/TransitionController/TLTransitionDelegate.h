@@ -6,7 +6,8 @@
 //  Copyright © 2018 故乡的云. All rights reserved.
 //  view vontroller transition delegate / navigation controller delegate
 
-#import "TLAnimatorProtocol.h"
+#import "TLGlobalConfig.h"
+@protocol TLAnimatorProtocol;
 
 NS_ASSUME_NONNULL_BEGIN
 

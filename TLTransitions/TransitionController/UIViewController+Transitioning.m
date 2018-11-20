@@ -8,11 +8,11 @@
 
 #import "UIViewController+Transitioning.h"
 #import <objc/runtime.h>
-#import "TLAnimatorProtocol.h"
 #import "TLTransitionDelegate.h"
 #import "TLCATransitonAnimator.h"
 #import "TLSwipeAnimator.h"
 #import "TLCustomAnimator.h"
+#import "TLAnimatorProtocol.h"
 
 #pragma mark-
 #pragma mark UIViewController (Transitioning)

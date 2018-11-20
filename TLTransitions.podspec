@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name         = 'TLTransitions'
-  s.version      = '1.3.5'
+  s.version      = '1.3.6'
   s.license      = 'MIT'
   s.ios.deployment_target = '8.0'
   s.platform     = :ios, '8.0'
@@ -24,15 +24,17 @@ Pod::Spec.new do |s|
       tv.dependency 'TLTransitions/Config'
   end
 
-  # s.subspec 'Animator' do |anm|
-  #         anm.source_files = 'TLTransitions/TransitionController/Animator/*.{h,m}'
-  #         anm.dependency 'TLTransitions/Config'
-  # end
+  
 
-  # s.subspec 'TransitionController' do |tc|
-  #     tc.source_files = 'TLTransitions/TransitionController/*.{h,m}'
-  #     tc.dependency 'TLTransitions/Config' 
-  #     tc.dependency 'TLTransitions/Animator'
-  # end
+  s.subspec 'TransitionController' do |tc|
+      tc.source_files = 'TLTransitions/TransitionController/*.{h,m}'
+      tc.dependency 'TLTransitions/Config' 
+      # tc.dependency 'TLTransitions/Animator'
+
+      tc.subspec 'Animator' do |anm|
+          anm.source_files = 'TLTransitions/TransitionController/Animator/*.{h,m}'
+          anm.dependency 'TLTransitions/Config'
+      end
+  end
   
 end

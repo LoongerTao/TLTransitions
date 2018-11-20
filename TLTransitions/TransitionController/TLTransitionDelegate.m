@@ -7,8 +7,8 @@
 //  view vontroller transition delegate / navigation controller delegate
 
 #import "TLTransitionDelegate.h"
-#import "TLGlobalConfig.h"
 #import "TLPercentDrivenInteractiveTransition.h"
+#import "TLAnimatorProtocol.h"
 
 @interface TLTransitionDelegate ()
 @property(nonatomic, strong) id<TLAnimatorProtocol> currentAnimator;
