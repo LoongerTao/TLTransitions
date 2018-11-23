@@ -1,11 +1,34 @@
 # TLTransitions
 
-- 快速实现控制器/View的转场，并支持自定义动画，支持手势转场（dismiss/pop）
-- 控制器的转场基于协议`UIViewControllerTransitioningDelegate`,`UINavigationControllerDelegate`，`UIViewControllerAnimatedTransitioning`
-- View的转场则是通过控制器的转场包装而来，同时还基于`UIPresentationController`
-- 说明：
-    - View的转场：对应类`TLTransition`
-    - Present/Dismiss/Push/Pop：对应分类`UIViewController+Transitioning`和遵守`TLTLAnimatorProtocol`协议的Animator实例
+### **目的**
+让繁琐的个性化控制器的转场(present/pop)和视图弹窗实现，变的简单快速（一句代码或几行即可搞定），并支持动画的自定义，支持通过手势转场（dismiss/pop）
+
+### **实现基础** 
+    - 控制器的转场基于协议`UIViewControllerTransitioningDelegate`,`UINavigationControllerDelegate`，`UIViewControllerAnimatedTransitioning`
+    - View的转场则是通过控制器的转场包装而来，同时还基于`UIPresentationController`
+
+### **使用与说明**
+#### View弹窗的使用：对应`TLTransition`类的API
+- 使用：只要一行代码即可将一个已有的View进行显示
+```objc
+// popView是一个用户自定义的视图，并且已经设置好布局
+[TLTransition showView:popView popType:TLPopTypeAlert];
+
+// 更多用法见demo
+```
+
+- 可实现如下效果：
+    1. 系统Alert样式的中间弹窗，并支持键简单的盘高度自适应（可关闭）
+    
+    2. 系统Action Sheet样式的底部弹窗
+    
+    3. 将一个view显示到指定的位置
+    
+    4. 将一个view从frame1动画到frame2
+    
+    5. 动画自定义，提供block将自定义动画传入即可
+    
+- Present/Dismiss/Push/Pop：对应分类`UIViewController+Transitioning`和遵守`TLTLAnimatorProtocol`协议的Animator实例
 - 控制器转场思维结构图
    ![思维结构图](https://upload-images.jianshu.io/upload_images/3333500-58489f3c2cb8e169.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
