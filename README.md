@@ -22,18 +22,23 @@ pod 'TLTransitions', '~> 1.4.0'
 
 - 可实现如下效果：
     1. 系统Alert样式的中间弹窗，并支持键简单的盘高度自适应（可关闭）
+    
 ![alert.gif](https://upload-images.jianshu.io/upload_images/3333500-a1862b84e09c65cd.gif?imageMogr2/auto-orient/strip)
 
     2. 系统Action Sheet样式的底部弹窗
+    
      ![actionSheet.gif](https://upload-images.jianshu.io/upload_images/3333500-b6f9d07cd39f6347.gif?imageMogr2/auto-orient/strip)
 
     3. 将一个view显示到指定的位置
+    
    ![point.gif](https://upload-images.jianshu.io/upload_images/3333500-8400581effaabdaa.gif?imageMogr2/auto-orient/strip)
 
     4. 将一个view从frame1动画到frame2
+    
    ![frame.gif](https://upload-images.jianshu.io/upload_images/3333500-ada674cbd225e62d.gif?imageMogr2/auto-orient/strip)
 
     5. 动画自定义，提供block将自定义动画传入即可
+    
   ![customforview.gif](https://upload-images.jianshu.io/upload_images/3333500-1036eb2a60e89ae4.gif?imageMogr2/auto-orient/strip)
 
 - 其他API
@@ -75,18 +80,23 @@ _bView.bounds = rect;
 4. 所以类型API都默认支持侧滑手势dismiss/pop，可以关闭（如果要手动dismiss/pop，只需调用原生API即可）
 4. 部分转场效果图
 - 原生present
+
 ![system.gif](https://upload-images.jianshu.io/upload_images/3333500-40355d0619cbb726.gif?imageMogr2/auto-orient/strip)
 
  - Swipe
+ 
 ![swipe.gif](https://upload-images.jianshu.io/upload_images/3333500-080df94e9d1cd8ec.gif?imageMogr2/auto-orient/strip)
 
 - CATransition
+
 ![CATransition.gif](https://upload-images.jianshu.io/upload_images/3333500-6b16c504fca3dbca.gif?imageMogr2/auto-orient/strip)
 
 - Cunstom
+
 ![custom.gif](https://upload-images.jianshu.io/upload_images/3333500-8727ef6aadda6a5d.gif?imageMogr2/auto-orient/strip)
 
 - 锦集
+
 ![锦集.gif](https://upload-images.jianshu.io/upload_images/3333500-a935d0c0a257c0bf.gif?imageMogr2/auto-orient/strip)
 
 5. 使用步骤与举例
