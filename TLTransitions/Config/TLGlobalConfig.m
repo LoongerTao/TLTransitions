@@ -48,3 +48,17 @@ UIImage * snapshotImage(UIView *view) {
     return snapshot;
 }
 
+UIImage * resizableSnapshotImage(UIView *view, CGRect inRect) {
+    if (CGRectEqualToRect(inRect, CGRectNull) || CGRectEqualToRect(inRect, CGRectZero)) {
+        inRect = view.bounds;
+    }
+    //    UIGraphicsBeginImageContextWithOptions(view.bounds.size, YES, 0);
+    //    [view drawViewHierarchyInRect:inRect afterScreenUpdates:NO];
+    UIGraphicsBeginImageContext(inRect.size);
+        CGContextRef contextRef = UIGraphicsGetCurrentContext();
+    [view.layer renderInContext:contextRef];
+    UIImage *snapshot = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    
+    return snapshot;
+}

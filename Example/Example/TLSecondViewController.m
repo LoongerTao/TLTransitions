@@ -9,7 +9,7 @@
 #import "TLSecondViewController.h"
 
 @interface TLSecondViewController ()
-
+@property(nonatomic, weak) IBOutlet UIImageView *imgView;
 @end
 
 @implementation TLSecondViewController
@@ -17,15 +17,9 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.navigationItem.title = @"Controller B";
+    
+    self.imgView.hidden = !_isShowImage;
 }
-
-//- (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
-//    if (self.navigationController.childViewControllers.count > 0) {
-//        [self.navigationController popViewControllerAnimated:YES];
-//    }else {
-//        [self dismissViewControllerAnimated:YES completion:nil];
-//    }
-//}
 
 - (IBAction)dismiss:(id)sender {
     if (self.navigationController.childViewControllers.count > 0) {

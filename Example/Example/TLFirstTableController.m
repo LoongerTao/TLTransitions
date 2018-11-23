@@ -28,9 +28,9 @@
     [super viewDidLoad];
     
     self.navigationItem.title = @"A";
-    
-    NSString *title = @"CuStom Animator";
-    NSArray *rows = @[@"Checkerboard", @"Heartbeat", @"Bounce"];
+
+    NSString *title;
+    NSArray *rows;
     switch (_type) {
         case TLContentTypeSystemAnimator:
             title = @"System Animator";
@@ -54,9 +54,16 @@
             title = @"UIView Transition Animator";
             rows = @[@"Flip", @"Curl", @"CrossDissolve", @"Flip"];
             break;
-        default:
-            title = @"System Animator";
+        case TLContentTypeCuStomAnimator:
+            title = @"CuStom Animator";;
             rows = @[@"Checkerboard", @"Heartbeat"];
+            break;
+        default:{
+            NSString *tempStr = _isPush ? @"斜角切入(不支持)" : @"斜角切入";
+            title = @"个人动画收集";
+            rows = @[@"开门",@"绽放",tempStr,@"向右边倾斜旋转",@"向左边倾斜旋转",@"指定frame：initialFrame --> finalFrame",
+                     @"对指定rect范围，进行缩放和平移",@"对指定rect范围...2[纯净版]"];
+        }
             break;
     }
     
@@ -119,6 +126,12 @@
         cell.textLabel.font = [UIFont systemFontOfSize:14];
     }
     
+    if ([text containsString:@"指定rect范围"]) {
+        cell.imageView.image = [UIImage imageNamed:@"img"];
+    }else {
+        cell.imageView.image = nil;
+    }
+    
     cell.textLabel.text = self.data[indexPath.section].rows[indexPath.row];
     
     UIColor *color = tl_Color(255, 255, 230);
@@ -164,15 +177,17 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
      if (_isPush == NO) {
         if (_type == TLContentTypeSystemAnimator) {
-            [self systemTransitions:indexPath];
+            [self presentBySystem:indexPath];
         }else if (_type == TLContentTypeSwipeAnimator){
-            [self swipeTransitions:indexPath];
+            [self presentBySwipe:indexPath];
         }else if (_type == TLContentTypeCATransitionAnimator){
-            [self CATransitionType:indexPath];
+            [self presentByCATransition:indexPath];
         }else if (_type == TLContentTypeUIViewTransitionAnimator) {
-            [self viewTransition:indexPath];
+            [self presentByViewTransition:indexPath];
         }else if (_type == TLContentTypeCuStomAnimator){
-            [self customTransitions:indexPath];
+            [self presentByCustom:indexPath];
+        }else {
+            [self presentByTLAnimator:indexPath];
         }
     }else {
         
@@ -184,13 +199,15 @@
             [self pushByViewTransition:indexPath];
         }else if (_type == TLContentTypeCuStomAnimator){
             [self pushByCustomAnimation:indexPath];
+        }else {
+            [self pushByTLAnimation:indexPath];
         }
     }
 }
 
 #pragma mark - Presenting Of View Controller
 #pragma mark 原生动画效果
-- (void)systemTransitions:(NSIndexPath *)indexPath {
+- (void)presentBySystem:(NSIndexPath *)indexPath {
    
     TLSecondViewController *vc = [[TLSecondViewController alloc] init];
     [self presentViewController:vc transitionStyle:indexPath.row completion:^{
@@ -199,7 +216,7 @@
 }
 
 #pragma mark 平滑效果
-- (void)swipeTransitions:(NSIndexPath *)indexPath  {
+- (void)presentBySwipe:(NSIndexPath *)indexPath  {
  
     TLSecondViewController *vc = [[TLSecondViewController alloc] init];
     
@@ -340,7 +357,7 @@
     return animator;
 }
 
-- (void)CATransitionType:(NSIndexPath *)indexPath {
+- (void)presentByCATransition:(NSIndexPath *)indexPath {
     TLSecondViewController *vc = [[TLSecondViewController alloc] init];
     TLCATransitonAnimator *animator = [self CATransitionAnimatorWithIndexPath:indexPath toViewController:vc];
     [self presentViewController:vc animator:animator completion:^{
@@ -349,7 +366,7 @@
 }
 
 #pragma mark UIView Transition
-- (void)viewTransition:(NSIndexPath *)indexPath {
+- (void)presentByViewTransition:(NSIndexPath *)indexPath {
    /*
     TLSecondViewController *vc = [[TLSecondViewController alloc] init];
     TLViewTransitionAnimator *animator = [TLViewTransitionAnimator new];
@@ -361,9 +378,9 @@
 }
 
 #pragma mark 自定义动画
-- (void)customTransitions:(NSIndexPath *)indexPath {
+- (void)presentByCustom:(NSIndexPath *)indexPath {
     TLSecondViewController *vc = [[TLSecondViewController alloc] init];
-    [self presentToViewController:vc customAnimation:^(id<UIViewControllerContextTransitioning>  _Nonnull transitionContext, BOOL isPresenting) {
+    [self presentViewController:vc customAnimation:^(id<UIViewControllerContextTransitioning>  _Nonnull transitionContext, BOOL isPresenting) {
         
         if (indexPath.row == 0) {
             [self checkerboardAnimateTransition:transitionContext isPresenting:isPresenting isPush:NO];
@@ -599,6 +616,32 @@
     }
 }
 
+#pragma mark TLAnimator(个人收集)
+- (void)presentByTLAnimator:(NSIndexPath *)indexPath {
+    TLAnimatorType type = indexPath.row;
+    if (indexPath.row == TLAnimatorRectScale + 1) type = TLAnimatorRectScale;
+    TLSecondViewController *vc = [[TLSecondViewController alloc] init];
+    TLAnimator *animator = [TLAnimator animatorWithType:type];
+    animator.transitionDuration = 1.f;
+    if (type == TLAnimatorTypeFrame) {
+        UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
+        CGRect frame = [self.tableView convertRect:cell.frame toView:[UIApplication sharedApplication].keyWindow];
+        animator.initialFrame = frame;
+    }else if (type == TLAnimatorRectScale) {
+        UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
+        CGRect frame = [cell convertRect:cell.imageView.frame toView:[UIApplication sharedApplication].keyWindow];
+        animator.fromRect = frame;
+        animator.toRect = CGRectMake(0, tl_ScreenH - 210, tl_ScreenW, 210);
+        animator.isOnlyShowRangeForRect = indexPath.row > TLAnimatorRectScale;
+        
+        vc.isShowImage = YES;
+    }
+    [self presentViewController:vc animator:animator completion:^{
+        tl_LogFunc;
+    }];
+}
+
+
 #pragma mark - push Of View Controller
 - (void)pushBySwipe:(NSIndexPath *)indexPath {
     TLSecondViewController *vc = [[TLSecondViewController alloc] init];
@@ -652,7 +695,32 @@
     }];
 }
 
+#pragma mark TLAnimator(个人收集)
+- (void)pushByTLAnimation:(NSIndexPath *)indexPath {
+    TLSecondViewController *vc = [[TLSecondViewController alloc] init];
+    
+    TLAnimatorType type = indexPath.row;
+    if (indexPath.row == TLAnimatorRectScale + 1) type = TLAnimatorRectScale;
+    TLAnimator *animator = [TLAnimator animatorWithType:type];
+    animator.transitionDuration = 1.0f;
+    if (type == TLAnimatorTypeFrame) {
+        UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
+        CGRect frame = [self.tableView convertRect:cell.frame toView:[UIApplication sharedApplication].keyWindow];
+        animator.initialFrame = frame;
+    }else if (type == TLAnimatorRectScale) {
+        UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
+        CGRect frame = [cell convertRect:cell.imageView.frame toView:[UIApplication sharedApplication].keyWindow];
+        animator.fromRect = frame;
+        animator.toRect = CGRectMake(0, tl_ScreenH - 210, tl_ScreenW, 210);
+        animator.rectView = cell.imageView;
+        animator.isOnlyShowRangeForRect = indexPath.row > TLAnimatorRectScale;
+        
+        vc.isShowImage = YES;
+    }
+    [self pushViewController:vc animator:animator];
+}
 
+#pragma mark - CAAnimationDelegate
 /// CAAnimationDelegate
 - (void)animationDidStop:(CAAnimation *)anim finished:(BOOL)flag {
     [_transitionContext completeTransition:YES];

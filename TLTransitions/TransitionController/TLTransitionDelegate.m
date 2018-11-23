@@ -97,6 +97,13 @@ static TLTransitionDelegate *_instace;
         TLPercentDrivenInteractiveTransition *interactiveTransition;
         interactiveTransition = [[TLPercentDrivenInteractiveTransition alloc] initWithGestureRecognizer:_popGestureRecognizer edgeForDragging: edge];
         _popGestureRecognizer = nil; // 防止交互取消后，采用按钮等直接返回的情况冲突
+        
+        id <TLAnimatorProtocol> tempAnimator =  (id<TLAnimatorProtocol>)animationController;
+        if ([tempAnimator respondsToSelector:@selector(percentOfFinishInteractiveTransition)]) {
+            CGFloat percent = [tempAnimator percentOfFinishInteractiveTransition];
+            interactiveTransition.percentOfFinishInteractiveTransition = percent;
+        }
+        
         return interactiveTransition;
     } else {
         return nil;
@@ -136,6 +143,13 @@ static TLTransitionDelegate *_instace;
         TLPercentDrivenInteractiveTransition *interactiveTransition;
         interactiveTransition = [[TLPercentDrivenInteractiveTransition alloc] initWithGestureRecognizer:_popGestureRecognizer edgeForDragging: edge];
         _popGestureRecognizer = nil;
+        
+        id <TLAnimatorProtocol> tempAnimator =  (id<TLAnimatorProtocol>)animator;
+        if ([tempAnimator respondsToSelector:@selector(percentOfFinishInteractiveTransition)]) {
+            CGFloat percent = [tempAnimator percentOfFinishInteractiveTransition];
+            interactiveTransition.percentOfFinishInteractiveTransition = percent;
+        }
+        
         return interactiveTransition;
     } else {
         return nil;

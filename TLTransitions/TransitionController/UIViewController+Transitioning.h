@@ -102,11 +102,11 @@ NS_ASSUME_NONNULL_BEGIN
  * @param completion 完成转场的回调
  * NOTE: 由于自定义情况下，系统不会将当前c控制器（self）从窗口移除，所以dismiss后，系统不会调用`- viewDidAppear:`和`- viewWillAppear:`等方法
  */
-- (void)presentToViewController:(UIViewController *)vc
-                 transitionType:(CATransitionType)tType
-                      direction:(TLDirection)direction
-               dismissDirection:(TLDirection)directionOfDismiss
-                     completion:(void (^ __nullable)(void))completion;
+- (void)presentViewController:(UIViewController *)vc
+               transitionType:(CATransitionType)tType
+                    direction:(TLDirection)direction
+             dismissDirection:(TLDirection)directionOfDismiss
+                   completion:(void (^ __nullable)(void))completion;
 
 /**
  * present转场控制器。
@@ -118,9 +118,9 @@ NS_ASSUME_NONNULL_BEGIN
  * @param completion 完成转场的回调
  * NOTE: 由于自定义情况下，系统不会将当前c控制器（self）从窗口移除，所以dismiss后，系统不会调用`- viewDidAppear:`和`- viewWillAppear:`等方法
  */
-- (void)presentToViewController:(UIViewController *)vc
-                customAnimation:(void (^)( id<UIViewControllerContextTransitioning> transitionContext, BOOL isPresenting))animation
-                     completion:(void (^ __nullable)(void))completion;
+- (void)presentViewController:(UIViewController *)vc
+              customAnimation:(void (^)( id<UIViewControllerContextTransitioning> transitionContext, BOOL isPresenting))animation
+                   completion:(void (^ __nullable)(void))completion;
 
 
 #pragma mark - Push / Pop

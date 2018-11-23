@@ -42,9 +42,9 @@
     
     if (!isPushOrPop) {
         if (isPresentingOrPush) {
-            fromView = [[UIImageView alloc] initWithImage:snapshotImage(fromViewController.view)];
+            fromView = [fromViewController.view snapshotViewAfterScreenUpdates:NO];
         }else {
-            toView = [[UIImageView alloc] initWithImage:snapshotImage(toViewController.view)];
+            toView = [toViewController.view snapshotViewAfterScreenUpdates:NO];
         }
     }
     

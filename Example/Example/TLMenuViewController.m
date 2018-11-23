@@ -29,7 +29,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
+//    self.navigationController.navigationBarHidden = YES;
     self.navigationItem.title = @"Menu";
     
     TLSection *viewSection = [TLSection new];
@@ -41,13 +41,13 @@
     presentSection.title = @"Present view controller";
     presentSection.show = YES;
     presentSection.rows = @[@"System Animator", @"Swipe Animator" ,@"CATransition Animator"//,@"UIView Transition Animator"
-                            ,@"CuStom Animator"];
+                            ,@"CuStom Animator",@"个人动画案例收集（TLAnimator）"];
     
     TLSection *pushSection = [TLSection new];
     pushSection.title = @"A push to B or B pop to A";
     pushSection.show = NO;
     pushSection.rows = @[@"Swipe Animator", @"CATransition Animator"//,@"UIView Transition Animator"
-                         ,@"CuStom Animator"];
+                         ,@"CuStom Animator", @"个人动画案例收集（TLAnimator）"];
     _data = @[viewSection, presentSection, pushSection];
     
     self.tableView.tableFooterView = [UIView new];
@@ -133,7 +133,7 @@
     
     TLFirstTableController *vc = [TLFirstTableController new];
     vc.isPush = indexPath.section == 2;
-    TLContentType type = TLContentTypeCuStomAnimator;
+    TLContentType type = TLContentTypeOther;
     
     NSString *text = self.data[indexPath.section].rows[indexPath.row];
     if ([text containsString:@"System"]) {
@@ -144,12 +144,12 @@
         type = TLContentTypeCATransitionAnimator;
     }else if ([text containsString:@"UIView"]) {
         type = TLContentTypeUIViewTransitionAnimator;
+    }else if ([text containsString:@"CuStom"]) {
+        type = TLContentTypeCuStomAnimator;
     }
     vc.type = type;
     
     [self pushViewController:vc transitionType:@"cube" direction:TLDirectionToLeft dismissDirection:TLDirectionToRight];
-//    [self pushViewController:vc swipeType:TLSwipeTypeInAndOut pushDirection:TLDirectionToLeft popDirection:TLDirectionToRight];
-//    [self.navigationController pushViewController:vc animated:YES];
 }
 
 #pragma mark - Transitions Of View

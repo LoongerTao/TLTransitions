@@ -11,7 +11,7 @@
 NS_ASSUME_NONNULL_BEGIN
 
 @interface TLSecondViewController : UIViewController
-
+@property(nonatomic, assign) BOOL isShowImage;
 @end
 
 NS_ASSUME_NONNULL_END

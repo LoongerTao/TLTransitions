@@ -13,7 +13,8 @@ typedef enum : NSUInteger {
     TLContentTypeSwipeAnimator,
     TLContentTypeCATransitionAnimator,
     TLContentTypeUIViewTransitionAnimator,
-    TLContentTypeCuStomAnimator
+    TLContentTypeCuStomAnimator,
+    TLContentTypeOther,
 } TLContentType;
 
 NS_ASSUME_NONNULL_BEGIN

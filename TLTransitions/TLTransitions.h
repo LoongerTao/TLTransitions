@@ -17,6 +17,6 @@
 #import "TLCATransitonAnimator.h"
 //#import "TLViewTransitionAnimator.h" // 不完善，暂不开放
 #import "TLCustomAnimator.h"
-
+#import "TLAnimator.h"
 
 #endif /* TLTransitionHeader_h */

@@ -26,6 +26,7 @@
     if (self) {
         _gestureRecognizer = gestureRecognizer;
         _edge = edge;
+        _percentOfFinishInteractiveTransition = 0.5;
         
         // 添加Self作为手势识别器的观察者，以便该对象在用户移动手指时接收更新。
         [_gestureRecognizer addTarget:self action:@selector(gestureRecognizeDidUpdate:)];
@@ -97,7 +98,7 @@
         case UIGestureRecognizerStateEnded:
             
             // 根据拖动比例决定是否转场
-            if ([self percentForGesture:gestureRecognizer] >= 0.5f)
+            if ([self percentForGesture:gestureRecognizer] >= _percentOfFinishInteractiveTransition)
                 [self finishInteractiveTransition];
             else
                 [self cancelInteractiveTransition];

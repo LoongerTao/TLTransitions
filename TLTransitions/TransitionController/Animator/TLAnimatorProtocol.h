@@ -22,7 +22,9 @@ NS_ASSUME_NONNULL_BEGIN
 /// 侧滑dismiss/pop的方向。
 - (TLDirection)directionForDragging;
 
-
+@optional
+/// 手势动画完成多少百分比后，释放手指可以完成转场,少于该值将取消转场。取值范围：[0 ，1），默认：0.5
+- (CGFloat)percentOfFinishInteractiveTransition;
 @end
 
 NS_ASSUME_NONNULL_END

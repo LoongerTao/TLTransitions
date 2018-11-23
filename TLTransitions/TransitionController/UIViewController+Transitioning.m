@@ -133,11 +133,11 @@
     [self presentViewController:vc animator:animator completion:completion];
 }
 
-- (void)presentToViewController:(UIViewController *)vc
-                 transitionType:(CATransitionType)tType
-                        direction:(TLDirection)direction
-                 dismissDirection:(TLDirection)directionOfDismiss
-                     completion:(void (^ __nullable)(void))completion
+- (void)presentViewController:(UIViewController *)vc
+               transitionType:(CATransitionType)tType
+                    direction:(TLDirection)direction
+             dismissDirection:(TLDirection)directionOfDismiss
+                   completion:(void (^ __nullable)(void))completion
 {
     TLCATransitonAnimator *animator;
     animator = [TLCATransitonAnimator animatorWithTransitionType:tType
@@ -148,9 +148,9 @@
     [self presentViewController:vc animator:animator completion:completion];
 }
 
-- (void)presentToViewController:(UIViewController *)vc
-                customAnimation:(void (^)(id<UIViewControllerContextTransitioning> transitionContext, BOOL isPresenting))animation
-                     completion:(void (^ __nullable)(void))completion
+- (void)presentViewController:(UIViewController *)vc
+              customAnimation:(void (^)(id<UIViewControllerContextTransitioning> transitionContext, BOOL isPresenting))animation
+                   completion:(void (^ __nullable)(void))completion
 {
     TLCustomAnimator *animator = [TLCustomAnimator animatorWithAnimation:animation];
     [self presentViewController:vc animator:animator completion:completion];

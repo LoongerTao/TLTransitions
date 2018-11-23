@@ -81,8 +81,7 @@
         }else {
             // 对于dismiss动画，我们希望fromView滑开，显示toView。
             // 因此，我们必须将toView放在containerView上，下面则是创建一个toView快照，并将其当作toView
-            UIImage *toViewSnapshot = snapshotImage(toViewController.view);
-            toView = [[UIImageView alloc] initWithImage:toViewSnapshot];
+            toView = [toViewController.view snapshotViewAfterScreenUpdates:NO];
             [containerView addSubview:toView];
             toView.tag = 100;
         }
@@ -91,15 +90,12 @@
     _transitionContext = transitionContext;
     CATransition *animation = [CATransition animation];
     animation.duration = [self transitionDuration:transitionContext];
-    //        NSString *fName = isPresenting ? kCAMediaTimingFunctionEaseIn : kCAMediaTimingFunctionEaseOut;
-    //        animation.timingFunction = [CAMediaTimingFunction functionWithName:fName];
     animation.type = isPresenting ? self.tType : self.tTypeOfDismiss;
     animation.subtype = getSubtype(isPresenting ? self.direction : self.directionOfDismiss);
     animation.delegate = self;
     animation.removedOnCompletion = YES;
     
-    UIView *targetView = _isPresenting ? toView : fromView; // 目标
-    [targetView.window.layer addAnimation:animation forKey:nil];
+    [containerView.window.layer addAnimation:animation forKey:nil];
 }
 
 #pragma mark - CAAnimationDelegate
