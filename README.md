@@ -23,11 +23,11 @@ pod 'TLTransitions', '~> 1.4.0'
 - 可实现如下效果：
     1. 系统Alert样式的中间弹窗，并支持键简单的盘高度自适应（可关闭）
     
-![alert.gif](https://upload-images.jianshu.io/upload_images/3333500-a1862b84e09c65cd.gif?imageMogr2/auto-orient/strip)
+   ![alert.gif](https://upload-images.jianshu.io/upload_images/3333500-a1862b84e09c65cd.gif?imageMogr2/auto-orient/strip)
 
     2. 系统Action Sheet样式的底部弹窗
     
-     ![actionSheet.gif](https://upload-images.jianshu.io/upload_images/3333500-b6f9d07cd39f6347.gif?imageMogr2/auto-orient/strip)
+   ![actionSheet.gif](https://upload-images.jianshu.io/upload_images/3333500-b6f9d07cd39f6347.gif?imageMogr2/auto-orient/strip)
 
     3. 将一个view显示到指定的位置
     
