@@ -22,6 +22,7 @@
 typedef enum : NSUInteger {
     TLPopTypeActionSheet = 0,    // ActionSheet动画样式，底部弹出，靠底部显示
     TLPopTypeAlert = 1,          // AlertView动画样式，淡化居中显示
+    TLPopTypeAlert2 = 2,         // f顶部掉下来、弹性，居中显示
 } TLPopType;
 
 /// 自定义动画样式

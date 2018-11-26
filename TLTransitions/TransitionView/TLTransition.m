@@ -353,7 +353,7 @@ typedef enum : NSUInteger {
                 presentedViewControllerFrame.size.height += 34;
             }
             presentedViewControllerFrame.origin.y = CGRectGetMaxY(containerViewBounds) - presentedViewControllerFrame.size.height;
-        }else if(self.pType == TLPopTypeAlert){
+        }else if(self.pType == TLPopTypeAlert || self.pType == TLPopTypeAlert2){
             // 垂直居中
             presentedViewControllerFrame.origin.y = (CGRectGetMaxY(containerViewBounds) - presentedViewContentSize.height) * 0.5;
         }
@@ -454,6 +454,37 @@ typedef enum : NSUInteger {
             
         } completion:^(BOOL finished) {
             
+            BOOL wasCancelled = [transitionContext transitionWasCancelled];
+            [transitionContext completeTransition:!wasCancelled];
+        }];
+        
+    }else if(self.pType == TLPopTypeAlert2){
+        [containerView addSubview:toView];
+        
+        BOOL isPresenting = (fromViewController == self.presentingViewController);
+        CGPoint center = isPresenting ? toView.center : fromView.center;
+        !isPresenting ? nil : [toView setAlpha:0.3f];
+        center.y = -self.popView.frame.size.height * 2;
+        toView.center = center;
+    
+        NSTimeInterval transitionDuration = [self transitionDuration:transitionContext];
+        [UIView animateWithDuration:(isPresenting ? transitionDuration : transitionDuration + 0.2f)
+                              delay:0
+             usingSpringWithDamping:(isPresenting ? 0.5 : 1)
+              initialSpringVelocity:(isPresenting ? 0.5 : 3)
+                            options:UIViewAnimationOptionCurveEaseInOut
+                         animations:^
+        {
+            if (isPresenting) {
+                toView.frame = [self frameOfPresentedViewInContainerView];
+                [toView setAlpha:1.f];
+            }else{
+                fromView.center = center;
+                [fromView setAlpha:0.3f];
+            }
+        } completion:^(BOOL finished) {
+            fromView.alpha = 1.0;
+            toView.alpha = 1.0;
             BOOL wasCancelled = [transitionContext transitionWasCancelled];
             [transitionContext completeTransition:!wasCancelled];
         }];

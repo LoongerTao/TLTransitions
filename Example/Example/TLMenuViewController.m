@@ -35,7 +35,7 @@
     TLSection *viewSection = [TLSection new];
     viewSection.title = @"Popover（View）";
     viewSection.show = NO;
-    viewSection.rows = @[@"Alert", @"Action Sheet", @"To Point",@"From Frame1 To Frame2" ,@"CuStom"];
+    viewSection.rows = @[@"Alert",@"Alert2", @"Action Sheet", @"To Point",@"From Frame1 To Frame2" ,@"CuStom"];
     
     TLSection *presentSection = [TLSection new];
     presentSection.title = @"Present view controller";
@@ -111,18 +111,19 @@
     if (indexPath.section == 0) {
         switch (indexPath.row) {
             case 0:
+            case 1:
                 [self alertType:[tableView cellForRowAtIndexPath:indexPath]];
                 break;
-            case 1:
+            case 2:
                 [self actionSheetType:[tableView cellForRowAtIndexPath:indexPath]];
                 break;
-            case 2:
+            case 3:
                 [self pointType:[tableView cellForRowAtIndexPath:indexPath]];
                 break;
-            case 3:
+            case 4:
                 [self frameType:[tableView cellForRowAtIndexPath:indexPath]];
                 break;
-            case 4:
+            case 5:
                 [self customAnimateTransition:[tableView cellForRowAtIndexPath:indexPath]];
                 break;
             default:
@@ -154,7 +155,7 @@
 
 #pragma mark - Transitions Of View
 // TLPopTypeAlert
-- (void)alertType:(UIView *)sender {
+- (void)alertType:(UITableViewCell *)sender {
     CGRect bounds = CGRectMake(0, 0, self.view.bounds.size.width * 0.8f, 200.f);
     UIView *bView = [self creatViewWithBounds:bounds color:tl_Color(218, 248, 120)];
     
@@ -167,7 +168,11 @@
     textFiled.center = CGPointMake(bView.bounds.size.width * 0.5, bView.bounds.size.height * 0.2);
     [bView addSubview:textFiled];
     
-    [TLTransition showView:bView popType:TLPopTypeAlert];
+    if([self.tableView indexPathForCell:sender].row == 0) {
+        [TLTransition showView:bView popType:TLPopTypeAlert];
+    }else{
+        [TLTransition showView:bView popType:TLPopTypeAlert2];
+    }
 }
 
 - (void)tap:(UITapGestureRecognizer *)tap {
