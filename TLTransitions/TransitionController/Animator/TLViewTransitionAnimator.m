@@ -15,7 +15,6 @@
 @synthesize isPushOrPop;
 
 - (TLDirection)directionForDragging; {
-#warning Direction Setting
     return TLDirectionToRight;
 }
 

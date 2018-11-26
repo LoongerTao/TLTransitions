@@ -619,7 +619,7 @@
 #pragma mark TLAnimator(个人收集)
 - (void)presentByTLAnimator:(NSIndexPath *)indexPath {
     TLAnimatorType type = indexPath.row;
-    if (indexPath.row > TLAnimatorRectScale + 1) type = indexPath.row - 1;
+    if (indexPath.row > TLAnimatorRectScale) type = indexPath.row - 1;
     TLSecondViewController *vc = [[TLSecondViewController alloc] init];
     TLAnimator *animator = [TLAnimator animatorWithType:type];
 //    animator.transitionDuration = 1.f;
@@ -711,7 +711,7 @@
     TLSecondViewController *vc = [[TLSecondViewController alloc] init];
     
     TLAnimatorType type = indexPath.row;
-    if (indexPath.row > TLAnimatorRectScale + 1) type = indexPath.row - 1;
+    if (indexPath.row > TLAnimatorRectScale) type = indexPath.row - 1;
     TLAnimator *animator = [TLAnimator animatorWithType:type];
 //    animator.transitionDuration = 0.5f;
     
