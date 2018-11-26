@@ -26,6 +26,10 @@
     return _directionOfDismiss;
 }
 
+- (CGFloat)percentOfFinishInteractiveTransition {
+    return 0;
+}
+
 #pragma mark - creat instancetype
 + (instancetype)animatorWithTransitionType:(CATransitionType)tType
                                           direction:(TLDirection)direction

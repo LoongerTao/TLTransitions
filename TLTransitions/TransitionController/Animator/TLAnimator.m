@@ -8,8 +8,18 @@
 
 #import "TLAnimator.h"
 
+typedef void(^TLAnimationCompletion)(BOOL flag);
+
+@interface TLAnimator ()<CAAnimationDelegate>
+
+/// CAAnimation 完成回调
+@property(nonatomic, copy) TLAnimationCompletion animationCompletion;
+@end
+
 
 @implementation TLAnimator
+
+
 #pragma mark - TLAnimatorProtocol
 @synthesize transitionDuration;
 @synthesize isPushOrPop;
@@ -24,6 +34,9 @@
 - (CGFloat)percentOfFinishInteractiveTransition {
     if (self.type == TLAnimatorTypeTiltLeft || self.type == TLAnimatorTypeTiltRight){
         return 0.29f;
+    }
+    if (self.type == TLAnimatorCircular){
+        return 0.f;
     }
     
     return 0.5f;
@@ -90,6 +103,9 @@
             break;
         case TLAnimatorRectScale:
             [self rectScaleTypeTransition:transitionContext presenting:isPresenting];
+            break;
+        case TLAnimatorCircular:
+            [self circularTypeTransition:transitionContext presenting:isPresenting];
             break;
         default:
             break;
@@ -425,5 +441,63 @@
     }];
 }
 
+#pragma mark - TLAnimatorTypeCircular
+- (void)circularTypeTransition:(id<UIViewControllerContextTransitioning>)transitionContext presenting:(BOOL)isPresenting {
+   
+    UIViewController *fromVC = [transitionContext viewControllerForKey:UITransitionContextFromViewControllerKey];
+    UIViewController *toVC = [transitionContext viewControllerForKey:UITransitionContextToViewControllerKey];
+    UIViewController *traget = isPresenting ? toVC : fromVC;
+    UIView *containerView = transitionContext.containerView;
+    if(isPresenting) {
+        [containerView addSubview:toVC.view];
+    }
+    if (!isPresenting && self->isPushOrPop) {
+        [containerView insertSubview:toVC.view belowSubview:fromVC.view];
+    }
+    
+    if (CGPointEqualToPoint(_center, CGPointZero)) {
+        _center = traget.view.center;
+    }
+    
+    CGFloat W = traget.view.frame.size.width;
+    CGFloat H = traget.view.frame.size.height;
+    
+    CGFloat x = MAX(_center.x, W - _center.x);
+    CGFloat y = MAX(_center.y, H - _center.y);
+    CGFloat endRadius = sqrt(x * x + y * y);
+    
+    CGFloat radius = isPresenting ? self->_startRadius : endRadius;
+    CGFloat radius2 = !isPresenting ? self->_startRadius : endRadius;
+    CGRect rect = CGRectMake(_center.x - radius, _center.y - radius, radius * 2, radius * 2);
+    CGRect rect2 = CGRectMake(_center.x - radius2, _center.y - radius2, radius2 * 2, radius2 * 2);
+    CGPathRef path = CGPathCreateWithEllipseInRect(rect, nil);
+    CGPathRef path2 = CGPathCreateWithEllipseInRect(rect2, nil);
+    
+    CABasicAnimation *anm = [CABasicAnimation animationWithKeyPath:@"path"];
+    anm.fromValue =  (__bridge id _Nullable)(path);
+    anm.toValue = (__bridge id _Nullable)(path2);
+    anm.duration = [self transitionDuration:transitionContext];
+    anm.delegate = self;
+    
+    CAShapeLayer *mask = [[CAShapeLayer alloc] init];
+    traget.view.layer.mask = mask;
 
+    mask.path = path2;
+    mask.fillRule = kCAFillRuleEvenOdd;
+    [mask addAnimation:anm forKey:@"path"];
+    [mask setNeedsDisplay];
+    __weak typeof(self) wself = self;
+    self.animationCompletion = ^(BOOL flag) {
+        BOOL wasCancelled = [transitionContext transitionWasCancelled];
+        [transitionContext completeTransition:!wasCancelled];
+        
+        wself.animationCompletion = nil;
+    };
+}
+
+- (void)animationDidStop:(CAAnimation *)anim finished:(BOOL)flag {
+    if (self.animationCompletion) {
+        self.animationCompletion(flag);
+    }
+}
 @end

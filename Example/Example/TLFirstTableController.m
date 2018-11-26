@@ -62,7 +62,7 @@
             NSString *tempStr = _isPush ? @"斜角切入(不支持)" : @"斜角切入";
             title = @"个人动画收集";
             rows = @[@"开门",@"绽放",tempStr,@"向右边倾斜旋转",@"向左边倾斜旋转",@"指定frame：initialFrame --> finalFrame",
-                     @"对指定rect范围，进行缩放和平移",@"对指定rect范围...2[纯净版]"];
+                     @"对指定rect范围，进行缩放和平移",@"对指定rect范围...2[纯净版]",@"圆形"];
         }
             break;
     }
@@ -619,23 +619,34 @@
 #pragma mark TLAnimator(个人收集)
 - (void)presentByTLAnimator:(NSIndexPath *)indexPath {
     TLAnimatorType type = indexPath.row;
-    if (indexPath.row == TLAnimatorRectScale + 1) type = TLAnimatorRectScale;
+    if (indexPath.row > TLAnimatorRectScale + 1) type = indexPath.row - 1;
     TLSecondViewController *vc = [[TLSecondViewController alloc] init];
     TLAnimator *animator = [TLAnimator animatorWithType:type];
-    animator.transitionDuration = 1.f;
+//    animator.transitionDuration = 1.f;
+    
     if (type == TLAnimatorTypeFrame) {
+        
         UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
         CGRect frame = [self.tableView convertRect:cell.frame toView:[UIApplication sharedApplication].keyWindow];
         animator.initialFrame = frame;
+        
     }else if (type == TLAnimatorRectScale) {
+        
         UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
         CGRect frame = [cell convertRect:cell.imageView.frame toView:[UIApplication sharedApplication].keyWindow];
         animator.fromRect = frame;
         animator.toRect = CGRectMake(0, tl_ScreenH - 210, tl_ScreenW, 210);
         animator.isOnlyShowRangeForRect = indexPath.row > TLAnimatorRectScale;
-        
         vc.isShowImage = YES;
+        
+    }else if (type == TLAnimatorCircular) {
+        
+        UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
+        CGPoint center = [self.tableView convertPoint:cell.center toView:[UIApplication sharedApplication].keyWindow];
+        center.x = arc4random_uniform(cell.bounds.size.width - 40) + 20;
+        animator.center = center;
     }
+    
     [self presentViewController:vc animator:animator completion:^{
         tl_LogFunc;
     }];
@@ -666,7 +677,7 @@
    
     TLSecondViewController *vc = [[TLSecondViewController alloc] init];
     TLCATransitonAnimator *animator = [self CATransitionAnimatorWithIndexPath:indexPath toViewController:vc];
-    animator.transitionDuration = 3.0;
+    animator.transitionDuration = 0.5;
     [self pushViewController:vc animator:animator];
     
 }
@@ -700,13 +711,15 @@
     TLSecondViewController *vc = [[TLSecondViewController alloc] init];
     
     TLAnimatorType type = indexPath.row;
-    if (indexPath.row == TLAnimatorRectScale + 1) type = TLAnimatorRectScale;
+    if (indexPath.row > TLAnimatorRectScale + 1) type = indexPath.row - 1;
     TLAnimator *animator = [TLAnimator animatorWithType:type];
-    animator.transitionDuration = 1.0f;
+//    animator.transitionDuration = 0.5f;
+    
     if (type == TLAnimatorTypeFrame) {
         UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
         CGRect frame = [self.tableView convertRect:cell.frame toView:[UIApplication sharedApplication].keyWindow];
         animator.initialFrame = frame;
+        
     }else if (type == TLAnimatorRectScale) {
         UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
         CGRect frame = [cell convertRect:cell.imageView.frame toView:[UIApplication sharedApplication].keyWindow];
@@ -716,6 +729,13 @@
         animator.isOnlyShowRangeForRect = indexPath.row > TLAnimatorRectScale;
         
         vc.isShowImage = YES;
+        
+    }else if (type == TLAnimatorCircular) {
+        UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
+        CGPoint center = [self.tableView convertPoint:cell.center toView:[UIApplication sharedApplication].keyWindow];
+        center.x = arc4random_uniform(cell.bounds.size.width - 40) + 20;
+        animator.center = center;
+        animator.startRadius = cell.bounds.size.height / 2;
     }
     [self pushViewController:vc animator:animator];
 }

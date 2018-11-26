@@ -69,11 +69,14 @@
         NSAssert(animator, @"animator = nil,异常");
         if (animator == nil) return;
         
-        // TLCATransitonAnimator 不支持百分比控制
-        if (![animator isMemberOfClass:[TLCATransitonAnimator class]] ||
-            ![animator isMemberOfClass:[TLCATransitonAnimator class]]) {
+        if ([animator respondsToSelector:@selector(percentOfFinishInteractiveTransition)] &&
+            [animator percentOfFinishInteractiveTransition] <= 0) {
+            // 不支持百分比控制
+            self.transitionDelegate.popGestureRecognizer = nil;
+        }else {
             self.transitionDelegate.popGestureRecognizer = gestureRecognizer;
         }
+        
         if (animator.isPushOrPop){
             [self.navigationController popViewControllerAnimated:YES];
         }else {

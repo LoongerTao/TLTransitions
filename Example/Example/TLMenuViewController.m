@@ -158,6 +158,9 @@
     CGRect bounds = CGRectMake(0, 0, self.view.bounds.size.width * 0.8f, 200.f);
     UIView *bView = [self creatViewWithBounds:bounds color:tl_Color(218, 248, 120)];
     
+    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tap:)];
+    [bView addGestureRecognizer:tap];
+    
     UITextField *textFiled = [[UITextField alloc] init];
     textFiled.backgroundColor = tl_Color(255, 255, 255);
     textFiled.bounds = CGRectMake(0, 0, bView.bounds.size.width * 0.8f, 30.f);
@@ -165,6 +168,10 @@
     [bView addSubview:textFiled];
     
     [TLTransition showView:bView popType:TLPopTypeAlert];
+}
+
+- (void)tap:(UITapGestureRecognizer *)tap {
+    [tap.view endEditing:YES];
 }
 
 // TLPopTypeActionSheet

@@ -17,7 +17,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    self.view.backgroundColor = [UIColor groupTableViewBackgroundColor];
+//    self.view.backgroundColor = [UIColor groupTableViewBackgroundColor];
     [self updatePreferredContentSizeWithTraitCollection:self.traitCollection];
     
 }
@@ -40,6 +40,7 @@
 - (void)setPopView:(UIView *)popView {
     _popView = popView;
     [self.view addSubview:popView];
+    self.view.backgroundColor = popView.backgroundColor;
 }
 
 - (void)viewDidLayoutSubviews {

@@ -23,7 +23,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (TLDirection)directionForDragging;
 
 @optional
-/// 手势动画完成多少百分比后，释放手指可以完成转场,少于该值将取消转场。取值范围：[0 ，1），默认：0.5
+/// 手势动画完成多少百分比后，释放手指可以完成转场,少于该值将取消转场。取值范围：[0 ，1），默认：0.5 ,小于等于0表示不支持百分比控制
 - (CGFloat)percentOfFinishInteractiveTransition;
 @end
 
