@@ -100,7 +100,7 @@
 
 - (void)presentViewController:(UIViewController *)viewController
                      animator:(id<TLAnimatorProtocol>)animator
-                   completion:(void (^)(void))completion
+                   completion:(void (^ __nullable)(void))completion;
 {
     animator.isPushOrPop = NO;
     if(animator.transitionDuration == 0){ // 默认值

@@ -20,7 +20,7 @@
    
     TLMenuViewController *vc = [TLMenuViewController new];
     UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:vc];
-    
+//    nav.navigationBar.translucent = NO;
     self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
     self.window.rootViewController = nav;
     [self.window makeKeyAndVisible];

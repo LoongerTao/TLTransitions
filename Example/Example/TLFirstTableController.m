@@ -11,7 +11,7 @@
 #import "TLSecondViewController.h"
 #import "TLWheelTableViewCell.h"
 #import "TLSection.h"
-
+#import "TLAppStoreListController.h"
 
 @interface TLFirstTableController ()<CAAnimationDelegate>{
     
@@ -28,16 +28,19 @@
     [super viewDidLoad];
     
     self.navigationItem.title = @"A";
-
+//    self.tableView.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;
+    
+    
     NSString *title;
     NSArray *rows;
+    NSArray *rowsOfSubtitle;
     switch (_type) {
         case TLContentTypeSystemAnimator:
             title = @"System Animator";
             rows = @[@"Cover Vertical", @"Flip Horizontal", @"Cross Dissolve",@"Partial Curl"];
             break;
         case TLContentTypeSwipeAnimator:
-            title = @"SwipeA Animator";
+            title = @"Swipe Animator";
             rows = @[@"·InAndOut: A->B,B从A的上面滑入; B->A,B从A的上面抽出", // “·”开始的表示需要设置方向
                      @"·In: B从A的上面滑入; B->A,A从B的上面滑入",
                      @"·Out: A->B,A从B的上面抽出; B->A,B从A的上面抽）"];
@@ -50,23 +53,29 @@
                      @"Ripple Effect (私有API)", @"·Page Curl (私有API)",
                      @"Camera Iris Hollow (私有API)",];
             break;
-        case TLContentTypeUIViewTransitionAnimator:
-            title = @"UIView Transition Animator";
-            rows = @[@"Flip", @"Curl", @"CrossDissolve", @"Flip"];
-            break;
         case TLContentTypeCuStomAnimator:
             title = @"CuStom Animator";;
             rows = @[@"Checkerboard", @"Heartbeat"];
             break;
         default:{
-            NSString *tempStr = _isPush ? @"斜角切入(不支持)" : @"斜角切入";
             title = @"个人动画收集";
-            rows = @[@"开门",@"绽放",tempStr,@"向右边倾斜旋转",@"向左边倾斜旋转",@"指定frame：initialFrame --> finalFrame",
-                     @"对指定rect范围，进行缩放和平移",@"对指定rect范围...2[纯净版]",@"圆形"];
+            if (_isPush) {
+                rows = @[@"开门",@"绽放",@"向右边倾斜旋转",@"向左边倾斜旋转",@"指定frame：initialFrame --> finalFrame",
+                         @"对指定rect范围，进行缩放和平移",@"对指定rect范围...2[纯净版]",@"圆形",@"翻转（还可以设置其他样式，见API）"];
+                rowsOfSubtitle = @[@(TLAnimatorTypeOpen), @(TLAnimatorTypeOpen2), @(TLAnimatorTypeTiltRight),
+                                   @(TLAnimatorTypeTiltLeft), @(TLAnimatorTypeFrame), @(TLAnimatorTypeRectScale),
+                                   @(TLAnimatorTypeRectScale), @(TLAnimatorTypeCircular),@(TLAnimatorTypeFlip)];
+            }else{
+                rows = @[@"开门",@"绽放", @"斜角切入",@"向右边倾斜旋转",@"向左边倾斜旋转",@"指定frame：initialFrame --> finalFrame",
+                         @"对指定rect范围，进行缩放和平移",@"对指定rect范围...2[纯净版]",@"圆形",@"App Store Card(demo自定义案例，不在框架内)"];
+                rowsOfSubtitle = @[@(TLAnimatorTypeOpen), @(TLAnimatorTypeOpen2),@(TLAnimatorTypeBevel),
+                                   @(TLAnimatorTypeTiltRight), @(TLAnimatorTypeTiltLeft), @(TLAnimatorTypeFrame),
+                                   @(TLAnimatorTypeRectScale), @(TLAnimatorTypeRectScale), @(TLAnimatorTypeCircular),@100];
+            }
         }
             break;
     }
-    
+
     TLSection *section = [TLSection new];
     if (_isPush) {
         section.title = [NSString stringWithFormat:@"Push : %@",title];
@@ -75,7 +84,7 @@
     }
     section.show = YES;
     section.rows = rows;
-
+    section.rowsOfSubTitle = rowsOfSubtitle;
     _data = @[section];
     
     self.tableView.tableFooterView = [UIView new];
@@ -84,7 +93,7 @@
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    
+    self.navigationController.navigationBar.translucent = NO;
     tl_LogFunc
 }
 
@@ -182,21 +191,23 @@
             [self presentBySwipe:indexPath];
         }else if (_type == TLContentTypeCATransitionAnimator){
             [self presentByCATransition:indexPath];
-        }else if (_type == TLContentTypeUIViewTransitionAnimator) {
-            [self presentByViewTransition:indexPath];
         }else if (_type == TLContentTypeCuStomAnimator){
             [self presentByCustom:indexPath];
         }else {
-            [self presentByTLAnimator:indexPath];
+            
+            NSString *text = self.data[indexPath.section].rows[indexPath.row];
+            if ([text containsString:@"App Store"]) {
+                TLAppStoreListController *vc = [TLAppStoreListController new];
+                [self.navigationController pushViewController:vc animated:YES];
+            }else {
+                [self presentByTLAnimator:indexPath];
+            }
         }
     }else {
-        
         if (_type == TLContentTypeSwipeAnimator){
             [self pushBySwipe:indexPath];
         }else if (_type == TLContentTypeCATransitionAnimator){
             [self pushByCATransition:indexPath];
-        }else if (_type == TLContentTypeUIViewTransitionAnimator) {
-            [self pushByViewTransition:indexPath];
         }else if (_type == TLContentTypeCuStomAnimator){
             [self pushByCustomAnimation:indexPath];
         }else {
@@ -363,18 +374,6 @@
     [self presentViewController:vc animator:animator completion:^{
         NSLog(@"CATransition : completion---%zi",indexPath.row);
     }];
-}
-
-#pragma mark UIView Transition
-- (void)presentByViewTransition:(NSIndexPath *)indexPath {
-   /*
-    TLSecondViewController *vc = [[TLSecondViewController alloc] init];
-    TLViewTransitionAnimator *animator = [TLViewTransitionAnimator new];
-    animator.transitionDuration = 1.0;
-    [self presentViewController:vc animator:animator completion:^{
-        NSLog(@"CATransition : completion---%zi",indexPath.row);
-    }];
-    */
 }
 
 #pragma mark 自定义动画
@@ -618,9 +617,9 @@
 
 #pragma mark TLAnimator(个人收集)
 - (void)presentByTLAnimator:(NSIndexPath *)indexPath {
-    TLAnimatorType type = indexPath.row;
-    if (indexPath.row > TLAnimatorRectScale) type = indexPath.row - 1;
     TLSecondViewController *vc = [[TLSecondViewController alloc] init];
+   
+    TLAnimatorType type = [self.data[indexPath.section].rowsOfSubTitle[indexPath.row] integerValue];
     TLAnimator *animator = [TLAnimator animatorWithType:type];
 //    animator.transitionDuration = 1.f;
     
@@ -630,16 +629,16 @@
         CGRect frame = [self.tableView convertRect:cell.frame toView:[UIApplication sharedApplication].keyWindow];
         animator.initialFrame = frame;
         
-    }else if (type == TLAnimatorRectScale) {
+    }else if (type == TLAnimatorTypeRectScale) {
         
         UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
         CGRect frame = [cell convertRect:cell.imageView.frame toView:[UIApplication sharedApplication].keyWindow];
         animator.fromRect = frame;
         animator.toRect = CGRectMake(0, tl_ScreenH - 210, tl_ScreenW, 210);
-        animator.isOnlyShowRangeForRect = indexPath.row > TLAnimatorRectScale;
+        animator.isOnlyShowRangeForRect = indexPath.row > TLAnimatorTypeRectScale;
         vc.isShowImage = YES;
         
-    }else if (type == TLAnimatorCircular) {
+    }else if (type == TLAnimatorTypeCircular) {
         
         UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
         CGPoint center = [self.tableView convertPoint:cell.center toView:[UIApplication sharedApplication].keyWindow];
@@ -682,15 +681,6 @@
     
 }
 
-- (void)pushByViewTransition:(NSIndexPath *)indexPath {
-    /*
-    TLSecondViewController *vc = [[TLSecondViewController alloc] init];
-    TLViewTransitionAnimator *animator = [TLViewTransitionAnimator new];
-    animator.transitionDuration = 1.0;
-    [self pushViewController:vc animator:animator];
-     */
-}
-
 - (void)pushByCustomAnimation:(NSIndexPath *)indexPath {
     TLSecondViewController *vc = [[TLSecondViewController alloc] init];
     [self pushViewController:vc customAnimation:^(id<UIViewControllerContextTransitioning>  _Nonnull transitionContext, BOOL isPush) {
@@ -710,27 +700,27 @@
 - (void)pushByTLAnimation:(NSIndexPath *)indexPath {
     TLSecondViewController *vc = [[TLSecondViewController alloc] init];
     
-    TLAnimatorType type = indexPath.row;
-    if (indexPath.row > TLAnimatorRectScale) type = indexPath.row - 1;
+    TLAnimatorType type = [self.data[indexPath.section].rowsOfSubTitle[indexPath.row] integerValue];
+   
     TLAnimator *animator = [TLAnimator animatorWithType:type];
-//    animator.transitionDuration = 0.5f;
+//    animator.transitionDuration = 5.f;
     
     if (type == TLAnimatorTypeFrame) {
         UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
         CGRect frame = [self.tableView convertRect:cell.frame toView:[UIApplication sharedApplication].keyWindow];
         animator.initialFrame = frame;
         
-    }else if (type == TLAnimatorRectScale) {
+    }else if (type == TLAnimatorTypeRectScale) {
         UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
         CGRect frame = [cell convertRect:cell.imageView.frame toView:[UIApplication sharedApplication].keyWindow];
         animator.fromRect = frame;
         animator.toRect = CGRectMake(0, tl_ScreenH - 210, tl_ScreenW, 210);
         animator.rectView = cell.imageView;
-        animator.isOnlyShowRangeForRect = indexPath.row > TLAnimatorRectScale;
+        animator.isOnlyShowRangeForRect = indexPath.row >= TLAnimatorTypeRectScale;
         
         vc.isShowImage = YES;
         
-    }else if (type == TLAnimatorCircular) {
+    }else if (type == TLAnimatorTypeCircular) {
         UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
         CGPoint center = [self.tableView convertPoint:cell.center toView:[UIApplication sharedApplication].keyWindow];
         center.x = arc4random_uniform(cell.bounds.size.width - 40) + 20;

@@ -40,14 +40,14 @@
     TLSection *presentSection = [TLSection new];
     presentSection.title = @"Present view controller";
     presentSection.show = YES;
-    presentSection.rows = @[@"System Animator", @"Swipe Animator" ,@"CATransition Animator"//,@"UIView Transition Animator"
-                            ,@"CuStom Animator",@"个人动画案例收集（TLAnimator）"];
+    presentSection.rows = @[@"System Animator", @"Swipe Animator" ,@"CATransition Animator",
+                            @"CuStom Animator",@"个人动画案例收集（TLAnimator）"];
     
     TLSection *pushSection = [TLSection new];
     pushSection.title = @"A push to B or B pop to A";
     pushSection.show = NO;
-    pushSection.rows = @[@"Swipe Animator", @"CATransition Animator"//,@"UIView Transition Animator"
-                         ,@"CuStom Animator", @"个人动画案例收集（TLAnimator）"];
+    pushSection.rows = @[@"Swipe Animator", @"CATransition Animator" ,
+                         @"CuStom Animator", @"个人动画案例收集（TLAnimator）"];
     _data = @[viewSection, presentSection, pushSection];
     
     self.tableView.tableFooterView = [UIView new];
@@ -143,8 +143,6 @@
         type = TLContentTypeSwipeAnimator;
     }else if ([text containsString:@"CATransition"]) {
         type = TLContentTypeCATransitionAnimator;
-    }else if ([text containsString:@"UIView"]) {
-        type = TLContentTypeUIViewTransitionAnimator;
     }else if ([text containsString:@"CuStom"]) {
         type = TLContentTypeCuStomAnimator;
     }
@@ -181,12 +179,18 @@
 
 // TLPopTypeActionSheet
 - (void)actionSheetType:(UIView *)sender {
-    CGRect bounds = CGRectMake(0, 0, self.view.bounds.size.width, 300.f);
+    CGRect bounds = CGRectMake(0, 0, self.view.bounds.size.width, 500.f);
     UIView *bView = [self creatViewWithBounds:bounds color:tl_Color(248, 218, 200)];
     _transition = [TLTransition showView:bView popType:TLPopTypeActionSheet];
     
-    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tap)];
-    [bView addGestureRecognizer:tap];
+    UILabel *textLabel = [[UILabel alloc] init];
+    textLabel.text = @"通过pan手势改变高度";
+    [textLabel sizeToFit];
+    textLabel.center = CGPointMake(bView.bounds.size.width * 0.5, 20);
+    [bView addSubview:textLabel];
+    
+    UIPanGestureRecognizer *pan = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(pan:)];
+    [bView addGestureRecognizer:pan];
 }
 
 // to point
@@ -310,9 +314,19 @@
     return BView;
 }
 
-- (void)tap {
+- (void)pan:(UIPanGestureRecognizer *)pan {
+    
+    CGPoint point = [pan locationInView:[UIApplication sharedApplication].keyWindow];
+    
+    CGFloat height = tl_ScreenH - point.y;
+    if (height < 100) {
+        height = 100;
+    }else if (height > tl_ScreenH - 88){
+        height = tl_ScreenH - 88;
+    }
+    
     CGRect rect = _bView.bounds;
-    rect.size.height += 1;
+    rect.size.height = height;
     _bView.bounds = rect;
     [_transition updateContentSize];
     

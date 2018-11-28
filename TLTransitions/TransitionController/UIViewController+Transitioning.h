@@ -30,7 +30,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property(nonatomic, assign) BOOL disableInteractivePopGestureRecognizer;
 
 
-
+//====================== 👇下面3个API是通用API ==========================//
 /**
  * 转场控制器(官方原生类型)。
  * @param vc 要转场的控制器
@@ -57,7 +57,7 @@ NS_ASSUME_NONNULL_BEGIN
  */
 - (void)presentViewController:(UIViewController *)viewController
                      animator:(id<TLAnimatorProtocol>)animator
-                   completion:(void (^)(void))completion;
+                   completion:(void (^ __nullable)(void))completion;
 
 /**
  * push 转场控制器。

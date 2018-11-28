@@ -16,8 +16,12 @@ typedef enum : NSUInteger {
     TLAnimatorTypeTiltRight,    // 向右边倾斜旋转
     TLAnimatorTypeTiltLeft,     // 向左边倾斜旋转
     TLAnimatorTypeFrame,        // 指定初始frame和最终frame（相对keyWindow）【需根据情况对initialFrame、finalFrame初始化】
-    TLAnimatorRectScale,        // 指定一个rect范围，对其进行缩放和平移【需对fromRect、toRect初始化】,【Push时rectView初始化】
-    TLAnimatorCircular,         // 圆形转场，可以指定center（默认，屏幕中心）
+    TLAnimatorTypeRectScale,    // 指定一个rect范围，对其进行缩放和平移【需对fromRect、toRect初始化】,【Push时rectView初始化】
+    TLAnimatorTypeCircular,     // 圆形转场，可以指定center（默认，屏幕中心）
+    TLAnimatorTypeFlip          // 翻转（只支持push/pop）、翻页...，通过animationOptions属性设置动画样式
+    // 如果dismiss需要TLAnimatorTypeFlip效果，可以使用
+    // `UIViewController+Transitioning.h` 中的 `- presentViewController: transitionStyle: completion:`
+    //  style 设置为：UIModalTransitionStyleFlipHorizontal
 } TLAnimatorType;
 
 NS_ASSUME_NONNULL_BEGIN
@@ -31,7 +35,7 @@ NS_ASSUME_NONNULL_BEGIN
 /// 转场结束的frame，默认：系统默认. 
 @property(nonatomic, assign) CGRect finalFrame;
 
-//****** 仅在TLAnimatorRectScale模式下有效 ******//
+//****** 仅在TLAnimatorTypeRectScale模式下有效 ******//
 /// 开始转场的frame，默认：[center, sizeZero]
 @property(nonatomic, assign) CGRect fromRect;
 /// 转场结束的frame，默认：系统默认finalFrame.
@@ -41,11 +45,25 @@ NS_ASSUME_NONNULL_BEGIN
 /// 缩放平移的View[rectView = 赋值的Viewf的快照]，Push的时候必传（push时没能截图成功）
 @property(nonatomic, strong) UIView *rectView;
 
-//****** TLAnimatorCircular模式下有效 ******//
+//****** TLAnimatorTypeCircular模式下有效 ******//
 /// 圆形转场的center（默认，屏幕中心）
 @property(nonatomic, assign) CGPoint center;
 /// 默认初始半径（默认：0）
 @property(nonatomic, assign) CGFloat startRadius;
+
+//****** TLAnimatorTypeFlip模式下有效 ******//
+/* UIViewAnimationOptions 有效值
+UIViewAnimationOptionTransitionFlipFromLeft    = 1 << 20, // default
+UIViewAnimationOptionTransitionFlipFromRight   = 2 << 20,
+UIViewAnimationOptionTransitionCurlUp          = 3 << 20,
+UIViewAnimationOptionTransitionCurlDown        = 4 << 20,
+UIViewAnimationOptionTransitionCrossDissolve   = 5 << 20,
+UIViewAnimationOptionTransitionFlipFromTop     = 6 << 20,
+UIViewAnimationOptionTransitionFlipFromBottom  = 7 << 20,
+*/
+// 动画效果，取值范围如上
+@property(nonatomic, assign) UIViewAnimationOptions animationOptions;
+
 
 + (instancetype)animatorWithType:(TLAnimatorType)type;
 @end

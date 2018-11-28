@@ -35,7 +35,7 @@ typedef void(^TLAnimationCompletion)(BOOL flag);
     if (self.type == TLAnimatorTypeTiltLeft || self.type == TLAnimatorTypeTiltRight){
         return 0.29f;
     }
-    if (self.type == TLAnimatorCircular){
+    if (self.type == TLAnimatorTypeCircular || self.type == TLAnimatorTypeFlip){
         return 0.f;
     }
     
@@ -48,6 +48,8 @@ typedef void(^TLAnimationCompletion)(BOOL flag);
     anmator.type = type;
     if (type == TLAnimatorTypeFrame) {
         anmator.initialFrame = CGRectMake(tl_ScreenW * 0.5f, tl_ScreenH * 0.5f, 0.f, 0.f);
+    }else if (type == TLAnimatorTypeFlip) {
+        anmator.animationOptions = UIViewAnimationOptionTransitionFlipFromLeft;
     }
    
     return anmator;
@@ -86,10 +88,7 @@ typedef void(^TLAnimationCompletion)(BOOL flag);
             break;
         case TLAnimatorTypeBevel:
             if (isPushOrPop) {
-                NSLog(@"TLAnimatorTypeBevel: 不支持Push/pop转场");
-                [transitionContext.containerView addSubview:toViewController.view];
-                BOOL wasCancelled = [transitionContext transitionWasCancelled];
-                [transitionContext completeTransition:!wasCancelled];
+                NSAssert(NO, @"TLViewTransitionAnimator: 只支持present/dismiss转场");
             }else {
                 [self bevelTypeTransition:transitionContext presenting:isPresenting];
             }
@@ -101,11 +100,14 @@ typedef void(^TLAnimationCompletion)(BOOL flag);
         case TLAnimatorTypeFrame:
             [self frameTypeTransition:transitionContext presenting:isPresenting];
             break;
-        case TLAnimatorRectScale:
+        case TLAnimatorTypeRectScale:
             [self rectScaleTypeTransition:transitionContext presenting:isPresenting];
             break;
-        case TLAnimatorCircular:
+        case TLAnimatorTypeCircular:
             [self circularTypeTransition:transitionContext presenting:isPresenting];
+            break;
+        case TLAnimatorTypeFlip:
+            [self flipTypeTransition:transitionContext presenting:isPresenting];
             break;
         default:
             break;
@@ -350,13 +352,13 @@ typedef void(^TLAnimationCompletion)(BOOL flag);
 #pragma mark - TLAnimatorTypeRectScale
 - (void)rectScaleTypeTransition:(id<UIViewControllerContextTransitioning>)transitionContext presenting:(BOOL)isPresenting {
     if(CGRectEqualToRect(self.fromRect, CGRectNull) || CGRectEqualToRect(self.fromRect, CGRectZero)) {
-        NSAssert(NO, @"TLAnimatorRectScale类型必须初始化fromRect");
+        NSAssert(NO, @"TLAnimatorTypeRectScale类型必须初始化fromRect");
     }
     if(CGRectEqualToRect(self.toRect, CGRectNull) || CGRectEqualToRect(self.toRect, CGRectZero)) {
-        NSAssert(NO, @"TLAnimatorRectScale类型必须初始化toRect");
+        NSAssert(NO, @"TLAnimatorTypeRectScale类型必须初始化toRect");
     }
     if(self.isPushOrPop && _rectView == nil) {
-        NSAssert(NO, @"TLAnimatorRectScale类型必须初始化rectView");
+        NSAssert(NO, @"TLAnimatorTypeRectScale类型必须初始化rectView");
     }
     
     UIView *fromView = [transitionContext viewControllerForKey:UITransitionContextFromViewControllerKey].view;
@@ -375,13 +377,17 @@ typedef void(^TLAnimationCompletion)(BOOL flag);
    
     [traget layoutIfNeeded];
     [traget setNeedsDisplay];
-    UIView *bgView;
-    if(_isOnlyShowRangeForRect) {
-        bgView = [[UIView alloc] init];
-        bgView.frame = containerView.bounds;
-    }else {
-        bgView = [traget snapshotViewAfterScreenUpdates:!isPresenting];
+    
+    UIView *bgView = [[UIView alloc] initWithFrame:containerView.bounds];
+    if(!_isOnlyShowRangeForRect) {
+        UIView *sanpshot = [traget snapshotViewAfterScreenUpdates:!isPresenting];
+        // 设置sanpshot.frame = traget.frame;是为了解决
+        // viewWillAppear 中写入 self.navigationController.navigationBar.translucent = NO; 导致计算sanpshot traget.view
+        // 有inset，而导致rect不对的问题
+        sanpshot.frame = traget.frame;
+        [bgView addSubview:sanpshot];
     }
+
     [containerView addSubview:bgView];
     CGFloat W = bgView.bounds.size.width;
     CGFloat H = bgView.bounds.size.height;
@@ -495,6 +501,74 @@ typedef void(^TLAnimationCompletion)(BOOL flag);
     };
 }
 
+#pragma mark - TLAnimatorTypeFlip
+- (void)flipTypeTransition:(id<UIViewControllerContextTransitioning>)transitionContext presenting:(BOOL)isPresenting {
+    NSAssert(self.isPushOrPop, @"TLViewTransitionAnimator: 只支持Push/pop转场");
+    
+    UIViewController *fromViewController = [transitionContext viewControllerForKey:UITransitionContextFromViewControllerKey];
+    UIViewController *toViewController = [transitionContext viewControllerForKey:UITransitionContextToViewControllerKey];
+    
+    UIView *containerView = transitionContext.containerView;
+    UIView *fromView = [transitionContext viewForKey:UITransitionContextFromViewKey];
+    UIView *toView = [transitionContext viewForKey:UITransitionContextToViewKey];
+    
+    NSInteger toIndex = [toViewController.navigationController.viewControllers indexOfObject:toViewController];
+    NSInteger fromIndex = [fromViewController.navigationController.viewControllers indexOfObject:fromViewController];
+    BOOL isPush = (toIndex > fromIndex);
+    
+    UIView *sanpshotOfFromView;
+    if (isPush) {
+        sanpshotOfFromView = [fromViewController.view snapshotViewAfterScreenUpdates:NO];
+        [containerView addSubview:sanpshotOfFromView];
+        [containerView insertSubview:toView belowSubview:sanpshotOfFromView];
+    }else {
+        [containerView insertSubview:toView belowSubview:fromView];
+    }
+    
+    UIViewAnimationOptions options = _animationOptions;
+    if (!isPush) {
+        switch (options) {
+            case UIViewAnimationOptionTransitionFlipFromLeft:
+                options = UIViewAnimationOptionTransitionFlipFromRight;
+                break;
+            case UIViewAnimationOptionTransitionFlipFromRight:
+                options = UIViewAnimationOptionTransitionFlipFromLeft;
+                break;
+            case UIViewAnimationOptionTransitionCurlUp:
+                options = UIViewAnimationOptionTransitionCurlDown;
+                break;
+            case UIViewAnimationOptionTransitionCurlDown:
+                options = UIViewAnimationOptionTransitionCurlUp;
+                break;
+            case UIViewAnimationOptionTransitionFlipFromTop:
+                options = UIViewAnimationOptionTransitionFlipFromBottom;
+                break;
+            case UIViewAnimationOptionTransitionFlipFromBottom:
+                options = UIViewAnimationOptionTransitionFlipFromTop;
+                break;
+            default:
+                break;
+        }
+    }
+    
+    [UIView transitionFromView:fromView
+                        toView:toView
+                      duration:[self transitionDuration:transitionContext]
+                       options:options
+                    completion:^(BOOL finished)
+     {
+         if (isPush) {
+             [sanpshotOfFromView removeFromSuperview];
+         }
+         
+         BOOL wasCancelled = [transitionContext transitionWasCancelled];
+         [transitionContext completeTransition:!wasCancelled];
+     }];
+
+}
+
+
+#pragma mark - CABasicAnimation delegate
 - (void)animationDidStop:(CAAnimation *)anim finished:(BOOL)flag {
     if (self.animationCompletion) {
         self.animationCompletion(flag);

@@ -14,6 +14,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property(nonatomic, copy) NSString *title;
 @property(nonatomic, assign) BOOL show;
 @property(nonatomic, strong) NSArray *rows;
+@property(nonatomic, strong) NSArray *rowsOfSubTitle;
 @end
 
 NS_ASSUME_NONNULL_END

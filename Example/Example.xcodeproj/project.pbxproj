@@ -22,6 +22,10 @@
 		142741D1218988B20047EE09 /* UIViewController+Transitioning.m in Sources */ = {isa = PBXBuildFile; fileRef = 142741D0218988B20047EE09 /* UIViewController+Transitioning.m */; };
 		142741D8218BEBD70047EE09 /* TLSwipeAnimator.m in Sources */ = {isa = PBXBuildFile; fileRef = 142741D7218BEBD70047EE09 /* TLSwipeAnimator.m */; };
 		142741DB218BFBE40047EE09 /* TLFirstTableController.m in Sources */ = {isa = PBXBuildFile; fileRef = 142741DA218BFBE40047EE09 /* TLFirstTableController.m */; };
+		142D0F1021AD215100257EF1 /* TLAppStoreDetialController.m in Sources */ = {isa = PBXBuildFile; fileRef = 142D0F0F21AD215100257EF1 /* TLAppStoreDetialController.m */; };
+		142D0F1321AD21EE00257EF1 /* TLAppStoreCardCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 142D0F1221AD21EE00257EF1 /* TLAppStoreCardCell.m */; };
+		142D0F1621AD221B00257EF1 /* TLAppStoreListController.m in Sources */ = {isa = PBXBuildFile; fileRef = 142D0F1521AD221B00257EF1 /* TLAppStoreListController.m */; };
+		142D0F1921AD3A4D00257EF1 /* TLAppStoreCardAmiator.m in Sources */ = {isa = PBXBuildFile; fileRef = 142D0F1821AD3A4D00257EF1 /* TLAppStoreCardAmiator.m */; };
 		14469F8721A52C4A007525BA /* TLAnimator.m in Sources */ = {isa = PBXBuildFile; fileRef = 14469F8621A52C4A007525BA /* TLAnimator.m */; };
 		149AA6B321955F2600F03EE6 /* TLPercentDrivenInteractiveTransition.m in Sources */ = {isa = PBXBuildFile; fileRef = 149AA6B221955F2600F03EE6 /* TLPercentDrivenInteractiveTransition.m */; };
 		14A539CA219C139B00DB5CE6 /* TLCATransitonAnimator.m in Sources */ = {isa = PBXBuildFile; fileRef = 14A539C9219C139B00DB5CE6 /* TLCATransitonAnimator.m */; };
@@ -30,7 +34,6 @@
 		14D39407219D0D1000F61677 /* TLTransitionDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 14D39406219D0D1000F61677 /* TLTransitionDelegate.m */; };
 		14D3940A219D22FD00F61677 /* TLCustomAnimator.m in Sources */ = {isa = PBXBuildFile; fileRef = 14D39409219D22FD00F61677 /* TLCustomAnimator.m */; };
 		14D3940D219D543F00F61677 /* TLAnimatorTemplate.m in Sources */ = {isa = PBXBuildFile; fileRef = 14D3940C219D543F00F61677 /* TLAnimatorTemplate.m */; };
-		14D39414219D787800F61677 /* TLViewTransitionAnimator.m in Sources */ = {isa = PBXBuildFile; fileRef = 14D39413219D787800F61677 /* TLViewTransitionAnimator.m */; };
 		14D39417219EAC2300F61677 /* TLMenuViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 14D39416219EAC2300F61677 /* TLMenuViewController.m */; };
 		14D3941A219EB0C200F61677 /* TLSection.m in Sources */ = {isa = PBXBuildFile; fileRef = 14D39419219EB0C200F61677 /* TLSection.m */; };
 /* End PBXBuildFile section */
@@ -83,6 +86,14 @@
 		142741D7218BEBD70047EE09 /* TLSwipeAnimator.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TLSwipeAnimator.m; sourceTree = "<group>"; };
 		142741D9218BFBE40047EE09 /* TLFirstTableController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TLFirstTableController.h; sourceTree = "<group>"; };
 		142741DA218BFBE40047EE09 /* TLFirstTableController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TLFirstTableController.m; sourceTree = "<group>"; };
+		142D0F0E21AD215100257EF1 /* TLAppStoreDetialController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TLAppStoreDetialController.h; sourceTree = "<group>"; };
+		142D0F0F21AD215100257EF1 /* TLAppStoreDetialController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TLAppStoreDetialController.m; sourceTree = "<group>"; };
+		142D0F1121AD21EE00257EF1 /* TLAppStoreCardCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TLAppStoreCardCell.h; sourceTree = "<group>"; };
+		142D0F1221AD21EE00257EF1 /* TLAppStoreCardCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TLAppStoreCardCell.m; sourceTree = "<group>"; };
+		142D0F1421AD221B00257EF1 /* TLAppStoreListController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TLAppStoreListController.h; sourceTree = "<group>"; };
+		142D0F1521AD221B00257EF1 /* TLAppStoreListController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TLAppStoreListController.m; sourceTree = "<group>"; };
+		142D0F1721AD3A4D00257EF1 /* TLAppStoreCardAmiator.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TLAppStoreCardAmiator.h; sourceTree = "<group>"; };
+		142D0F1821AD3A4D00257EF1 /* TLAppStoreCardAmiator.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TLAppStoreCardAmiator.m; sourceTree = "<group>"; };
 		14469F8521A52C4A007525BA /* TLAnimator.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TLAnimator.h; sourceTree = "<group>"; };
 		14469F8621A52C4A007525BA /* TLAnimator.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TLAnimator.m; sourceTree = "<group>"; };
 		149AA6B121955F2600F03EE6 /* TLPercentDrivenInteractiveTransition.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TLPercentDrivenInteractiveTransition.h; sourceTree = "<group>"; };
@@ -99,8 +110,6 @@
 		14D39409219D22FD00F61677 /* TLCustomAnimator.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TLCustomAnimator.m; sourceTree = "<group>"; };
 		14D3940B219D543F00F61677 /* TLAnimatorTemplate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TLAnimatorTemplate.h; sourceTree = "<group>"; };
 		14D3940C219D543F00F61677 /* TLAnimatorTemplate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TLAnimatorTemplate.m; sourceTree = "<group>"; };
-		14D39412219D787800F61677 /* TLViewTransitionAnimator.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TLViewTransitionAnimator.h; sourceTree = "<group>"; };
-		14D39413219D787800F61677 /* TLViewTransitionAnimator.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TLViewTransitionAnimator.m; sourceTree = "<group>"; };
 		14D39415219EAC2300F61677 /* TLMenuViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TLMenuViewController.h; sourceTree = "<group>"; };
 		14D39416219EAC2300F61677 /* TLMenuViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TLMenuViewController.m; sourceTree = "<group>"; };
 		14D39418219EB0C200F61677 /* TLSection.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TLSection.h; sourceTree = "<group>"; };
@@ -157,6 +166,7 @@
 		1427415B2186DEA00047EE09 /* Example */ = {
 			isa = PBXGroup;
 			children = (
+				142D0F0A21AD206900257EF1 /* AppStoreCard */,
 				142741BC2186E18B0047EE09 /* Scene Template */,
 				1427415C2186DEA00047EE09 /* AppDelegate.h */,
 				1427415D2186DEA00047EE09 /* AppDelegate.m */,
@@ -219,6 +229,21 @@
 			path = "Scene Template";
 			sourceTree = "<group>";
 		};
+		142D0F0A21AD206900257EF1 /* AppStoreCard */ = {
+			isa = PBXGroup;
+			children = (
+				142D0F1421AD221B00257EF1 /* TLAppStoreListController.h */,
+				142D0F1521AD221B00257EF1 /* TLAppStoreListController.m */,
+				142D0F0E21AD215100257EF1 /* TLAppStoreDetialController.h */,
+				142D0F0F21AD215100257EF1 /* TLAppStoreDetialController.m */,
+				142D0F1121AD21EE00257EF1 /* TLAppStoreCardCell.h */,
+				142D0F1221AD21EE00257EF1 /* TLAppStoreCardCell.m */,
+				142D0F1721AD3A4D00257EF1 /* TLAppStoreCardAmiator.h */,
+				142D0F1821AD3A4D00257EF1 /* TLAppStoreCardAmiator.m */,
+			);
+			path = AppStoreCard;
+			sourceTree = "<group>";
+		};
 		14469F8121A3E3CB007525BA /* Config */ = {
 			isa = PBXGroup;
 			children = (
@@ -261,8 +286,6 @@
 				142741D7218BEBD70047EE09 /* TLSwipeAnimator.m */,
 				14A539C8219C139B00DB5CE6 /* TLCATransitonAnimator.h */,
 				14A539C9219C139B00DB5CE6 /* TLCATransitonAnimator.m */,
-				14D39412219D787800F61677 /* TLViewTransitionAnimator.h */,
-				14D39413219D787800F61677 /* TLViewTransitionAnimator.m */,
 				14D39408219D22FD00F61677 /* TLCustomAnimator.h */,
 				14D39409219D22FD00F61677 /* TLCustomAnimator.m */,
 				14469F8521A52C4A007525BA /* TLAnimator.h */,
@@ -404,6 +427,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				142D0F1621AD221B00257EF1 /* TLAppStoreListController.m in Sources */,
 				14A539CA219C139B00DB5CE6 /* TLCATransitonAnimator.m in Sources */,
 				142741C12186E18B0047EE09 /* TLTransition.m in Sources */,
 				14469F8721A52C4A007525BA /* TLAnimator.m in Sources */,
@@ -416,11 +440,13 @@
 				14D3940D219D543F00F61677 /* TLAnimatorTemplate.m in Sources */,
 				142741C22186E18B0047EE09 /* TLSheetPicker.m in Sources */,
 				14B08832218FEE4B0001B3EB /* TLWheelTableViewCell.m in Sources */,
-				14D39414219D787800F61677 /* TLViewTransitionAnimator.m in Sources */,
+				142D0F1321AD21EE00257EF1 /* TLAppStoreCardCell.m in Sources */,
+				142D0F1921AD3A4D00257EF1 /* TLAppStoreCardAmiator.m in Sources */,
 				142741D1218988B20047EE09 /* UIViewController+Transitioning.m in Sources */,
 				142741C02186E18B0047EE09 /* TLGlobalConfig.m in Sources */,
 				1427415E2186DEA00047EE09 /* AppDelegate.m in Sources */,
 				142741C7218861CC0047EE09 /* TLSecondViewController.m in Sources */,
+				142D0F1021AD215100257EF1 /* TLAppStoreDetialController.m in Sources */,
 				14D39407219D0D1000F61677 /* TLTransitionDelegate.m in Sources */,
 				142741DB218BFBE40047EE09 /* TLFirstTableController.m in Sources */,
 				142741D8218BEBD70047EE09 /* TLSwipeAnimator.m in Sources */,

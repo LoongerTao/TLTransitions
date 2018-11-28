@@ -10,13 +10,13 @@
 
 @interface TLPercentDrivenInteractiveTransition ()
 @property (nonatomic, weak) id<UIViewControllerContextTransitioning> transitionContext;
-@property (nonatomic, weak, readonly) UIScreenEdgePanGestureRecognizer *gestureRecognizer;
+@property (nonatomic, weak, readonly) UIPanGestureRecognizer *gestureRecognizer;
 @property (nonatomic, readonly) UIRectEdge edge;
 @end
 
 @implementation TLPercentDrivenInteractiveTransition
 
-- (instancetype)initWithGestureRecognizer:(UIScreenEdgePanGestureRecognizer *)gestureRecognizer edgeForDragging:(UIRectEdge)edge
+- (instancetype)initWithGestureRecognizer:(UIPanGestureRecognizer *)gestureRecognizer edgeForDragging:(UIRectEdge)edge
 {
     NSAssert(edge == UIRectEdgeTop || edge == UIRectEdgeBottom ||
              edge == UIRectEdgeLeft || edge == UIRectEdgeRight,
@@ -63,22 +63,45 @@
     
     CGPoint locationInSourceView = [gesture locationInView:containerView];
     CGFloat width = CGRectGetWidth(containerView.bounds);
-//    CGFloat height = CGRectGetHeight(containerView.bounds);
+    CGFloat height = CGRectGetHeight(containerView.bounds);
     
     CGFloat percent = 0.f;
-    if (self.edge == UIRectEdgeRight) {
-        percent = (width - locationInSourceView.x) / width;
+    
+    if ([gesture isMemberOfClass: [UIScreenEdgePanGestureRecognizer class]]) {
+        if (self.edge == UIRectEdgeRight) {
+            percent = (width - locationInSourceView.x) / width;
+            
+        } else //if (self.edge == UIRectEdgeLeft) {
+            // 垂直方向的转场以左侧滑作为依据
+            percent = locationInSourceView.x / width;
         
-    } else //if (self.edge == UIRectEdgeLeft) {
-        // 垂直方向的转场以左侧滑作为依据
-        percent = locationInSourceView.x / width;
+        //    } else if (self.edge == UIRectEdgeBottom) {
+        //        percent = (height - locationInSourceView.y) / height;
+        //
+        //    }else if (self.edge == UIRectEdgeTop) {
+        //        percent = locationInSourceView.x / width;
+        //    }
+    }else {
         
-//    } else if (self.edge == UIRectEdgeBottom) {
-//        percent = (height - locationInSourceView.y) / height;
-//
-//    }else if (self.edge == UIRectEdgeTop) {
-//        percent = locationInSourceView.x / width;
-//    }
+        if (self.edge == UIRectEdgeRight) {
+            percent = (width - locationInSourceView.x) / width;
+            
+        } else if (self.edge == UIRectEdgeLeft) {
+            // 垂直方向的转场以左侧滑作为依据
+            percent = locationInSourceView.x / width;
+    
+        } else if (self.edge == UIRectEdgeBottom) {
+            percent = (height - locationInSourceView.y) / height;
+    
+        }else if (self.edge == UIRectEdgeTop) {
+            percent = locationInSourceView.y / height;
+        }
+    }
+    
+    if (_speedOfPercent > 0.5) {
+        percent *= _speedOfPercent;
+    }
+    
     return percent;
 }
 
@@ -92,8 +115,12 @@
             // 开始状态由视图控制器处理。触发 presentation or dismissal.
             break;
         case UIGestureRecognizerStateChanged:
-            // 拖动中,更新百分比
-            [self updateInteractiveTransition:[self percentForGesture:gestureRecognizer]];
+            if(_percentOfFinished > 0 && [self percentForGesture:gestureRecognizer] >= _percentOfFinished) {
+                [self finishInteractiveTransition];
+            }else {
+                // 拖动中,更新百分比
+                [self updateInteractiveTransition:[self percentForGesture:gestureRecognizer]];
+            }
             break;
         case UIGestureRecognizerStateEnded:
             

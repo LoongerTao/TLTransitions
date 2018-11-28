@@ -12,7 +12,6 @@ typedef enum : NSUInteger {
     TLContentTypeSystemAnimator,
     TLContentTypeSwipeAnimator,
     TLContentTypeCATransitionAnimator,
-    TLContentTypeUIViewTransitionAnimator,
     TLContentTypeCuStomAnimator,
     TLContentTypeOther,
 } TLContentType;
