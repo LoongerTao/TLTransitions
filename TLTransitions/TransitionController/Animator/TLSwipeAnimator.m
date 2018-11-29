@@ -18,6 +18,18 @@
     return _popDirection;
 }
 
+
++ (instancetype)animatorWithSwipeType:(TLSwipeType)swipeType
+                        pushDirection:(TLDirection)pushDirection
+                         popDirection:(TLDirection)popDirection
+{
+    TLSwipeAnimator *anm = [self new];
+    anm.swipeType = swipeType;
+    anm.pushDirection = pushDirection;
+    anm.popDirection = popDirection;
+    return anm;
+}
+
 #pragma mark - UIViewControllerAnimatedTransitioning
 - (NSTimeInterval)transitionDuration:(nullable id<UIViewControllerContextTransitioning>)transitionContext {
     return [transitionContext isAnimated] ? self.transitionDuration : 0.f;

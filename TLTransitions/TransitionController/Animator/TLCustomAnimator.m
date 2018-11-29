@@ -43,6 +43,11 @@
     }else {
         isPresentingOrPush = (toViewController.presentingViewController == fromViewController);
     }
+    
+    if (isPresentingOrPush) {
+        toViewController.view.frame = [transitionContext finalFrameForViewController:toViewController];
+    }
+    
     if (self.animation) {
          self.animation(transitionContext, isPresentingOrPush);
     }else {

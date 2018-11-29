@@ -56,7 +56,7 @@
 
 
 // 返回交互过渡完成的百分比。
-- (CGFloat)percentForGesture:(UIScreenEdgePanGestureRecognizer *)gesture
+- (CGFloat)percentForGesture:(UIPanGestureRecognizer *)gesture
 {
     // 因为视图控制器将作为动画的一部分在屏幕上或从屏幕上滑动，因此我们希望将计算建立在不移动视图的坐标空间：transitionContext.containerView。
     UIView *containerView = self.transitionContext.containerView;
@@ -71,16 +71,11 @@
         if (self.edge == UIRectEdgeRight) {
             percent = (width - locationInSourceView.x) / width;
             
-        } else //if (self.edge == UIRectEdgeLeft) {
+        } else {
             // 垂直方向的转场以左侧滑作为依据
             percent = locationInSourceView.x / width;
+        }
         
-        //    } else if (self.edge == UIRectEdgeBottom) {
-        //        percent = (height - locationInSourceView.y) / height;
-        //
-        //    }else if (self.edge == UIRectEdgeTop) {
-        //        percent = locationInSourceView.x / width;
-        //    }
     }else {
         
         if (self.edge == UIRectEdgeRight) {

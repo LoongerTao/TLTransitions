@@ -10,18 +10,39 @@
 
 // 方向,指向的方向（Top：bottom --> top，动画由Top：bottom到top）
 typedef enum : NSUInteger {
-    TLDirectionToTop = 0,
-    TLDirectionToLeft,
-    TLDirectionToBottom,
-    TLDirectionToRight,
+    TLDirectionToTop = 1 << 0,
+    TLDirectionToLeft = 1 << 1,
+    TLDirectionToBottom = 1 << 2,
+    TLDirectionToRight = 1 << 3,
 } TLDirection;
 
-// 平滑动画类型：如有控制器A和B， 操作： A push to B Or B pop to A
+// TLSwipeAnimator动画类型：如有控制器A和B， 操作： A push to B Or B pop to A
 typedef enum : NSUInteger {
     TLSwipeTypeInAndOut = 0, // push：B从A的上面滑入，pop：B从A的上面抽出.
     TLSwipeTypeIn,           // push：B从A的上面滑入，pop：A从B的上面滑入.效果类似CATransition动画中的kCATransitionMoveIn
     TLSwipeTypeOut,          // push：A从B的上面抽出，pop：B从A的上面抽出.效果类似CATransition动画中的kCATransitionReveal
 } TLSwipeType;
+
+// TLCATransitonAnimator 动画类型，对应官方的CATransitionType
+typedef enum : NSUInteger {
+    TLTransitionFade,
+    TLTransitionMoveIn,
+    TLTransitionPush,
+    TLTransitionReveal,
+    
+    // 以下是官方未公开的API（私有，可能影响上架）
+    TLTransitionCube,
+    TLTransitionSuckEffect,
+    TLTransitionOglFlip,
+    TLTransitionRippleEffect,
+    TLTransitionPageCurl,
+    TLTransitionPageUnCurl,
+    TLTransitionCameraIrisHollowOpen,
+    TLTransitionCameraIrisHollowClose,
+} TLTransitionType;
+
+
+
 
 
 // MARK: - 全局常量配置

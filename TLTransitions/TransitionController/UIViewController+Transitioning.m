@@ -13,11 +13,30 @@
 #import "TLSwipeAnimator.h"
 #import "TLCustomAnimator.h"
 #import "TLAnimatorProtocol.h"
+#import "TLSystemAnimator.h"
 
 #pragma mark-
 #pragma mark UIViewController (Transitioning)
 
 @implementation UIViewController (Transitioning)
+#pragma mark Runtime 方法交换
++ (void)load {
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        Class cls = [UIViewController class];
+        Method method1 = class_getInstanceMethod(cls, NSSelectorFromString(@"dealloc"));
+        Method method2 = class_getInstanceMethod(cls, @selector(tl_dealloc));
+        method_exchangeImplementations(method1, method2);
+    });
+}
+
+- (void)tl_dealloc{
+    
+    tl_Log(@"%@ %s", [self class], __func__);
+    [TLTransitionDelegate removeAnimatorForKey:self];
+    
+    [self tl_dealloc];
+}
 
 #pragma mark Runtime 对象关联
 - (void)setTransitionDelegate:(TLTransitionDelegate * _Nonnull)transitionDelegate {
@@ -25,6 +44,14 @@
 }
 
 - (TLTransitionDelegate *)transitionDelegate {
+    return objc_getAssociatedObject(self, _cmd);
+}
+
+- (void)setPresentedViewController:(UIViewController * _Nullable)presentedViewController{
+    objc_setAssociatedObject(self, @selector(presentedViewController), presentedViewController, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+}
+
+- (UIViewController *)presentedViewController {
     return objc_getAssociatedObject(self, _cmd);
 }
 
@@ -40,6 +67,73 @@
 }
 
 #pragma mark 注册手势
+// push or present
+- (void)registerInteractiveModalRecognizer:(BOOL)isModal
+                               toDirection:(TLDirection)toDirection
+                          toViewController:(UIViewController *)viewController
+                                  animator:(id <TLAnimatorProtocol>)animator;
+
+{
+    // 手势
+    SEL sel = @selector(interactivePushRecognizerAction:);
+    UIScreenEdgePanGestureRecognizer *interactiveTransitionRecognizer;
+    interactiveTransitionRecognizer = [[UIScreenEdgePanGestureRecognizer alloc] initWithTarget:self action:sel];
+    interactiveTransitionRecognizer.edges = [self getEdgeWithDirection:toDirection];
+    [self.view addGestureRecognizer:interactiveTransitionRecognizer];
+    
+    animator.isPushOrPop = !isModal;
+    if(animator.transitionDuration == 0){ // 默认值
+        animator.transitionDuration = 0.45f;
+    }
+    
+    TLTransitionDelegate *tDelegate = [TLTransitionDelegate sharedInstace];
+    tDelegate.popGestureRecognizerDirection = toDirection;
+    [TLTransitionDelegate addAnimator:animator forKey:viewController];
+   
+    viewController.transitionDelegate = tDelegate;
+    self.presentedViewController = viewController;
+    
+    if(isModal) {
+        viewController.modalPresentationStyle = UIModalPresentationCustom;
+        viewController.transitioningDelegate = tDelegate;
+    }else {
+        BOOL falg = ![self isMemberOfClass:[UINavigationController class]]; // 不能是UINavigationController
+        NSAssert(falg, @"%s 方法n不能用UINavigationController发起调用，请直接用view controllerd调用", __func__);
+        NSAssert(self.navigationController, (@"控制器 %@ 没有navigationController，无法push"), self);
+        NSAssert(![animator isMemberOfClass:[TLSystemAnimator class]], (@"TLSystemAnimator 只支持modal"), self);
+        
+        self.navigationController.delegate = tDelegate;
+    }
+}
+
+- (void)interactivePushRecognizerAction:(UIPanGestureRecognizer *)gestureRecognizer {
+    if (gestureRecognizer.state == UIGestureRecognizerStateBegan) {
+        
+        if (self.transitionDelegate == nil) {
+            return;
+        }
+        
+        id <TLAnimatorProtocol>animator = [TLTransitionDelegate animatorForKey:self.presentedViewController];
+        NSAssert(animator, @"animator = nil,异常");
+        if (animator == nil) return;
+        
+        if ([animator respondsToSelector:@selector(percentOfFinishInteractiveTransition)] &&
+            [animator percentOfFinishInteractiveTransition] <= 0) {
+            // 不支持百分比控制
+            self.presentedViewController.transitionDelegate.interactiveRecognizer = nil;
+        }else {
+            self.presentedViewController.transitionDelegate.interactiveRecognizer = gestureRecognizer;
+        }
+        
+        if (animator.isPushOrPop){
+            [self.navigationController pushViewController:self.presentedViewController animated:YES];
+        }else {
+            [self presentViewController:self.presentedViewController animated:YES completion:nil];
+        }
+    }
+}
+
+
 // register pop or dismiss interactive recognizer for transition
 - (UIScreenEdgePanGestureRecognizer *)registerInteractivePopRecognizerWithDirection:(TLDirection)direction {
     
@@ -57,7 +151,7 @@
     return direction == TLDirectionToLeft ? UIRectEdgeRight : UIRectEdgeLeft;
 }
 
-- (void)interactivePopRecognizerAction:(UIScreenEdgePanGestureRecognizer *)gestureRecognizer {
+- (void)interactivePopRecognizerAction:(UIPanGestureRecognizer *)gestureRecognizer {
     if (gestureRecognizer.state == UIGestureRecognizerStateBegan) {
         
         if (self.transitionDelegate == nil) {
@@ -72,9 +166,9 @@
         if ([animator respondsToSelector:@selector(percentOfFinishInteractiveTransition)] &&
             [animator percentOfFinishInteractiveTransition] <= 0) {
             // 不支持百分比控制
-            self.transitionDelegate.popGestureRecognizer = nil;
+            self.transitionDelegate.interactiveRecognizer = nil;
         }else {
-            self.transitionDelegate.popGestureRecognizer = gestureRecognizer;
+            self.transitionDelegate.interactiveRecognizer = gestureRecognizer;
         }
         
         if (animator.isPushOrPop){
@@ -87,7 +181,7 @@
 
 
 #pragma mark API
-#pragma mark - present / dismiss
+#pragma mark - modal
 - (void)presentViewController:(UIViewController *)vc
               transitionStyle:(UIModalTransitionStyle)style
                    completion:(void (^ __nullable)(void))completion
@@ -103,6 +197,12 @@
                    completion:(void (^ __nullable)(void))completion;
 {
     animator.isPushOrPop = NO;
+    if([animator isMemberOfClass:[TLSystemAnimator class]]) {
+        TLSystemAnimator *anim = (TLSystemAnimator *)animator;
+        [self presentViewController:viewController transitionStyle:anim.style completion:completion];
+        return;
+    }
+    
     if(animator.transitionDuration == 0){ // 默认值
         animator.transitionDuration = 0.45f;
     }
@@ -137,7 +237,7 @@
 }
 
 - (void)presentViewController:(UIViewController *)vc
-               transitionType:(CATransitionType)tType
+               transitionType:(TLTransitionType)tType
                     direction:(TLDirection)direction
              dismissDirection:(TLDirection)directionOfDismiss
                    completion:(void (^ __nullable)(void))completion
@@ -165,6 +265,7 @@
     BOOL falg = ![self isMemberOfClass:[UINavigationController class]]; // 不能是UINavigationController
     NSAssert(falg, @"%s 方法n不能用UINavigationController发起调用，请直接用view controllerd调用", __func__);
     NSAssert(self.navigationController, (@"控制器 %@ 没有navigationController，无法push"), self);
+    NSAssert(![animator isMemberOfClass:[TLSystemAnimator class]], (@"TLSystemAnimator 只支持modal"), self);
     
     animator.isPushOrPop = YES;
     if(animator.transitionDuration == 0){ // 默认值
@@ -200,7 +301,7 @@
 }
 
 - (void)pushViewController:(UIViewController *)vc
-            transitionType:(CATransitionType)tType
+            transitionType:(TLTransitionType)tType
                  direction:(TLDirection)direction
           dismissDirection:(TLDirection)directionOfPop
 {
@@ -219,12 +320,6 @@
     animator.animation = animation;
    
     [self pushViewController:vc animator:animator];
-}
-
-- (void)dealloc{
-    tl_Log(@"%@ %s", [self class], __func__);
-
-    [TLTransitionDelegate removeAnimatorForKey:self];
 }
 
 

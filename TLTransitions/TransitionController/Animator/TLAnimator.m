@@ -7,11 +7,16 @@
 //  个人收集的一些动画
 
 #import "TLAnimator.h"
+#import "UIViewController+Transitioning.h"
+#import "TLTransitionDelegate.h"
 
 typedef void(^TLAnimationCompletion)(BOOL flag);
 
 @interface TLAnimator ()<CAAnimationDelegate>
 
+@property(nonatomic, weak) UIViewController *presentingViewController; // 发起present的view controller
+@property(nonatomic, weak) UIViewController *presentedViewController;  // 被present的view controller
+@property(nonatomic, weak) id<UIViewControllerContextTransitioning> transitionContext;
 /// CAAnimation 完成回调
 @property(nonatomic, copy) TLAnimationCompletion animationCompletion;
 @end
@@ -25,7 +30,7 @@ typedef void(^TLAnimationCompletion)(BOOL flag);
 @synthesize isPushOrPop;
 
 - (TLDirection)directionForDragging; {
-    if (self.type == TLAnimatorTypeTiltLeft){
+    if (self.type == TLAnimatorTypeTiltLeft || self.type == TLAnimatorTypeSlidingDrawer){
         return TLDirectionToLeft;
     }
     return TLDirectionToRight; // 滑动方向
@@ -37,6 +42,9 @@ typedef void(^TLAnimationCompletion)(BOOL flag);
     }
     if (self.type == TLAnimatorTypeCircular || self.type == TLAnimatorTypeFlip){
         return 0.f;
+    }
+    if (self.type == TLAnimatorTypeSlidingDrawer){
+        return 0.45;
     }
     
     return 0.5f;
@@ -50,6 +58,8 @@ typedef void(^TLAnimationCompletion)(BOOL flag);
         anmator.initialFrame = CGRectMake(tl_ScreenW * 0.5f, tl_ScreenH * 0.5f, 0.f, 0.f);
     }else if (type == TLAnimatorTypeFlip) {
         anmator.animationOptions = UIViewAnimationOptionTransitionFlipFromLeft;
+    }else if (type == TLAnimatorTypeSlidingDrawer){
+        anmator.slidEnabled = YES;
     }
    
     return anmator;
@@ -77,7 +87,9 @@ typedef void(^TLAnimationCompletion)(BOOL flag);
         isPresenting = (toViewController.presentingViewController == fromViewController);
     }
     
-    !isPresenting ? nil : [toViewController.view setFrame:[transitionContext finalFrameForViewController: toViewController]];
+    if(isPresenting) {
+        [toViewController.view setFrame:[transitionContext finalFrameForViewController: toViewController]];
+    }
     
     switch (_type) {
         case TLAnimatorTypeOpen:
@@ -109,6 +121,9 @@ typedef void(^TLAnimationCompletion)(BOOL flag);
         case TLAnimatorTypeFlip:
             [self flipTypeTransition:transitionContext presenting:isPresenting];
             break;
+        case TLAnimatorTypeSlidingDrawer:
+            [self slidingDrawerTypeTransition:transitionContext presenting:isPresenting];
+            break;
         default:
             break;
     }
@@ -127,8 +142,11 @@ typedef void(^TLAnimationCompletion)(BOOL flag);
     rect.size.width *= .5f;
     // 如bview是不可见的：afterScreenUpdates必须为YES
     UIView *leftView = [tragetView resizableSnapshotViewFromRect:rect afterScreenUpdates:self.isPushOrPop withCapInsets:UIEdgeInsetsZero];
+    rect.origin.y = tragetView.frame.origin.y;
+    leftView.frame = rect;
     
     rect = CGRectOffset(rect, rect.size.width, 0.f);
+    rect.origin.y = 0;
     UIView *rightView = [tragetView resizableSnapshotViewFromRect:rect afterScreenUpdates:self.isPushOrPop withCapInsets:UIEdgeInsetsZero];
     rightView.frame = CGRectOffset(leftView.frame, leftView.frame.size.width, 0.f);;
     
@@ -186,9 +204,11 @@ typedef void(^TLAnimationCompletion)(BOOL flag);
     CGFloat H = rect.size.height;
     
     UIView *leftTopView = [tragetView resizableSnapshotViewFromRect:rect afterScreenUpdates:self.isPushOrPop withCapInsets:UIEdgeInsetsZero];
+    rect.origin.y = tragetView.frame.origin.y;
+    leftTopView.frame = rect;
     
+    rect.origin.y = tragetView.bounds.origin.y;
     rect = CGRectOffset(rect, W, 0.f);
-    
     UIView *rightTopView = [tragetView resizableSnapshotViewFromRect:rect afterScreenUpdates:self.isPushOrPop withCapInsets:UIEdgeInsetsZero];
     rightTopView.frame = CGRectOffset(leftTopView.frame, W, 0.f);
     
@@ -305,7 +325,8 @@ typedef void(^TLAnimationCompletion)(BOOL flag);
     CGFloat H = animateView.bounds.size.height;
     CGFloat angle = self.type == TLAnimatorTypeTiltLeft ? -M_PI_2 : M_PI_2;
     animateView.layer.anchorPoint = CGPointMake(0.5, 2);
-    animateView.layer.position = CGPointMake(W * animateView.layer.anchorPoint.x, H * animateView.layer.anchorPoint.y);
+    CGFloat insetY = isPresenting ? toView.frame.origin.y : fromView.frame.origin.y;
+    animateView.layer.position = CGPointMake(W * animateView.layer.anchorPoint.x, H * animateView.layer.anchorPoint.y + insetY);
     animateView.transform = isPresenting ? CGAffineTransformMakeRotation(angle) : CGAffineTransformIdentity;
    
     [UIView animateWithDuration:[self transitionDuration:transitionContext] animations:^{
@@ -506,16 +527,11 @@ typedef void(^TLAnimationCompletion)(BOOL flag);
     NSAssert(self.isPushOrPop, @"TLViewTransitionAnimator: 只支持Push/pop转场");
     
     UIViewController *fromViewController = [transitionContext viewControllerForKey:UITransitionContextFromViewControllerKey];
-    UIViewController *toViewController = [transitionContext viewControllerForKey:UITransitionContextToViewControllerKey];
-    
     UIView *containerView = transitionContext.containerView;
     UIView *fromView = [transitionContext viewForKey:UITransitionContextFromViewKey];
     UIView *toView = [transitionContext viewForKey:UITransitionContextToViewKey];
     
-    NSInteger toIndex = [toViewController.navigationController.viewControllers indexOfObject:toViewController];
-    NSInteger fromIndex = [fromViewController.navigationController.viewControllers indexOfObject:fromViewController];
-    BOOL isPush = (toIndex > fromIndex);
-    
+    BOOL isPush = isPresenting;
     UIView *sanpshotOfFromView;
     if (isPush) {
         sanpshotOfFromView = [fromViewController.view snapshotViewAfterScreenUpdates:NO];
@@ -567,6 +583,116 @@ typedef void(^TLAnimationCompletion)(BOOL flag);
 
 }
 
+#pragma mark - TLAnimatorSlidingDrawer
+- (void)slidingDrawerTypeTransition:(id<UIViewControllerContextTransitioning>)transitionContext presenting:(BOOL)isPresenting
+{
+//    NSAssert(self.isPushOrPop, @"TLViewTransitionAnimator: 只支持Push/pop转场");
+    UIViewController *fromViewController = [transitionContext viewControllerForKey:UITransitionContextFromViewControllerKey];
+    UIViewController *toViewController = [transitionContext viewControllerForKey:UITransitionContextToViewControllerKey];
+    
+    UIView *containerView = transitionContext.containerView;
+    UIView *fromView = fromViewController.view;
+    UIView *toView = toViewController.view;
+    
+    UIView *snapshot = isPresenting ? [fromView snapshotViewAfterScreenUpdates:NO] : [containerView viewWithTag:100];
+    snapshot.tag = 100; // dismiss之后才会销毁
+
+    if(isPresenting) {
+        [containerView addSubview:toView];
+        
+        UIView *mask = [[UIView alloc] initWithFrame:snapshot.bounds];
+        mask.backgroundColor = [UIColor colorWithWhite:0 alpha:0.15f];
+        [snapshot addSubview:mask];
+    }
+    [containerView addSubview:snapshot];
+    
+    CGFloat offsetX = tl_ScreenW - 100.f;
+//    isPresenting ? nil : [snapshot setFrame: CGRectOffset(snapshot.frame, offsetX, 0.f)];
+    
+    if (_slidEnabled) {
+        UIView *slidView = isPresenting ? toView : fromView;
+        CGFloat slidX = -slidView.bounds.size.width * 0.5;
+        !isPresenting ? nil : [slidView setFrame: CGRectOffset(slidView.frame, slidX, 0.f)];
+    }
+    
+    [UIView animateWithDuration:[self transitionDuration:transitionContext] animations:^{
+        CGFloat offsetX_Block = isPresenting ? offsetX : -offsetX;
+        snapshot.frame = CGRectOffset(snapshot.frame, offsetX_Block, 0.f);
+        
+        if (self->_slidEnabled) {
+            UIView *slidView = isPresenting ? toView : fromView;
+            CGFloat slidX = isPresenting ? slidView.bounds.size.width * 0.5 : -slidView.bounds.size.width * 0.5;
+            [slidView setFrame: CGRectOffset(slidView.frame, slidX, 0.f)];
+        }
+        
+    } completion:^(BOOL finished) {
+        if(!isPresenting && self->isPushOrPop) {
+            [containerView addSubview:toView];
+        }
+        
+        BOOL wasCancelled = [transitionContext transitionWasCancelled];
+        if (!isPresenting && !wasCancelled) {
+            [snapshot removeFromSuperview];
+            if (containerView.gestureRecognizers.count) {
+                [containerView removeGestureRecognizer: containerView.gestureRecognizers.firstObject];
+            }
+        }
+        
+        if (!wasCancelled && isPresenting) { // 添加手势
+            self->_presentedViewController = toViewController;
+            UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(dismissTapGestureRecognizerOfSlidingDrawerType:)];
+            [snapshot addGestureRecognizer:tap];
+            
+            UIPanGestureRecognizer *pan = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(dismissPanGestureRecognizerOfSlidingDrawerType:)];
+            [containerView addGestureRecognizer:pan];
+        }
+        
+        [transitionContext completeTransition:!wasCancelled];
+    }];
+}
+
+#pragma mark - 手势 Gesture Recognizer
+- (void)dismissTapGestureRecognizerOfSlidingDrawerType:(UITapGestureRecognizer *)tap {
+    if(_presentedViewController) {
+        [_presentedViewController dismissViewControllerAnimated:YES completion:nil];
+    }
+}
+
+- (void)dismissPanGestureRecognizerOfSlidingDrawerType:(UIPanGestureRecognizer *)pan {
+    if(_presentedViewController) {
+        switch (pan.state)
+        {
+            case UIGestureRecognizerStateBegan:
+            {
+                UIView *containerView = pan.view;
+                UIView *snapshot = [containerView viewWithTag:100];
+                CGPoint locationInSourceView = [pan locationInView:containerView];
+                
+                if (CGRectContainsPoint(snapshot.frame, locationInSourceView)) {
+                    _presentedViewController.transitionDelegate.interactiveRecognizer = pan;
+                    [_presentedViewController dismissViewControllerAnimated:YES completion:nil];
+                }
+            }
+                break;
+                
+//            case UIGestureRecognizerStateChanged:
+//                [self.transitionContext updateInteractiveTransition: percentComplete];
+//                break;
+//
+            case UIGestureRecognizerStateEnded:
+//                if (percentComplete >= 0.5)
+//                    [self.transitionContext finishInteractiveTransition];
+//                else
+//                    [self.transitionContext cancelInteractiveTransition];
+//                break;
+//
+            default:
+//                [self.transitionContext cancelInteractiveTransition];
+                
+                break;
+        }
+    }
+}
 
 #pragma mark - CABasicAnimation delegate
 - (void)animationDidStop:(CAAnimation *)anim finished:(BOOL)flag {

@@ -4,6 +4,7 @@
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
+        <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14283.14"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -12,6 +13,8 @@
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="TLSecondViewController">
             <connections>
                 <outlet property="imgView" destination="Not-hf-YMZ" id="l9c-Dg-0aW"/>
+                <outlet property="presentBtn" destination="h6O-bT-PP2" id="PtG-OU-qcu"/>
+                <outlet property="textLabel" destination="eKs-XU-EP4" id="hnE-ft-uMU"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
             </connections>
         </placeholder>
@@ -32,11 +35,21 @@
                     <autoresizingMask key="autoresizingMask" flexibleMinY="YES"/>
                 </imageView>
                 <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="4Re-zX-27L">
-                    <rect key="frame" x="161" y="328" width="52" height="30"/>
+                    <rect key="frame" x="55" y="328" width="264" height="30"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                    <color key="backgroundColor" red="1" green="0.57810515169999999" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                     <state key="normal" title="dismiss"/>
                     <connections>
                         <action selector="dismiss:" destination="-1" eventType="touchUpInside" id="7RW-VG-Mji"/>
+                    </connections>
+                </button>
+                <button hidden="YES" opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="h6O-bT-PP2">
+                    <rect key="frame" x="55" y="410" width="264" height="30"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                    <color key="backgroundColor" red="0.29853495959999998" green="0.84600949290000005" blue="0.39043116570000003" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                    <state key="normal" title="击按钮present"/>
+                    <connections>
+                        <action selector="present:" destination="-1" eventType="touchUpInside" id="59M-ws-AR9"/>
                     </connections>
                 </button>
             </subviews>

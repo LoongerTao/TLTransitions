@@ -21,6 +21,8 @@ NS_ASSUME_NONNULL_BEGIN
 /// 转场动画(面向present/push To View Controller)
 @property(nonatomic, weak, readonly) TLTransitionDelegate *transitionDelegate;
 
+@property(nonatomic, weak, readonly) UIViewController *presentedViewController;
+
 /** 侧滑pop/dismiss交互手势启用开关。默认开启（NO）
  * 1.特性：当pop/dismiss的方向为TLDirectionToLeft（向左动画退场）时，通过右侧滑（屏幕右侧向左滑动）启动交互；
  *        其它则都是通过左侧滑启动交互
@@ -29,22 +31,22 @@ NS_ASSUME_NONNULL_BEGIN
  */
 @property(nonatomic, assign) BOOL disableInteractivePopGestureRecognizer;
 
-
-//====================== 👇下面3个API是通用API ==========================//
-/**
- * 转场控制器(官方原生类型)。
- * @param vc 要转场的控制器
- * @param style 转场动画类型
- *          `UIModalTransitionStyleCoverVertical=0, 默认方式，竖向上推`
- *          `UIModalTransitionStyleFlipHorizontal, 水平反转`
- *          `UIModalTransitionStyleCrossDissolve, 隐出隐现`
- *          `UIModalTransitionStylePartialCurl, 部分翻页效果`
- * @param completion 完成转场的回调
+/** 注册手势，通过UIScreenEdgePanGestureRecognizer手势触发push/present
+ * @param isModal 转场方式： YES：modal， NO：push
+ * @param toDirection 方向（To）
+ * @param viewController 要转场的控制器
+ * @param animator 动画管理对象
  */
-- (void)presentViewController:(UIViewController *)vc
-              transitionStyle:(UIModalTransitionStyle)style
-                   completion:(void (^ __nullable)(void))completion;
+//- (void)registerInteractiveModalRecognizer:(BOOL)isModal
+//                            toDirection:(TLDirection)toDirection
+//                     toViewController:(UIViewController *)viewController
+//                             animator:(id <TLAnimatorProtocol>)animator;
 
+// 注册功能不完善，暂不开放
+
+
+
+//====================== 👇下面2个API是通用API ==========================//
 
 // NOTE：下面不同类型的Animator实现的转场效果有些类似，只是实现方案有所差异
 /**
@@ -70,9 +72,21 @@ NS_ASSUME_NONNULL_BEGIN
 
 
 //====================== 👇下面的API是👆上面两个的简化使用 ==========================//
-
-
 #pragma mark - Present / Dismiss
+/**
+ * 转场控制器(官方原生类型)。 对应TLSystemAnimator类型
+ * @param vc 要转场的控制器
+ * @param style 转场动画类型
+ *          `UIModalTransitionStyleCoverVertical=0, 默认方式，竖向上推`
+ *          `UIModalTransitionStyleFlipHorizontal, 水平反转`
+ *          `UIModalTransitionStyleCrossDissolve, 隐出隐现`
+ *          `UIModalTransitionStylePartialCurl, 部分翻页效果`
+ * @param completion 完成转场的回调
+ */
+- (void)presentViewController:(UIViewController *)vc
+              transitionStyle:(UIModalTransitionStyle)style
+                   completion:(void (^ __nullable)(void))completion;
+
 /**
  * 以滑动的方式present转场控制器。
  * @param vc 要转场的控制器
@@ -90,20 +104,14 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  * present转场控制器。
  * @param vc 要转场的控制器
- * @param tType present动画类型
- *          `kCATransitionFade`
- *          `kCATransitionMoveIn`
- *          `kCATransitionPush`
- *          `kCATransitionReveal`
- *          其它官方私有API：@"cube"、@"suckEffect"、@"oglFlip"、@"rippleEffect"、@"pageCurl"、@"pageUnCurl"、
- *          @"cameraIrisHollowOpen"、@"cameraIrisHollowClose"
+ * @param tType TLTransitionType动画类型(其中部分为私有API，详将定义处)
  * @param direction present方向
  * @param directionOfDismiss dismiss方向
  * @param completion 完成转场的回调
  * NOTE: 由于自定义情况下，系统不会将当前c控制器（self）从窗口移除，所以dismiss后，系统不会调用`- viewDidAppear:`和`- viewWillAppear:`等方法
  */
 - (void)presentViewController:(UIViewController *)vc
-               transitionType:(CATransitionType)tType
+               transitionType:(TLTransitionType)tType
                     direction:(TLDirection)direction
              dismissDirection:(TLDirection)directionOfDismiss
                    completion:(void (^ __nullable)(void))completion;
@@ -139,19 +147,13 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  * push 转场控制器。
  * @param vc 要转场的控制器
- * @param tType present动画类型
- *          `kCATransitionFade`
- *          `kCATransitionMoveIn`
- *          `kCATransitionPush`
- *          `kCATransitionReveal`
- *          其它官方私有API：@"cube"、@"suckEffect"、@"oglFlip"、@"rippleEffect"、@"pageCurl"、@"pageUnCurl"、
- *          @"cameraIrisHollowOpen"、@"cameraIrisHollowClose"
+ * @param tType TLTransitionType动画类型(其中部分为私有API，详将定义处)
  * @param direction push方向
  * @param directionOfPop pop方向
  * NOTE: 由于自定义情况下，系统不会将当前c控制器（self）从窗口移除，所以dismiss后，系统不会调用`- viewDidAppear:`和`- viewWillAppear:`等方法
  */
 - (void)pushViewController:(UIViewController *)vc
-            transitionType:(CATransitionType)tType
+            transitionType:(TLTransitionType)tType
                  direction:(TLDirection)direction
           dismissDirection:(TLDirection)directionOfPop;
 

@@ -46,7 +46,11 @@
         _scrollView = [[UIScrollView alloc] initWithFrame:self.view.bounds];
         _scrollView.showsVerticalScrollIndicator = NO;
         _scrollView.delegate = self;
-        _scrollView.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;
+        if (@available(iOS 11.0, *)) {
+            _scrollView.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;
+        } else {
+            self.automaticallyAdjustsScrollViewInsets = NO;
+        }
     }
     return _scrollView;
 }
@@ -81,7 +85,7 @@
     if (_allowDismiss && scrollView.contentOffset.y < 0) {
         _allowDismiss = NO;
         self.transitionDelegate.popGestureRecognizerDirection = TLDirectionToBottom;
-        self.transitionDelegate.popGestureRecognizer = scrollView.panGestureRecognizer;
+        self.transitionDelegate.interactiveRecognizer = scrollView.panGestureRecognizer;
         [self dismissViewControllerAnimated:YES completion:nil];
     }
 }

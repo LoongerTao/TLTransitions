@@ -13,7 +13,8 @@
 
 
 @interface TLMenuViewController ()<CAAnimationDelegate>{
-    UIView *_bView;
+    UIView *_frameView;
+    UIView *_sheetView;
     UILabel *_titleLabel;
     TLTransition *_transition;
     
@@ -39,7 +40,7 @@
     
     TLSection *presentSection = [TLSection new];
     presentSection.title = @"Present view controller";
-    presentSection.show = YES;
+    presentSection.show = NO;
     presentSection.rows = @[@"System Animator", @"Swipe Animator" ,@"CATransition Animator",
                             @"CuStom Animator",@"个人动画案例收集（TLAnimator）"];
     
@@ -51,6 +52,8 @@
     _data = @[viewSection, presentSection, pushSection];
     
     self.tableView.tableFooterView = [UIView new];
+    
+    self.automaticallyAdjustsScrollViewInsets = YES;
 }
 
 #pragma mark - Table view data source and delegate
@@ -148,7 +151,7 @@
     }
     vc.type = type;
     
-    [self pushViewController:vc transitionType:@"cube" direction:TLDirectionToLeft dismissDirection:TLDirectionToRight];
+    [self pushViewController:vc transitionType:TLTransitionCube direction:TLDirectionToLeft dismissDirection:TLDirectionToRight];
 }
 
 #pragma mark - Transitions Of View
@@ -179,18 +182,39 @@
 
 // TLPopTypeActionSheet
 - (void)actionSheetType:(UIView *)sender {
-    CGRect bounds = CGRectMake(0, 0, self.view.bounds.size.width, 500.f);
-    UIView *bView = [self creatViewWithBounds:bounds color:tl_Color(248, 218, 200)];
-    _transition = [TLTransition showView:bView popType:TLPopTypeActionSheet];
+    if (_sheetView == nil) {
+        CGRect bounds = CGRectMake(0, 0, self.view.bounds.size.width, 500.f);
+        UIView *bView = [self creatViewWithBounds:bounds color:tl_Color(248, 218, 200)];
+        
+        UILabel *textLabel = [[UILabel alloc] init];
+        textLabel.text = @"通过pan手势改变高度";
+        [textLabel sizeToFit];
+        textLabel.center = CGPointMake(bView.bounds.size.width * 0.5, 20);
+        [bView addSubview:textLabel];
+        
+        _sheetView = bView;
+        UIPanGestureRecognizer *pan = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(pan:)];
+        [_sheetView addGestureRecognizer:pan];
+    }
+    _transition = [TLTransition showView:_sheetView popType:TLPopTypeActionSheet];
+}
+
+- (void)pan:(UIPanGestureRecognizer *)pan {
     
-    UILabel *textLabel = [[UILabel alloc] init];
-    textLabel.text = @"通过pan手势改变高度";
-    [textLabel sizeToFit];
-    textLabel.center = CGPointMake(bView.bounds.size.width * 0.5, 20);
-    [bView addSubview:textLabel];
+    CGPoint point = [pan locationInView:[UIApplication sharedApplication].keyWindow];
     
-    UIPanGestureRecognizer *pan = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(pan:)];
-    [bView addGestureRecognizer:pan];
+    CGFloat height = tl_ScreenH - point.y;
+    if (height < 100) {
+        height = 100;
+    }else if (height > tl_ScreenH - 88){
+        height = tl_ScreenH - 88;
+    }
+    
+    CGRect rect = _sheetView.bounds;
+    rect.size.height = height;
+    _sheetView.bounds = rect;
+    [_transition updateContentSize];
+    
 }
 
 // to point
@@ -207,6 +231,9 @@
     CGRect finalFrame = CGRectMake(30, 220, self.view.bounds.size.width * 0.8f, 200.f);
     UIView *bView = [self creatViewWithBounds:initialFrame color:tl_Color(250, 250, 250)];
     [TLTransition showView:bView initialFrame:initialFrame finalFrame:finalFrame];
+    
+    _frameView = bView;
+    [bView addObserver:self forKeyPath:@"frame" options:NSKeyValueObservingOptionNew context:nil];
 }
 
 // 自定义动画
@@ -308,28 +335,8 @@
     titleLabel.textColor = [UIColor orangeColor];
     titleLabel.textAlignment = NSTextAlignmentCenter;
     titleLabel.frame = BView.bounds;
-    
-    _bView = BView;
-    [BView addObserver:self forKeyPath:@"frame" options:NSKeyValueObservingOptionNew context:nil];
-    return BView;
-}
 
-- (void)pan:(UIPanGestureRecognizer *)pan {
-    
-    CGPoint point = [pan locationInView:[UIApplication sharedApplication].keyWindow];
-    
-    CGFloat height = tl_ScreenH - point.y;
-    if (height < 100) {
-        height = 100;
-    }else if (height > tl_ScreenH - 88){
-        height = tl_ScreenH - 88;
-    }
-    
-    CGRect rect = _bView.bounds;
-    rect.size.height = height;
-    _bView.bounds = rect;
-    [_transition updateContentSize];
-    
+    return BView;
 }
 
 #pragma mark - Other
@@ -346,6 +353,6 @@
 }
 
 - (void)dealloc {
-    [_bView removeObserver:self forKeyPath:@"frame"];
+    [_frameView removeObserver:self forKeyPath:@"frame"];
 }
 @end

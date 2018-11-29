@@ -20,6 +20,10 @@ NS_ASSUME_NONNULL_BEGIN
 /// 滑入方式
 @property (nonatomic, assign) TLSwipeType swipeType;
 
++ (instancetype)animatorWithSwipeType:(TLSwipeType)swipeType
+                        pushDirection:(TLDirection)pushDirection
+                         popDirection:(TLDirection)popDirection;
+
 @end
 
 NS_ASSUME_NONNULL_END

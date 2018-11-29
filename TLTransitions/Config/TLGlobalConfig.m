@@ -8,21 +8,6 @@
 
 #import "TLGlobalConfig.h"
 
-CATransitionSubtype getSubtype(TLDirection direction) {
-    CATransitionSubtype subtype = kCATransitionFromLeft;
-    if (direction == TLDirectionToTop) {
-        subtype = kCATransitionFromBottom;
-    }else if(direction == TLDirectionToLeft) {
-        subtype = kCATransitionFromRight;
-    }else if(direction == TLDirectionToBottom) {
-        subtype = kCATransitionFromTop;
-    }else if(direction == TLDirectionToRight) {
-        subtype = kCATransitionFromLeft;
-    }
-    
-    return subtype;
-}
-
 UIRectEdge getRectEdge(TLDirection direction) {
     UIRectEdge edge = UIRectEdgeLeft;
     if (direction == TLDirectionToTop) {
@@ -62,3 +47,4 @@ UIImage * resizableSnapshotImage(UIView *view, CGRect inRect) {
     
     return snapshot;
 }
+

@@ -46,6 +46,9 @@ static TLTransitionDelegate *_instace;
 
 + (void)addAnimator:(id<TLAnimatorProtocol>)animator  forKey:(UIViewController *)key {
     NSString *KEY = [self keyWithViewController:key];
+    
+    NSLog(@"add KEY: %@",KEY);
+    
     [[[self sharedInstace] animators] setObject:animator forKey:KEY];
     _instace.currentAnimator = animator;
 }
@@ -111,15 +114,8 @@ static TLTransitionDelegate *_instace;
 #pragma mark 转场手势交互管理者（present / dismiss）
 - (id<UIViewControllerInteractiveTransitioning>)interactionControllerForPresentation:(id<UIViewControllerAnimatedTransitioning>)animator
 {
-//    if (_popGestureRecognizer) {
-//        UIRectEdge edge = [self getPopEdge];
-//        TLPercentDrivenInteractiveTransition *interactiveTransition;
-//        interactiveTransition = [[TLPercentDrivenInteractiveTransition alloc] initWithGestureRecognizer:_popGestureRecognizer edgeForDragging: edge];
-//        _popGestureRecognizer = nil;
-//        return interactiveTransition;
-//    } else {
-        return nil;
-//    }
+    id <TLAnimatorProtocol> tempAnimator =  (id<TLAnimatorProtocol>)animator;
+    return [self interactiveTransitionWithAnimator:tempAnimator];
 }
 
 - (id<UIViewControllerInteractiveTransitioning>)interactionControllerForDismissal:(id<UIViewControllerAnimatedTransitioning>)animator
@@ -130,11 +126,11 @@ static TLTransitionDelegate *_instace;
 }
 
 - (TLPercentDrivenInteractiveTransition *)interactiveTransitionWithAnimator:(id <TLAnimatorProtocol>)animator {
-    if (_popGestureRecognizer) {
+    if (_interactiveRecognizer) {
         UIRectEdge edge = [self getPopEdge];
         TLPercentDrivenInteractiveTransition *interactiveTransition;
-        interactiveTransition = [[TLPercentDrivenInteractiveTransition alloc] initWithGestureRecognizer:_popGestureRecognizer edgeForDragging: edge];
-        _popGestureRecognizer = nil;
+        interactiveTransition = [[TLPercentDrivenInteractiveTransition alloc] initWithGestureRecognizer:_interactiveRecognizer edgeForDragging: edge];
+        _interactiveRecognizer = nil;
         
         if ([animator respondsToSelector:@selector(percentOfFinishInteractiveTransition)]) {
             CGFloat percent = [animator percentOfFinishInteractiveTransition];
@@ -155,8 +151,10 @@ static TLTransitionDelegate *_instace;
 }
 
 - (UIRectEdge)getPopEdge {
-    if(_popGestureRecognizerDirection >= 0){
-        return getRectEdge(_popGestureRecognizerDirection);
+    if(_popGestureRecognizerDirection >= TLDirectionToTop && _popGestureRecognizerDirection <= TLDirectionToRight ){
+        UIRectEdge edge = getRectEdge(_popGestureRecognizerDirection);
+        _popGestureRecognizerDirection = -1;
+        return edge;
     }
     
     UIRectEdge edge = UIRectEdgeLeft;

@@ -12,6 +12,7 @@
 #import "TLTransition.h"
 #import "UIViewController+Transitioning.h"
 #import "TLGlobalConfig.h"
+#import "TLSystemAnimator.h"
 #import "TLAnimatorProtocol.h"
 #import "TLSwipeAnimator.h"
 #import "TLCATransitonAnimator.h"

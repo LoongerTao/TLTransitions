@@ -28,7 +28,12 @@
     [super viewDidLoad];
     
     self.navigationItem.title = @"A";
-//    self.tableView.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;
+    
+//    if (@available(iOS 11.0, *)) {
+//        self.tableView.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;
+//    } else {
+//        self.automaticallyAdjustsScrollViewInsets = NO;
+//    }
     
     
     NSString *title;
@@ -66,11 +71,14 @@
                                    @(TLAnimatorTypeTiltLeft), @(TLAnimatorTypeFrame), @(TLAnimatorTypeRectScale),
                                    @(TLAnimatorTypeRectScale), @(TLAnimatorTypeCircular),@(TLAnimatorTypeFlip)];
             }else{
-                rows = @[@"开门",@"绽放", @"斜角切入",@"向右边倾斜旋转",@"向左边倾斜旋转",@"指定frame：initialFrame --> finalFrame",
-                         @"对指定rect范围，进行缩放和平移",@"对指定rect范围...2[纯净版]",@"圆形",@"App Store Card(demo自定义案例，不在框架内)"];
+                rows = @[@"开门",@"绽放", @"斜角切入",@"向右边倾斜旋转",@"向左边倾斜旋转",
+                         @"指定frame：initialFrame --> finalFrame", @"对指定rect范围，进行缩放和平移",
+                         @"对指定rect范围...2[纯净版]",@"圆形",@"抽屉效果",@"App Store Card(demo自定义案例，不在框架内)"
+                         ];
                 rowsOfSubtitle = @[@(TLAnimatorTypeOpen), @(TLAnimatorTypeOpen2),@(TLAnimatorTypeBevel),
                                    @(TLAnimatorTypeTiltRight), @(TLAnimatorTypeTiltLeft), @(TLAnimatorTypeFrame),
-                                   @(TLAnimatorTypeRectScale), @(TLAnimatorTypeRectScale), @(TLAnimatorTypeCircular),@100];
+                                   @(TLAnimatorTypeRectScale), @(TLAnimatorTypeRectScale), @(TLAnimatorTypeCircular),
+                                   @(TLAnimatorTypeSlidingDrawer),@100];
             }
         }
             break;
@@ -158,9 +166,20 @@
     return cell;
 }
 
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    NSString *text = self.data[indexPath.section].rows[indexPath.row];
+    if ([text hasPrefix:@"·"]) {
+        return 145;
+    }
+    return 44;
+}
+
+
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
     return 50;
 }
+
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
     UITableViewHeaderFooterView *headerView = [tableView dequeueReusableHeaderFooterViewWithIdentifier:@"HeaderReuseIdentifier"];
@@ -221,9 +240,15 @@
 - (void)presentBySystem:(NSIndexPath *)indexPath {
    
     TLSecondViewController *vc = [[TLSecondViewController alloc] init];
+    TLSystemAnimator *anm = [TLSystemAnimator animatorWithTransitionStyle:indexPath.row];
+    [self presentViewController:vc animator:anm completion:nil];
+    
+    
+    /* 简化版
+    TLSecondViewController *vc = [[TLSecondViewController alloc] init];
     [self presentViewController:vc transitionStyle:indexPath.row completion:^{
         NSLog(@"system : completion---%zi",indexPath.row);
-    }];
+    }];*/
 }
 
 #pragma mark 平滑效果
@@ -242,15 +267,31 @@
     }else {
         type = TLSwipeTypeOut;
     }
+    
+    /*
+     typedef enum : NSUInteger {
+         TLDirectionToTop = 1 << 0,
+         TLDirectionToLeft = 1 << 1,
+         TLDirectionToBottom = 1 << 2,
+         TLDirectionToRight = 1 << 3,
+     } TLDirection;
+     */
+    
+    TLSwipeAnimator *anm = [TLSwipeAnimator animatorWithSwipeType:type
+                                                    pushDirection:1<<cell.sgmtA.selectedSegmentIndex
+                                                     popDirection:1<<cell.sgmtA.selectedSegmentIndex];
+    [self presentViewController:vc animator:anm completion:nil];
+    
+     /* 简化版
     [self presentViewController:vc
                       swipeType:type
-               presentDirection:cell.sgmtA.selectedSegmentIndex
-               dismissDirection:cell.sgmtB.selectedSegmentIndex
+               presentDirection:1<<cell.sgmtA.selectedSegmentIndex
+               dismissDirection:1<<cell.sgmtB.selectedSegmentIndex
                      completion:^
     {
         NSLog(@"system : completion---%zi",indexPath.row);
     }];
-    
+    */
 }
 
 
@@ -262,97 +303,70 @@
     TLDirection direction = TLDirectionToBottom;
     TLDirection dismissDirection = TLDirectionToBottom;
     if ([text hasPrefix:@"·"]) {
-        switch (cell.sgmtA.selectedSegmentIndex) {
-            case 0:
-                direction = TLDirectionToTop;
-                break;
-            case 1:
-                direction = TLDirectionToLeft;
-                break;
-            case 2:
-                direction = TLDirectionToBottom;
-                break;
-            default:
-                direction = TLDirectionToRight;
-                break;
-        }
-        
-        switch (cell.sgmtB.selectedSegmentIndex) {
-            case 0:
-                dismissDirection = TLDirectionToTop;
-                break;
-            case 1:
-                dismissDirection = TLDirectionToLeft;
-                break;
-            case 2:
-                dismissDirection = TLDirectionToBottom;
-                break;
-            default:
-                dismissDirection = TLDirectionToRight;
-                break;
-        }
+        direction = 1 << cell.sgmtA.selectedSegmentIndex;
+        dismissDirection = 1 << cell.sgmtB.selectedSegmentIndex;
     }
     
-    CATransitionType transitionType = kCATransitionFade;
-    CATransitionType transitionTypeOfDismiss = kCATransitionFade;
+    TLTransitionType transitionType = TLTransitionFade;
+    TLTransitionType transitionTypeOfDismiss = TLTransitionFade;
     switch (indexPath.row) {
         case 0:
         {
-            transitionType = kCATransitionFade;
-            transitionTypeOfDismiss = kCATransitionFade;
+            transitionType = TLTransitionFade;
+            transitionTypeOfDismiss = TLTransitionFade;
         }
             break;
         case 1:
         {
-            transitionType = kCATransitionMoveIn;
-            transitionTypeOfDismiss = kCATransitionMoveIn;
+            transitionType = TLTransitionMoveIn;
+            transitionTypeOfDismiss = TLTransitionMoveIn;
         }
             break;
         case 2:
         {
-            transitionType = kCATransitionPush;
-            transitionTypeOfDismiss = kCATransitionPush;
+            transitionType = TLTransitionPush;
+            transitionTypeOfDismiss = TLTransitionPush;
         }
             break;
         case 3:
         {
-            transitionType = kCATransitionReveal;
-            transitionTypeOfDismiss = kCATransitionReveal;
+            transitionType = TLTransitionReveal;
+            transitionTypeOfDismiss = TLTransitionReveal;
         }
             break;
         case 4:
         {
-            transitionType = @"cube";
-            transitionTypeOfDismiss = @"cube";
+            transitionType = TLTransitionCube;
+            transitionTypeOfDismiss =TLTransitionCube;
         }
             break;
         case 5:
         {
-            transitionType = @"suckEffect";
-            transitionTypeOfDismiss = @"suckEffect";
+            transitionType = TLTransitionSuckEffect;
+            transitionTypeOfDismiss = TLTransitionSuckEffect;
         }
         case 6:
         {
-            transitionType = @"oglFlip";
-            transitionTypeOfDismiss = @"oglFlip";
+            transitionType =TLTransitionOglFlip;
+            transitionTypeOfDismiss = TLTransitionOglFlip;
         }
             break;
         case 7:
         {
-            transitionType = @"rippleEffect";
-            transitionTypeOfDismiss = @"rippleEffect";
+            transitionType = TLTransitionRippleEffect;
+            transitionTypeOfDismiss = TLTransitionRippleEffect;
         }
             break;
         case 8:
         {
-            transitionType = @"pageCurl";
-            transitionTypeOfDismiss = @"pageUnCurl";
+            transitionType = TLTransitionPageCurl;
+            transitionTypeOfDismiss = TLTransitionPageUnCurl;
         }
             break;
         case 9:
         {
-            transitionType = @"cameraIrisHollowOpen";
-            transitionTypeOfDismiss = @"cameraIrisHollowClose";
+            transitionType = TLTransitionCameraIrisHollowOpen;
+            transitionTypeOfDismiss = TLTransitionCameraIrisHollowClose;
         }
             break;
         default:
@@ -618,8 +632,12 @@
 #pragma mark TLAnimator(个人收集)
 - (void)presentByTLAnimator:(NSIndexPath *)indexPath {
     TLSecondViewController *vc = [[TLSecondViewController alloc] init];
-   
     TLAnimatorType type = [self.data[indexPath.section].rowsOfSubTitle[indexPath.row] integerValue];
+    if (type == TLAnimatorTypeSlidingDrawer) {
+        type = TLAnimatorTypeTiltRight;
+        vc.isShowBtn = YES;
+        vc.disableInteractivePopGestureRecognizer = YES;
+    }
     TLAnimator *animator = [TLAnimator animatorWithType:type];
 //    animator.transitionDuration = 1.f;
     
@@ -668,8 +686,24 @@
     }else {
         type = TLSwipeTypeOut;
     }
-    [self pushViewController:vc swipeType:type pushDirection:cell.sgmtA.selectedSegmentIndex popDirection:cell.sgmtB.selectedSegmentIndex];
     
+    /*
+     typedef enum : NSUInteger {
+     TLDirectionToTop = 1 << 0,
+     TLDirectionToLeft = 1 << 1,
+     TLDirectionToBottom = 1 << 2,
+     TLDirectionToRight = 1 << 3,
+     } TLDirection;
+     */
+    
+    TLSwipeAnimator *anm = [TLSwipeAnimator animatorWithSwipeType:type
+                                                    pushDirection:1<<cell.sgmtA.selectedSegmentIndex
+                                                     popDirection:1<<cell.sgmtA.selectedSegmentIndex];
+    [self pushViewController:vc animator:anm];
+    
+    /* 简化
+    [self pushViewController:vc swipeType:type pushDirection:cell.sgmtA.selectedSegmentIndex popDirection:cell.sgmtB.selectedSegmentIndex];
+    */
 }
 
 - (void)pushByCATransition:(NSIndexPath *)indexPath {
@@ -722,7 +756,7 @@
         
     }else if (type == TLAnimatorTypeCircular) {
         UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
-        CGPoint center = [self.tableView convertPoint:cell.center toView:[UIApplication sharedApplication].keyWindow];
+        CGPoint center = [self.tableView convertPoint:cell.center toView:self.view];
         center.x = arc4random_uniform(cell.bounds.size.width - 40) + 20;
         animator.center = center;
         animator.startRadius = cell.bounds.size.height / 2;

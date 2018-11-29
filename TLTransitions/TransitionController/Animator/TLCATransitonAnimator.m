@@ -31,10 +31,10 @@
 }
 
 #pragma mark - creat instancetype
-+ (instancetype)animatorWithTransitionType:(CATransitionType)tType
-                                          direction:(TLDirection)direction
-                            transitionTypeOfDismiss:(CATransitionType)tTypeOfDismiss
-                                 directionOfDismiss:(TLDirection)directionOfDismiss
++ (instancetype)animatorWithTransitionType:(TLTransitionType)tType
+                                 direction:(TLDirection)direction
+                   transitionTypeOfDismiss:(TLTransitionType)tTypeOfDismiss
+                        directionOfDismiss:(TLDirection)directionOfDismiss
 {
     TLCATransitonAnimator *animator = [self new];
     animator.tType = tType;
@@ -43,7 +43,6 @@
     animator.directionOfDismiss = directionOfDismiss;
     return animator;
 }
-
 
 #pragma mark - UIViewControllerAnimatedTransitioning
 - (NSTimeInterval)transitionDuration:(nullable id<UIViewControllerContextTransitioning>)transitionContext {
@@ -77,6 +76,7 @@
     
     _isPresenting = isPresenting;
     if (isPresenting)
+        toView.frame = [transitionContext finalFrameForViewController:toViewController];
         [containerView addSubview:toView];
     
     if (!isPresenting) { // dismiss
@@ -94,12 +94,73 @@
     _transitionContext = transitionContext;
     CATransition *animation = [CATransition animation];
     animation.duration = [self transitionDuration:transitionContext];
-    animation.type = isPresenting ? self.tType : self.tTypeOfDismiss;
+    animation.type =  getType( isPresenting ? self.tType : self.tTypeOfDismiss);
     animation.subtype = getSubtype(isPresenting ? self.direction : self.directionOfDismiss);
     animation.delegate = self;
     animation.removedOnCompletion = YES;
     
     [containerView.window.layer addAnimation:animation forKey:nil];
+}
+
+NSString * getType(TLTransitionType type) {
+    NSString *text = @"";
+    switch (type) {
+        case TLTransitionFade:
+            text =  @"fade";
+            break;
+        case TLTransitionMoveIn:
+            text =  @"moveIn";
+            break;
+        case TLTransitionPush:
+            text =  @"push";
+            break;
+        case TLTransitionReveal:
+            text =  @"reveal";
+            break;
+        case TLTransitionCube:
+            text =  @"cube";
+            break;
+        case TLTransitionSuckEffect:
+            text =  @"suckEffect";
+            break;
+        case TLTransitionOglFlip:
+            text =  @"oglFlip";
+            break;
+        case TLTransitionRippleEffect:
+            text =  @"rippleEffect";
+            break;
+        case TLTransitionPageCurl:
+            text =  @"pageCurl";
+            break;
+        case TLTransitionPageUnCurl:
+            text =  @"pageUnCurl";
+            break;
+        case TLTransitionCameraIrisHollowOpen:
+            text =  @"cameraIrisHollowOpen";
+            break;
+        case TLTransitionCameraIrisHollowClose:
+            text =  @"cameraIrisHollowClose";
+            break;
+        default:
+            break;
+    }
+    return text;
+}
+
+
+NSString * getSubtype(TLDirection direction) {
+    NSString *subtype = @"";
+    if (direction == TLDirectionToTop) {
+        subtype = @"fromTop";
+    }else if(direction == TLDirectionToLeft) {
+        subtype = @"fromRight";
+    }else if(direction == TLDirectionToBottom) {
+        subtype = @"fromBottom";
+    }else if(direction == TLDirectionToRight) {
+        subtype = @"fromLeft";
+    }
+    
+    return subtype;
 }
 
 #pragma mark - CAAnimationDelegate
