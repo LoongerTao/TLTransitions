@@ -93,7 +93,7 @@
         }
     }
     
-    if (_speedOfPercent > 0.5) {
+    if (_speedOfPercent >= 0.2) {
         percent *= _speedOfPercent;
     }
     

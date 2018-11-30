@@ -24,6 +24,7 @@ static NSString * const reuseIdentifier = @"AppStoerCardCell";
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.navigationItem.title = @"App Store";
+    self.view.backgroundColor = [UIColor whiteColor];
     
     _cards = @[@"0",@"1",@"2",@"3",@"4",@"5",@"6",@"7",@"8",@"9",@"10"];
     
@@ -32,7 +33,9 @@ static NSString * const reuseIdentifier = @"AppStoerCardCell";
     layout.minimumLineSpacing = 20;
     layout.minimumInteritemSpacing = 20;
     
-    UICollectionView *cView = [[UICollectionView alloc] initWithFrame:self.view.bounds collectionViewLayout:layout];
+    CGRect rect = CGRectOffset(self.view.bounds, 20, 0);
+    rect.size.width -= 20;
+    UICollectionView *cView = [[UICollectionView alloc] initWithFrame:rect collectionViewLayout:layout];
     [self.view addSubview:cView];
     cView.backgroundColor = [UIColor groupTableViewBackgroundColor];
     cView.delegate = self;
@@ -41,6 +44,11 @@ static NSString * const reuseIdentifier = @"AppStoerCardCell";
     
     [self.collectionView registerClass:[TLAppStoreCardCell class] forCellWithReuseIdentifier:reuseIdentifier];
 }
+
+- (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
+
 
 #pragma mark <UICollectionViewDataSource>
 

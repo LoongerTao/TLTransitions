@@ -16,8 +16,8 @@ NS_ASSUME_NONNULL_BEGIN
 // 交互手势(滑动方向即动画方向)。 必须在手势唤醒的时候(UIGestureRecognizerStateBegan)赋值，否则提前赋值会导致转场失败
 @property (nonatomic, weak) UIPanGestureRecognizer * _Nullable interactiveRecognizer;
 
-// didmiss/pop手势的方向（每次唤醒手势都需要重新设置）--> 仅限用户自定义时使用,或者多手势(用小于0的数清空，如-1)
-@property (nonatomic, assign) TLDirection popGestureRecognizerDirection;
+// 临时交互手势的方向（每次唤醒手势都需要重新设置）--> 只生效一次（优先级最高）
+@property (nonatomic, assign) TLDirection tempInteractiveDirection;
 
 /// 采用单例模式是为了实现，多级Push转场，防止后面的转场覆盖前面的，导致pop动画被后面的取代
 + (instancetype)sharedInstace;

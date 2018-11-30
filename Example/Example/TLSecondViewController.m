@@ -26,17 +26,28 @@
     
     if (_isShowBtn) {
         
-        TLSecondViewController *vc = [[TLSecondViewController alloc] init];
-        vc.textLabel.text = @"C";
-        vc.view.backgroundColor = [UIColor yellowColor];
+        UIViewController *vc = [[UIViewController alloc] init];
+        CAGradientLayer *gradient = [CAGradientLayer layer];
+        gradient.frame = vc.view.bounds;
+        gradient.colors = [NSArray arrayWithObjects:
+                           (id)[UIColor redColor].CGColor,
+                           (id)[UIColor greenColor].CGColor,
+                           (id)[UIColor blueColor].CGColor, nil];
+        gradient.startPoint = CGPointMake(0, 0);
+        gradient.endPoint = CGPointMake(1, 1);
+        gradient.locations = @[@0.0, @0.5, @1.0];
+        [vc.view.layer addSublayer:gradient];
+        
+        
         TLAnimatorType type = TLAnimatorTypeSlidingDrawer;
         TLAnimator *animator = [TLAnimator animatorWithType:type];
         animator.transitionDuration = 0.35f;
+       
+        // 必须初始化的属性
+        animator.isPushOrPop = NO;
+        animator.interactiveDirectionOfPush = TLDirectionToRight;
         
-//        [self registerInteractiveModalRecognizer:YES
-//                                     toDirection:TLDirectionToRight
-//                                toViewController:vc
-//                                        animator:animator];
+        [self registerInteractiveTransitionToViewController:vc animator:animator];
     }
 }
 

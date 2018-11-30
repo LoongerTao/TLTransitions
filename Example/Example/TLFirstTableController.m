@@ -88,7 +88,7 @@
     if (_isPush) {
         section.title = [NSString stringWithFormat:@"Push : %@",title];
     }else {
-        section.title = [NSString stringWithFormat:@"Present : %@",title];
+        section.title = [NSString stringWithFormat:@"Modal : %@",title];
     }
     section.show = YES;
     section.rows = rows;
@@ -217,7 +217,7 @@
             NSString *text = self.data[indexPath.section].rows[indexPath.row];
             if ([text containsString:@"App Store"]) {
                 TLAppStoreListController *vc = [TLAppStoreListController new];
-                [self.navigationController pushViewController:vc animated:YES];
+                [self presentViewController:vc swipeType:TLSwipeTypeIn presentDirection:TLDirectionToLeft dismissDirection:TLDirectionToLeft completion:nil];
             }else {
                 [self presentByTLAnimator:indexPath];
             }

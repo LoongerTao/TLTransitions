@@ -28,8 +28,9 @@ typedef void(^TLAnimationCompletion)(BOOL flag);
 #pragma mark - TLAnimatorProtocol
 @synthesize transitionDuration;
 @synthesize isPushOrPop;
+@synthesize interactiveDirectionOfPush;
 
-- (TLDirection)directionForDragging; {
+- (TLDirection)interactiveDirectionOfPop {
     if (self.type == TLAnimatorTypeTiltLeft || self.type == TLAnimatorTypeSlidingDrawer){
         return TLDirectionToLeft;
     }
@@ -48,6 +49,13 @@ typedef void(^TLAnimationCompletion)(BOOL flag);
     }
     
     return 0.5f;
+}
+
+- (CGFloat)speedOfPercent {
+    if (self.type == TLAnimatorTypeTiltLeft || self.type == TLAnimatorTypeTiltRight){
+        return 0.5f;
+    }
+    return 0;
 }
 
 #pragma mark - creat instance
@@ -307,7 +315,7 @@ typedef void(^TLAnimationCompletion)(BOOL flag);
     }];
 }
 
-#pragma mark - TLAnimatorTypetilt
+#pragma mark - TLAnimatorTypeTilt
 - (void)tiltTypeTransition:(id<UIViewControllerContextTransitioning>)transitionContext presenting:(BOOL)isPresenting {
     
     UIView *fromView = [transitionContext viewControllerForKey:UITransitionContextFromViewControllerKey].view;
@@ -602,12 +610,17 @@ typedef void(^TLAnimationCompletion)(BOOL flag);
         
         UIView *mask = [[UIView alloc] initWithFrame:snapshot.bounds];
         mask.backgroundColor = [UIColor colorWithWhite:0 alpha:0.15f];
+        mask.tag = 99;
         [snapshot addSubview:mask];
+        
+        snapshot.layer.shadowOpacity = 0.33f;
+        snapshot.layer.shadowRadius = 5.f;
+        snapshot.layer.shadowOffset = CGSizeMake(-3, -1.f) ;
     }
     [containerView addSubview:snapshot];
     
     CGFloat offsetX = tl_ScreenW - 100.f;
-//    isPresenting ? nil : [snapshot setFrame: CGRectOffset(snapshot.frame, offsetX, 0.f)];
+    [snapshot viewWithTag:99].alpha = isPresenting ? 0.f : 1.f;
     
     if (_slidEnabled) {
         UIView *slidView = isPresenting ? toView : fromView;
@@ -618,7 +631,7 @@ typedef void(^TLAnimationCompletion)(BOOL flag);
     [UIView animateWithDuration:[self transitionDuration:transitionContext] animations:^{
         CGFloat offsetX_Block = isPresenting ? offsetX : -offsetX;
         snapshot.frame = CGRectOffset(snapshot.frame, offsetX_Block, 0.f);
-        
+        [snapshot viewWithTag:99].alpha = !isPresenting ? 0.f : 1.f;
         if (self->_slidEnabled) {
             UIView *slidView = isPresenting ? toView : fromView;
             CGFloat slidX = isPresenting ? slidView.bounds.size.width * 0.5 : -slidView.bounds.size.width * 0.5;
@@ -638,6 +651,7 @@ typedef void(^TLAnimationCompletion)(BOOL flag);
             }
         }
         
+        [transitionContext completeTransition:!wasCancelled];
         if (!wasCancelled && isPresenting) { // 添加手势
             self->_presentedViewController = toViewController;
             UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(dismissTapGestureRecognizerOfSlidingDrawerType:)];
@@ -646,8 +660,6 @@ typedef void(^TLAnimationCompletion)(BOOL flag);
             UIPanGestureRecognizer *pan = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(dismissPanGestureRecognizerOfSlidingDrawerType:)];
             [containerView addGestureRecognizer:pan];
         }
-        
-        [transitionContext completeTransition:!wasCancelled];
     }];
 }
 
@@ -667,28 +679,14 @@ typedef void(^TLAnimationCompletion)(BOOL flag);
                 UIView *containerView = pan.view;
                 UIView *snapshot = [containerView viewWithTag:100];
                 CGPoint locationInSourceView = [pan locationInView:containerView];
-                
                 if (CGRectContainsPoint(snapshot.frame, locationInSourceView)) {
+                    _presentedViewController.transitionDelegate.tempInteractiveDirection = TLDirectionToLeft;
                     _presentedViewController.transitionDelegate.interactiveRecognizer = pan;
                     [_presentedViewController dismissViewControllerAnimated:YES completion:nil];
                 }
             }
                 break;
-                
-//            case UIGestureRecognizerStateChanged:
-//                [self.transitionContext updateInteractiveTransition: percentComplete];
-//                break;
-//
-            case UIGestureRecognizerStateEnded:
-//                if (percentComplete >= 0.5)
-//                    [self.transitionContext finishInteractiveTransition];
-//                else
-//                    [self.transitionContext cancelInteractiveTransition];
-//                break;
-//
             default:
-//                [self.transitionContext cancelInteractiveTransition];
-                
                 break;
         }
     }

@@ -47,11 +47,11 @@
     return objc_getAssociatedObject(self, _cmd);
 }
 
-- (void)setPresentedViewController:(UIViewController * _Nullable)presentedViewController{
-    objc_setAssociatedObject(self, @selector(presentedViewController), presentedViewController, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+- (void)setWillPresentViewController:(UIViewController * _Nullable)willPresentViewController{
+    objc_setAssociatedObject(self, @selector(willPresentViewController), willPresentViewController, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
-- (UIViewController *)presentedViewController {
+- (UIViewController *)willPresentViewController {
     return objc_getAssociatedObject(self, _cmd);
 }
 
@@ -68,41 +68,44 @@
 
 #pragma mark 注册手势
 // push or present
-- (void)registerInteractiveModalRecognizer:(BOOL)isModal
-                               toDirection:(TLDirection)toDirection
-                          toViewController:(UIViewController *)viewController
-                                  animator:(id <TLAnimatorProtocol>)animator;
+- (void)registerInteractiveTransitionToViewController:(UIViewController *)viewController animator:(id <TLAnimatorProtocol>)animator
 
 {
     // 手势
+    TLDirection direction = animator.interactiveDirectionOfPush;
+    if (direction < TLDirectionToTop) {
+        if ([animator respondsToSelector:@selector(interactiveDirectionOfPop)]) {
+            direction = [animator interactiveDirectionOfPop];
+        }
+    }
     SEL sel = @selector(interactivePushRecognizerAction:);
     UIScreenEdgePanGestureRecognizer *interactiveTransitionRecognizer;
     interactiveTransitionRecognizer = [[UIScreenEdgePanGestureRecognizer alloc] initWithTarget:self action:sel];
-    interactiveTransitionRecognizer.edges = [self getEdgeWithDirection:toDirection];
+    interactiveTransitionRecognizer.edges = [self getEdgeWithDirection:direction];
     [self.view addGestureRecognizer:interactiveTransitionRecognizer];
     
-    animator.isPushOrPop = !isModal;
     if(animator.transitionDuration == 0){ // 默认值
         animator.transitionDuration = 0.45f;
     }
     
     TLTransitionDelegate *tDelegate = [TLTransitionDelegate sharedInstace];
-    tDelegate.popGestureRecognizerDirection = toDirection;
     [TLTransitionDelegate addAnimator:animator forKey:viewController];
    
     viewController.transitionDelegate = tDelegate;
-    self.presentedViewController = viewController;
+    self.willPresentViewController = viewController;
     
-    if(isModal) {
+    if(animator.isPushOrPop) {
+        self.navigationController.delegate = tDelegate;
+    }else {
         viewController.modalPresentationStyle = UIModalPresentationCustom;
         viewController.transitioningDelegate = tDelegate;
-    }else {
-        BOOL falg = ![self isMemberOfClass:[UINavigationController class]]; // 不能是UINavigationController
-        NSAssert(falg, @"%s 方法n不能用UINavigationController发起调用，请直接用view controllerd调用", __func__);
-        NSAssert(self.navigationController, (@"控制器 %@ 没有navigationController，无法push"), self);
-        NSAssert(![animator isMemberOfClass:[TLSystemAnimator class]], (@"TLSystemAnimator 只支持modal"), self);
+    }
+    
+    // 注册手势
+    if(animator.interactiveDirectionOfPush > TLDirectionToTop &&
+       animator.interactiveDirectionOfPush != animator.interactiveDirectionOfPop){
         
-        self.navigationController.delegate = tDelegate;
+        [viewController registerInteractivePopRecognizerWithDirection: animator.interactiveDirectionOfPop];
     }
 }
 
@@ -113,22 +116,26 @@
             return;
         }
         
-        id <TLAnimatorProtocol>animator = [TLTransitionDelegate animatorForKey:self.presentedViewController];
+        id <TLAnimatorProtocol>animator = [TLTransitionDelegate animatorForKey:self.willPresentViewController];
         NSAssert(animator, @"animator = nil,异常");
         if (animator == nil) return;
         
         if ([animator respondsToSelector:@selector(percentOfFinishInteractiveTransition)] &&
             [animator percentOfFinishInteractiveTransition] <= 0) {
             // 不支持百分比控制
-            self.presentedViewController.transitionDelegate.interactiveRecognizer = nil;
+            self.willPresentViewController.transitionDelegate.interactiveRecognizer = nil;
         }else {
-            self.presentedViewController.transitionDelegate.interactiveRecognizer = gestureRecognizer;
+            self.willPresentViewController.transitionDelegate.interactiveRecognizer = gestureRecognizer;
         }
         
         if (animator.isPushOrPop){
-            [self.navigationController pushViewController:self.presentedViewController animated:YES];
+            BOOL falg = ![self isMemberOfClass:[UINavigationController class]]; // 不能是UINavigationController
+            NSAssert(falg, @"%s 方法n不能用UINavigationController发起调用，请直接用view controllerd调用", __func__);
+            NSAssert(self.navigationController, (@"控制器 %@ 没有navigationController，无法push"), self);
+            NSAssert(![animator isMemberOfClass:[TLSystemAnimator class]], (@"TLSystemAnimator 只支持modal"), self);
+            [self.navigationController pushViewController:self.willPresentViewController animated:YES];
         }else {
-            [self presentViewController:self.presentedViewController animated:YES completion:nil];
+            [self presentViewController:self.willPresentViewController animated:YES completion:nil];
         }
     }
 }
@@ -208,8 +215,8 @@
     }
     
     TLDirection dir = TLDirectionToRight;
-    if ([animator respondsToSelector:@selector(directionForDragging)]) {
-        dir = [animator directionForDragging];
+    if ([animator respondsToSelector:@selector(interactiveDirectionOfPop)]) {
+        dir = [animator interactiveDirectionOfPop];
     }
     TLTransitionDelegate *tDelegate = [TLTransitionDelegate sharedInstace];
     [TLTransitionDelegate addAnimator:animator forKey:viewController];
@@ -273,8 +280,8 @@
     }
     
     TLDirection dir = TLDirectionToRight;
-    if ([animator respondsToSelector:@selector(directionForDragging)]) {
-        dir = [animator directionForDragging];
+    if ([animator respondsToSelector:@selector(interactiveDirectionOfPop)]) {
+        dir = [animator interactiveDirectionOfPop];
     }
     [viewController registerInteractivePopRecognizerWithDirection: dir];
     

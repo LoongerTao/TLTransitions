@@ -84,7 +84,7 @@
     // 添加dismiss手势
     if (_allowDismiss && scrollView.contentOffset.y < 0) {
         _allowDismiss = NO;
-        self.transitionDelegate.popGestureRecognizerDirection = TLDirectionToBottom;
+        self.transitionDelegate.tempInteractiveDirection = TLDirectionToBottom;
         self.transitionDelegate.interactiveRecognizer = scrollView.panGestureRecognizer;
         [self dismissViewControllerAnimated:YES completion:nil];
     }

@@ -14,6 +14,9 @@
 @property(nonatomic, strong) id<TLAnimatorProtocol> currentAnimator;
 /// 动画负责者集合
 @property(nonatomic, strong) NSMutableDictionary <NSString *, id<TLAnimatorProtocol>>*animators;
+
+/// 是否为push/Presentation操作. 默认：NO，pop/dismiss
+@property(nonatomic, assign) BOOL isPush;
 @end
 
 @implementation TLTransitionDelegate
@@ -46,9 +49,6 @@ static TLTransitionDelegate *_instace;
 
 + (void)addAnimator:(id<TLAnimatorProtocol>)animator  forKey:(UIViewController *)key {
     NSString *KEY = [self keyWithViewController:key];
-    
-    NSLog(@"add KEY: %@",KEY);
-    
     [[[self sharedInstace] animators] setObject:animator forKey:KEY];
     _instace.currentAnimator = animator;
 }
@@ -84,9 +84,12 @@ static TLTransitionDelegate *_instace;
     UIViewController *key;
     if(operation == UINavigationControllerOperationPush) {
         key = toVC;
+        _isPush = YES;
     }else if (operation == UINavigationControllerOperationPop) {
         key = fromVC;
+        _isPush = NO;
     }else {
+        _isPush = NO;
         return nil;
     }
     return [[self class] animatorForKey:key];
@@ -103,24 +106,27 @@ static TLTransitionDelegate *_instace;
 #pragma mark - UIViewControllerTransitioningDelegate
 - (id<UIViewControllerAnimatedTransitioning>)animationControllerForPresentedController:(UIViewController *)presented presentingController:(UIViewController *)presenting sourceController:(UIViewController *)source
 {
+    _isPush = YES;
     return [[self class] animatorForKey:presented];
 }
 
 - (id<UIViewControllerAnimatedTransitioning>)animationControllerForDismissedController:(UIViewController *)dismissed
 {
+    _isPush =NO;
     return [[self class] animatorForKey:dismissed];
 }
 
 #pragma mark 转场手势交互管理者（present / dismiss）
 - (id<UIViewControllerInteractiveTransitioning>)interactionControllerForPresentation:(id<UIViewControllerAnimatedTransitioning>)animator
 {
+    _isPush = YES;
     id <TLAnimatorProtocol> tempAnimator =  (id<TLAnimatorProtocol>)animator;
     return [self interactiveTransitionWithAnimator:tempAnimator];
 }
 
 - (id<UIViewControllerInteractiveTransitioning>)interactionControllerForDismissal:(id<UIViewControllerAnimatedTransitioning>)animator
 {
-    
+    _isPush = NO;
     id <TLAnimatorProtocol> tempAnimator =  (id<TLAnimatorProtocol>)animator;
     return [self interactiveTransitionWithAnimator:tempAnimator];
 }
@@ -151,15 +157,24 @@ static TLTransitionDelegate *_instace;
 }
 
 - (UIRectEdge)getPopEdge {
-    if(_popGestureRecognizerDirection >= TLDirectionToTop && _popGestureRecognizerDirection <= TLDirectionToRight ){
-        UIRectEdge edge = getRectEdge(_popGestureRecognizerDirection);
-        _popGestureRecognizerDirection = -1;
+    // 临时类型
+    if(_tempInteractiveDirection >= TLDirectionToTop && _tempInteractiveDirection <= TLDirectionToRight ){
+        UIRectEdge edge = getRectEdge(_tempInteractiveDirection);
+        _tempInteractiveDirection = -1;
         return edge;
     }
     
+    if (_isPush) {
+        TLDirection direction = _instace.currentAnimator.interactiveDirectionOfPush;
+        if (direction >= TLDirectionToTop) {
+            return getRectEdge(direction);
+        }
+    }
+    
+    // push/Presentation direction 未设置是取pop/dismiss的值
     UIRectEdge edge = UIRectEdgeLeft;
-    if ([_instace.currentAnimator respondsToSelector:@selector(directionForDragging)]) {
-        edge = getRectEdge([ _instace.currentAnimator directionForDragging]);
+    if ([_instace.currentAnimator respondsToSelector:@selector(interactiveDirectionOfPop)]) {
+        edge = getRectEdge([ _instace.currentAnimator interactiveDirectionOfPop]);
     }
     return edge;
 }

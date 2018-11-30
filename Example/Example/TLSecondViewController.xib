@@ -47,7 +47,7 @@
                     <rect key="frame" x="55" y="410" width="264" height="30"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                     <color key="backgroundColor" red="0.29853495959999998" green="0.84600949290000005" blue="0.39043116570000003" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                    <state key="normal" title="击按钮present"/>
+                    <state key="normal" title="左侧滑或击按钮可以继续present"/>
                     <connections>
                         <action selector="present:" destination="-1" eventType="touchUpInside" id="59M-ws-AR9"/>
                     </connections>

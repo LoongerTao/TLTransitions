@@ -21,8 +21,9 @@
 #pragma mark - TLAnimatorProtocol
 @synthesize transitionDuration;
 @synthesize isPushOrPop;
+@synthesize interactiveDirectionOfPush;
 
-- (TLDirection)directionForDragging; {
+- (TLDirection)interactiveDirectionOfPop {
     return _directionOfDismiss;
 }
 

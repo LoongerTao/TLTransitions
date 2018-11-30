@@ -6,6 +6,8 @@
 //  Copyright © 2018 故乡的云. All rights reserved.
 //  自定义 Animator 参考模版
 
+#ifdef NO_BUILDING // 本文件不参与编译
+
 #import "TLAnimatorTemplate.h"
 
 @implementation TLAnimatorTemplate
@@ -13,8 +15,9 @@
 #pragma mark - TLAnimatorProtocol (必须实现的协议内容)
 @synthesize transitionDuration;
 @synthesize isPushOrPop;
+@synthesize interactiveDirectionOfPush;
 
-- (TLDirection)directionForDragging; {
+- (TLDirection)interactiveDirectionOfPop {
     return TLDirectionToRight; // 滑动方向
 }
 
@@ -109,4 +112,5 @@
 
 @end
 
+#endif
 

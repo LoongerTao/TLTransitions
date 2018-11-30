@@ -9,6 +9,7 @@
 #import "TLMenuViewController.h"
 #import "TLTransitions.h"
 #import "TLFirstTableController.h"
+#import "TLRegisterInteractiveController.h"
 #import "TLSection.h"
 
 
@@ -39,17 +40,22 @@
     viewSection.rows = @[@"Alert",@"Alert2", @"Action Sheet", @"To Point",@"From Frame1 To Frame2" ,@"CuStom"];
     
     TLSection *presentSection = [TLSection new];
-    presentSection.title = @"Present view controller";
+    presentSection.title = @"Modal";
     presentSection.show = NO;
     presentSection.rows = @[@"System Animator", @"Swipe Animator" ,@"CATransition Animator",
                             @"CuStom Animator",@"个人动画案例收集（TLAnimator）"];
     
     TLSection *pushSection = [TLSection new];
-    pushSection.title = @"A push to B or B pop to A";
+    pushSection.title = @"Push / pop";
     pushSection.show = NO;
     pushSection.rows = @[@"Swipe Animator", @"CATransition Animator" ,
                          @"CuStom Animator", @"个人动画案例收集（TLAnimator）"];
-    _data = @[viewSection, presentSection, pushSection];
+    
+    TLSection *registerInteractiveSection = [TLSection new];
+    registerInteractiveSection.title = @"注册手势进行push/presention";
+    registerInteractiveSection.show = NO;
+    registerInteractiveSection.rows = @[@"Modal", @"Push"];
+    _data = @[viewSection, presentSection, pushSection,registerInteractiveSection];
     
     self.tableView.tableFooterView = [UIView new];
     
@@ -135,23 +141,30 @@
         return;
     }
     
-    TLFirstTableController *vc = [TLFirstTableController new];
-    vc.isPush = indexPath.section == 2;
-    TLContentType type = TLContentTypeOther;
-    
-    NSString *text = self.data[indexPath.section].rows[indexPath.row];
-    if ([text containsString:@"System"]) {
-        type = TLContentTypeSystemAnimator;
-    }else if ([text containsString:@"Swipe"]) {
-        type = TLContentTypeSwipeAnimator;
-    }else if ([text containsString:@"CATransition"]) {
-        type = TLContentTypeCATransitionAnimator;
-    }else if ([text containsString:@"CuStom"]) {
-        type = TLContentTypeCuStomAnimator;
+    UIViewController *viewController;
+    if (indexPath.section == 3) {
+        TLRegisterInteractiveController *vc = [TLRegisterInteractiveController new];
+        vc.isModal = indexPath.row == 0;
+        viewController = vc;
+    }else {
+        TLFirstTableController *vc = [TLFirstTableController new];
+        vc.isPush = indexPath.section == 2;
+        TLContentType type = TLContentTypeOther;
+        NSString *text = self.data[indexPath.section].rows[indexPath.row];
+        if ([text containsString:@"System"]) {
+            type = TLContentTypeSystemAnimator;
+        }else if ([text containsString:@"Swipe"]) {
+            type = TLContentTypeSwipeAnimator;
+        }else if ([text containsString:@"CATransition"]) {
+            type = TLContentTypeCATransitionAnimator;
+        }else if ([text containsString:@"CuStom"]) {
+            type = TLContentTypeCuStomAnimator;
+        }
+        vc.type = type;
+        viewController = vc;
     }
-    vc.type = type;
     
-    [self pushViewController:vc transitionType:TLTransitionCube direction:TLDirectionToLeft dismissDirection:TLDirectionToRight];
+    [self pushViewController:viewController transitionType:TLTransitionCube direction:TLDirectionToLeft dismissDirection:TLDirectionToRight];
 }
 
 #pragma mark - Transitions Of View

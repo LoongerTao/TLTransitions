@@ -21,7 +21,7 @@ NS_ASSUME_NONNULL_BEGIN
 /// 转场动画(面向present/push To View Controller)
 @property(nonatomic, weak, readonly) TLTransitionDelegate *transitionDelegate;
 
-@property(nonatomic, weak, readonly) UIViewController *presentedViewController;
+@property(nonatomic, weak, readonly) UIViewController *willPresentViewController;
 
 /** 侧滑pop/dismiss交互手势启用开关。默认开启（NO）
  * 1.特性：当pop/dismiss的方向为TLDirectionToLeft（向左动画退场）时，通过右侧滑（屏幕右侧向左滑动）启动交互；
@@ -32,18 +32,11 @@ NS_ASSUME_NONNULL_BEGIN
 @property(nonatomic, assign) BOOL disableInteractivePopGestureRecognizer;
 
 /** 注册手势，通过UIScreenEdgePanGestureRecognizer手势触发push/present
- * @param isModal 转场方式： YES：modal， NO：push
- * @param toDirection 方向（To）
  * @param viewController 要转场的控制器
- * @param animator 动画管理对象
+ * @param animator 动画管理对象  ⚠️：必须初始化`isPushOrPop`，`interactiveDirection`属性
  */
-//- (void)registerInteractiveModalRecognizer:(BOOL)isModal
-//                            toDirection:(TLDirection)toDirection
-//                     toViewController:(UIViewController *)viewController
-//                             animator:(id <TLAnimatorProtocol>)animator;
-
-// 注册功能不完善，暂不开放
-
+- (void)registerInteractiveTransitionToViewController:(UIViewController *)viewController
+                                             animator:(id <TLAnimatorProtocol>)animator;
 
 
 //====================== 👇下面2个API是通用API ==========================//
