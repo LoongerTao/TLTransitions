@@ -6,8 +6,7 @@
 //  Copyright © 2018 故乡的云. All rights reserved.
 //  CATransition Animator
 
-#import "TLGlobalConfig.h"
-//#import "TLAnimatorProtocol.h"
+#import "TLAnimatorProtocol.h"
 
 NS_ASSUME_NONNULL_BEGIN
 

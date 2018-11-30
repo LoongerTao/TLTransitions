@@ -9,7 +9,7 @@
 
 #import "TLAnimatorTemplate.h"
 
-//#ifdef NO_BUILDING // 本文件不参与编译
+#ifdef NO_BUILDING // 本文件不参与编译
 @implementation TLAnimatorTemplate
 
 #pragma mark - TLAnimatorProtocol (必须实现的协议内容)
@@ -112,5 +112,5 @@
 
 @end
 
-//#endif
+#endif
 

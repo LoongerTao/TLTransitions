@@ -129,8 +129,7 @@
         }
         
         if (animator.isPushOrPop){
-            BOOL falg = ![self isMemberOfClass:[UINavigationController class]]; // 不能是UINavigationController
-            NSAssert(falg, @"%s 方法n不能用UINavigationController发起调用，请直接用view controllerd调用", __func__);
+            NSAssert(![self isMemberOfClass:[UINavigationController class]], @"%s 方法n不能用UINavigationController发起调用，请直接用view controllerd调用", __func__);
             NSAssert(self.navigationController, (@"控制器 %@ 没有navigationController，无法push"), self);
             NSAssert(![animator isMemberOfClass:[TLSystemAnimator class]], (@"TLSystemAnimator 只支持modal"), self);
             [self.navigationController pushViewController:self.willPresentViewController animated:YES];
@@ -269,8 +268,8 @@
 #pragma mark - Push / pop
 - (void)pushViewController:(UIViewController *)viewController animator:(id<TLAnimatorProtocol>)animator
 {
-    BOOL falg = ![self isMemberOfClass:[UINavigationController class]]; // 不能是UINavigationController
-    NSAssert(falg, @"%s 方法n不能用UINavigationController发起调用，请直接用view controllerd调用", __func__);
+    // 不能是UINavigationController
+    NSAssert(![self isMemberOfClass:[UINavigationController class]], @"%s 方法n不能用UINavigationController发起调用，请直接用view controllerd调用", __func__);
     NSAssert(self.navigationController, (@"控制器 %@ 没有navigationController，无法push"), self);
     NSAssert(![animator isMemberOfClass:[TLSystemAnimator class]], (@"TLSystemAnimator 只支持modal"), self);
     

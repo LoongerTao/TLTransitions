@@ -7,8 +7,8 @@
 //  个人收集的一些动画
 
 #import "TLAnimator.h"
-#import "UIViewController+Transitioning.h"
-#import "TLTransitionDelegate.h"
+//#import "UIViewController+Transitioning.h"
+//#import "TLTransitionDelegate.h"
 
 typedef void(^TLAnimationCompletion)(BOOL flag);
 
@@ -680,8 +680,11 @@ typedef void(^TLAnimationCompletion)(BOOL flag);
                 UIView *snapshot = [containerView viewWithTag:100];
                 CGPoint locationInSourceView = [pan locationInView:containerView];
                 if (CGRectContainsPoint(snapshot.frame, locationInSourceView)) {
-                    _presentedViewController.transitionDelegate.tempInteractiveDirection = TLDirectionToLeft;
-                    _presentedViewController.transitionDelegate.interactiveRecognizer = pan;
+                    // 使用KVO解决pod中头文件的循环依赖
+                    [_presentedViewController setValue:@(TLDirectionToLeft) forKeyPath:@"transitionDelegate.tempInteractiveDirection"];
+                    [_presentedViewController setValue:pan forKeyPath:@"transitionDelegate.interactiveRecognizer"];
+//                    _presentedViewController.transitionDelegate.tempInteractiveDirection = TLDirectionToLeft;
+//                    _presentedViewController.transitionDelegate.interactiveRecognizer = pan;
                     [_presentedViewController dismissViewControllerAnimated:YES completion:nil];
                 }
             }

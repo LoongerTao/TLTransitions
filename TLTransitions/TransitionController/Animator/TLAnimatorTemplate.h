@@ -9,7 +9,7 @@
 
 #import "TLAnimatorProtocol.h"
 
-//#ifdef NO_BUILDING // 本文件不参与编译
+#ifdef NO_BUILDING // 本文件不参与编译
 NS_ASSUME_NONNULL_BEGIN
 
 @interface TLAnimatorTemplate : NSObject <TLAnimatorProtocol>
@@ -18,4 +18,4 @@ NS_ASSUME_NONNULL_BEGIN
 @end
 NS_ASSUME_NONNULL_END
 
-//#endif
+#endif
