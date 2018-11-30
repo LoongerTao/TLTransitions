@@ -2,7 +2,7 @@
 
 ### pod支持
 ```
-pod 'TLTransitions', '~> 1.4.2'
+pod 'TLTransitions', '~> 1.4.4'
 ```
 
 ### **1. 目的**

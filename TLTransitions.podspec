@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name         = 'TLTransitions'
-  s.version      = '1.4.3'
+  s.version      = '1.4.4'
   s.license      = 'MIT'
   s.ios.deployment_target = '8.0'
   s.platform     = :ios, '8.0'
@@ -35,5 +35,7 @@ Pod::Spec.new do |s|
           anm.dependency 'TLTransitions/Config'
       end
   end
-  
 end
+
+
+# 错误：xcodebuild: Returned an unsuccessful exit code. 一般是有头文件相互依赖，pod检测通不过

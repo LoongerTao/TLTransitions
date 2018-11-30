@@ -71,8 +71,7 @@ static TLTransitionDelegate *_instace;
 }
 
 + (NSString *)keyWithViewController:(UIViewController *)viewController {
-    BOOL flag = [viewController isKindOfClass:[UIViewController class]];
-    NSAssert(flag, @"key: %@ 不是UIViewController类型]", viewController);
+    NSAssert([viewController isKindOfClass:[UIViewController class]], @"key: %@ 不是UIViewController类型]", viewController);
 
     return [NSString stringWithFormat:@"%p", viewController];
 }
