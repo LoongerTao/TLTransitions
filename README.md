@@ -1,9 +1,23 @@
 # TLTransitions
 
 ### pod支持
+##### 1. 版本 
 ```
 pod 'TLTransitions', '~> 1.4.4'
 ```
+
+##### 2. CocoaPods获取不到最新的`TLTransitions`版本问题
+这可能是本地的CocoaPods仓库列表没有更新导致的。
+
+1. 运行以下命令更新本地的CocoaPods仓库列表：
+``` pod repo update ```
+
+2. 然后通过以下命令查询
+``` pod search TLTransitions ```
+
+3. 如果仍然查询不到最新版本，可以删除本地仓库重新安装
+```sudo rm -rf ~/.cocoapods/repos/master pod setup```
+
 
 ### **1. 目的**
 让繁琐的个性化控制器的转场(present/pop)和视图弹窗实现，变的简单快速（一句代码或几行即可搞定），并支持动画的自定义，支持通过手势转场（dismiss/pop）
@@ -14,7 +28,7 @@ pod 'TLTransitions', '~> 1.4.4'
 
 ### **使用与说明**
 ####  1. View弹窗：
-- 使用：对应`TLTransition`类的API，只要一行代码即可将一个已有的View进行显示，使用如下（`更多用法见demo`）
+- 使用：对应`TLTransition`类的API，只要一行代码即可将一个已有的View进行显示，使用如下（更多使用见`TLTransition.h` 中的API 或 Demo)）
 ```objc
 // popView是一个用户自定义的视图，并且已经设置好布局
 [TLTransition showView:popView popType:TLPopTypeAlert];
@@ -98,38 +112,21 @@ _bView.bounds = rect;
 - 锦集
 
 ![锦集.gif](https://upload-images.jianshu.io/upload_images/3333500-a935d0c0a257c0bf.gif?imageMogr2/auto-orient/strip)
+![抽屉效果.gif](https://upload-images.jianshu.io/upload_images/3333500-6d22eb8847c0fff3.gif?imageMogr2/auto-orient/strip)
+![AppStoreCard.gif](https://upload-images.jianshu.io/upload_images/3333500-2eaaa8a03d671b00.gif?imageMogr2/auto-orient/strip)
+![圆.gif](https://upload-images.jianshu.io/upload_images/3333500-d7aed12dd5e9a248.gif?imageMogr2/auto-orient/strip)
 
-5. 使用步骤与举例
+5. 使用步骤与举例 (更多使用见`UIViewController+Transitioning.h` 中的API 或 Demo)
 可以一步实现，也可以分步实现
-  a. 一步实现：
-```objc
-更多API的使用见demo
-
-TLSecondViewController *vc = [[TLSecondViewController alloc] init];
- //  vc.disableInteractivePopGestureRecognizer = YES; // 关闭侧滑pop手势
-
-// push (直接使用self发起API调用）
-[self pushViewController: vc
-               swipeType: TLSwipeTypeInAndOut
-           pushDirection: TLDirectionToRight
-            popDirection: TLDirectionToRight];
-
-/** present
-[self presentViewController:vc
-                  swipeType: TLSwipeTypeInAndOut
-           presentDirection:TLDirectionToRight
-           dismissDirection:TLDirectionToRight
-                 completion:^ {
-                     // 完成回调
-}];
-*/
-  ```
-  b.分步实现（建议使用，更灵活、多样化、统一化）：
+  a. 分步实现（建议使用，更灵活、多样化、统一化）：
     1. 创建动画管理者
     2. 设置动画时间
     3. 设置手势使能
 ```objc
 更多API的使用见demo
+
+TLSecondViewController *vc = [[TLSecondViewController alloc] init];
+vc.disableInteractivePopGestureRecognizer = YES; // 关闭手势
 
 // 1.创建动画管理者
 TLCATransitonAnimator *animator;
@@ -137,12 +134,7 @@ animator = [TLCATransitonAnimator animatorWithTransitionType:transitionType
                                                    direction:direction
                                      transitionTypeOfDismiss:transitionTypeOfDismiss
                                           directionOfDismiss:dismissDirection];
- // 2.动画时间
-animator.transitionDuration = 3.0;
-
-TLSecondViewController *vc = [[TLSecondViewController alloc] init];
-// 3.关闭手势
-vc.disableInteractivePopGestureRecognizer = YES; 
+animator.transitionDuration = 3.0; // 动画时间
 
 // 调用API转场
 // push（直接使用self发起API调用）
@@ -152,6 +144,29 @@ vc.disableInteractivePopGestureRecognizer = YES;
 [self presentViewController:vc animator:animator completion:^{
         // 完成回调
   }];
+*/
+```
+b. 一步实现：
+```objc
+更多API的使用见demo
+
+TLSecondViewController *vc = [[TLSecondViewController alloc] init];
+//  vc.disableInteractivePopGestureRecognizer = YES; // 关闭侧滑pop手势
+
+// push (直接使用self发起API调用）
+[self pushViewController: vc
+swipeType: TLSwipeTypeInAndOut
+pushDirection: TLDirectionToRight
+popDirection: TLDirectionToRight];
+
+/** present
+[self presentViewController:vc
+swipeType: TLSwipeTypeInAndOut
+presentDirection:TLDirectionToRight
+dismissDirection:TLDirectionToRight
+completion:^ {
+// 完成回调
+}];
 */
 ```
 
