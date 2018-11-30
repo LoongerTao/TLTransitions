@@ -7,7 +7,7 @@
 //  滑动边缘区域进入和退出
 
 #import "TLGlobalConfig.h"
-#import "TLAnimatorProtocol.h"
+//#import "TLAnimatorProtocol.h"
 
 NS_ASSUME_NONNULL_BEGIN
 

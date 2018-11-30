@@ -6,8 +6,8 @@
 //  Copyright © 2018 故乡的云. All rights reserved.
 //  系统动画，只支持modal
 
-#import <UIKit/UIKit.h>
-#import "TLAnimatorProtocol.h"
+#import "TLGlobalConfig.h"
+//#import "TLAnimatorProtocol.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
