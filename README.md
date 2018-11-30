@@ -40,11 +40,12 @@ pod 'TLTransitions', '~> 1.4.4'
     - 图3. 将一个view显示到指定的位置
     - 图4. 将一个view从frame1动画到frame2
     - 图5. 动画自定义，提供block将自定义动画传入即可
-   ![alert.gif](https://upload-images.jianshu.io/upload_images/3333500-a1862b84e09c65cd.gif?imageMogr2/auto-orient/strip)
-   ![actionSheet.gif](https://upload-images.jianshu.io/upload_images/3333500-b6f9d07cd39f6347.gif?imageMogr2/auto-orient/strip)
-   ![point.gif](https://upload-images.jianshu.io/upload_images/3333500-8400581effaabdaa.gif?imageMogr2/auto-orient/strip)
-   ![frame.gif](https://upload-images.jianshu.io/upload_images/3333500-ada674cbd225e62d.gif?imageMogr2/auto-orient/strip)
-  ![customforview.gif](https://upload-images.jianshu.io/upload_images/3333500-1036eb2a60e89ae4.gif?imageMogr2/auto-orient/strip)
+    
+ ![alert.gif](https://upload-images.jianshu.io/upload_images/3333500-a1862b84e09c65cd.gif?imageMogr2/auto-orient/strip)
+ ![actionSheet.gif](https://upload-images.jianshu.io/upload_images/3333500-b6f9d07cd39f6347.gif?imageMogr2/auto-orient/strip)
+ ![point.gif](https://upload-images.jianshu.io/upload_images/3333500-8400581effaabdaa.gif?imageMogr2/auto-orient/strip)
+ ![frame.gif](https://upload-images.jianshu.io/upload_images/3333500-ada674cbd225e62d.gif?imageMogr2/auto-orient/strip)
+ ![customforview.gif](https://upload-images.jianshu.io/upload_images/3333500-1036eb2a60e89ae4.gif?imageMogr2/auto-orient/strip)
 
 - 其他API
 1. 动态更新size（效果如上面ActionSheet样式所示，仅限size，不能改变位置）
@@ -84,9 +85,14 @@ _bView.bounds = rect;
 只要基于`TLTLAnimatorProtocol`协议即可，具体实现可参考模版`TLAnimatorTemplate`里面有一些思路与注意事项
 4. 所以类型API都默认支持侧滑手势dismiss/pop，可以关闭（如果要手动dismiss/pop，只需调用原生API即可）
 4. 部分转场效果图
-图1. 原生present | 图2.Swipe | 图3.CATransition | 图4.Cunstom
----|---
-图5.锦集 | 图6.锦集-圆形缩放 | 图7.锦集-抽屉效果 | 图8.轻仿App store Card动画
+- 图1. 原生present  
+- 图2.Swipe 
+- 图3.CATransition 
+- 图4.Cunstom
+- 图5.锦集 
+- 图6.锦集-圆形缩放 
+- 图7.锦集-抽屉效果 
+- 图8.轻仿App store Card动画
 
 ![system.gif](https://upload-images.jianshu.io/upload_images/3333500-40355d0619cbb726.gif?imageMogr2/auto-orient/strip)
 ![swipe.gif](https://upload-images.jianshu.io/upload_images/3333500-080df94e9d1cd8ec.gif?imageMogr2/auto-orient/strip)
