@@ -110,7 +110,6 @@ alpha:alphaValue]
 
 
 #pragma mark - 函数
-CATransitionSubtype getSubtype(TLDirection direction);
 UIRectEdge getRectEdge(TLDirection direction);
 UIImage * snapshotImage(UIView *view);  // 快照，将View转换成图片
 UIImage * resizableSnapshotImage(UIView *view, CGRect inRect);

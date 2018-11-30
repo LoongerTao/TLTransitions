@@ -1,4 +1,4 @@
-# 
+
 Pod::Spec.new do |s|
   s.name         = 'TLTransitions'
   s.version      = '1.4.3'
@@ -30,7 +30,6 @@ Pod::Spec.new do |s|
   s.subspec 'TransitionController' do |tc|
       tc.source_files = 'TLTransitions/TransitionController/*.{h,m}'
       tc.dependency 'TLTransitions/Config' 
-      # tc.dependency 'TLTransitions/Animator'
 
       tc.subspec 'Animator' do |anm|
           anm.source_files = 'TLTransitions/TransitionController/Animator/*.{h,m}'
