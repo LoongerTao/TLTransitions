@@ -112,9 +112,9 @@ _bView.bounds = rect;
 - 锦集
 
 ![锦集.gif](https://upload-images.jianshu.io/upload_images/3333500-a935d0c0a257c0bf.gif?imageMogr2/auto-orient/strip)
-![抽屉效果.gif](https://upload-images.jianshu.io/upload_images/3333500-6d22eb8847c0fff3.gif?imageMogr2/auto-orient/strip)
-![AppStoreCard.gif](https://upload-images.jianshu.io/upload_images/3333500-2eaaa8a03d671b00.gif?imageMogr2/auto-orient/strip)
 ![圆.gif](https://upload-images.jianshu.io/upload_images/3333500-d7aed12dd5e9a248.gif?imageMogr2/auto-orient/strip)
+![抽屉效果.gif](https://upload-images.jianshu.io/upload_images/3333500-01d9e607ac5b81fc.gif?imageMogr2/auto-orient/strip)
+![AppstoreCard.gif](https://upload-images.jianshu.io/upload_images/3333500-ef510b6bbba569bc.gif?imageMogr2/auto-orient/strip)
 
 5. 使用步骤与举例 (更多使用见`UIViewController+Transitioning.h` 中的API 或 Demo)
 可以一步实现，也可以分步实现
