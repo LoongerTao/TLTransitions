@@ -8,6 +8,7 @@
 
 #import "TLSecondViewController.h"
 #import "TLTransitions.h"
+#import "TLCodeViewConroller.h"
 
 @interface TLSecondViewController ()
 @property(nonatomic, weak) IBOutlet UIImageView *imgView;
@@ -73,6 +74,15 @@
     }];
 }
 
+- (IBAction)showCode:(UIButton *)sender {
+    TLCodeViewConroller *codeVc = [TLCodeViewConroller new];
+    codeVc.imgName = _imgName;
+    TLCATransitonAnimator *anm = [TLCATransitonAnimator animatorWithTransitionType:TLTransitionRippleEffect
+                                                                         direction:TLDirectionToLeft
+                                                           transitionTypeOfDismiss:TLTransitionRippleEffect
+                                                                directionOfDismiss:TLDirectionToRight];
+    [self presentViewController:codeVc animator:anm completion:nil];
+}
 
 
 - (void)dealloc {

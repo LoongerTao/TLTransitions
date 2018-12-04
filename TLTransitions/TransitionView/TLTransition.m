@@ -557,10 +557,10 @@ typedef enum : NSUInteger {
         [containerView addSubview:toView];
        
         toView.frame = self.initialFrame;
-        self.popView.frame = self.initialFrame;
+        self.popView.bounds = self.initialFrame;
         CGFloat duration = [self transitionDuration:transitionContext];
         [UIView animateWithDuration:duration animations:^{
-            self->_popView.frame = self.finalFrame;
+            self->_popView.bounds = self.finalFrame;
             toView.frame = self.finalFrame;
         } completion:^(BOOL finished) {
             [transitionContext completeTransition:YES];

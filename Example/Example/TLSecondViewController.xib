@@ -52,6 +52,14 @@
                         <action selector="present:" destination="-1" eventType="touchUpInside" id="59M-ws-AR9"/>
                     </connections>
                 </button>
+                <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="B6x-Xj-nAU">
+                    <rect key="frame" x="296" y="80" width="62" height="30"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxY="YES"/>
+                    <state key="normal" title="查看代码"/>
+                    <connections>
+                        <action selector="showCode:" destination="-1" eventType="touchUpInside" id="845-no-zIe"/>
+                    </connections>
+                </button>
             </subviews>
             <color key="backgroundColor" red="0.99831825494766235" green="0.90161246061325073" blue="0.90066510438919067" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
             <viewLayoutGuide key="safeArea" id="Q5M-cg-NOt"/>

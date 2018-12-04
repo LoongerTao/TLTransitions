@@ -240,6 +240,7 @@
 - (void)presentBySystem:(NSIndexPath *)indexPath {
    
     TLSecondViewController *vc = [[TLSecondViewController alloc] init];
+    vc.imgName = @"modal_system_animator";
     TLSystemAnimator *anm = [TLSystemAnimator animatorWithTransitionStyle:indexPath.row];
     [self presentViewController:vc animator:anm completion:nil];
     
@@ -255,6 +256,7 @@
 - (void)presentBySwipe:(NSIndexPath *)indexPath  {
  
     TLSecondViewController *vc = [[TLSecondViewController alloc] init];
+    vc.imgName = @"modal_swipe";
     
     // 关闭侧滑pop手势
 //    vc.disableInteractivePopGestureRecognizer = YES;
@@ -384,6 +386,8 @@
 
 - (void)presentByCATransition:(NSIndexPath *)indexPath {
     TLSecondViewController *vc = [[TLSecondViewController alloc] init];
+    vc.imgName = @"modal_catransition";
+    
     TLCATransitonAnimator *animator = [self CATransitionAnimatorWithIndexPath:indexPath toViewController:vc];
     [self presentViewController:vc animator:animator completion:^{
         NSLog(@"CATransition : completion---%zi",indexPath.row);
@@ -393,6 +397,8 @@
 #pragma mark 自定义动画
 - (void)presentByCustom:(NSIndexPath *)indexPath {
     TLSecondViewController *vc = [[TLSecondViewController alloc] init];
+    vc.imgName = @"modal_custom";
+    
     [self presentViewController:vc customAnimation:^(id<UIViewControllerContextTransitioning>  _Nonnull transitionContext, BOOL isPresenting) {
         
         if (indexPath.row == 0) {
@@ -632,6 +638,8 @@
 #pragma mark TLAnimator(个人收集)
 - (void)presentByTLAnimator:(NSIndexPath *)indexPath {
     TLSecondViewController *vc = [[TLSecondViewController alloc] init];
+    vc.imgName = @"modal_animator";
+    
     TLAnimatorType type = [self.data[indexPath.section].rowsOfSubTitle[indexPath.row] integerValue];
     if (type == TLAnimatorTypeSlidingDrawer) {
         type = TLAnimatorTypeTiltRight;
@@ -673,6 +681,7 @@
 #pragma mark - push Of View Controller
 - (void)pushBySwipe:(NSIndexPath *)indexPath {
     TLSecondViewController *vc = [[TLSecondViewController alloc] init];
+    vc.imgName = @"push_swipe";
     
     // 关闭侧滑pop手势
 //    vc.disableInteractivePopGestureRecognizer = YES;
@@ -709,6 +718,8 @@
 - (void)pushByCATransition:(NSIndexPath *)indexPath {
    
     TLSecondViewController *vc = [[TLSecondViewController alloc] init];
+    vc.imgName = @"push_catransition";
+    
     TLCATransitonAnimator *animator = [self CATransitionAnimatorWithIndexPath:indexPath toViewController:vc];
     animator.transitionDuration = 0.5;
     [self pushViewController:vc animator:animator];
@@ -717,6 +728,8 @@
 
 - (void)pushByCustomAnimation:(NSIndexPath *)indexPath {
     TLSecondViewController *vc = [[TLSecondViewController alloc] init];
+    vc.imgName = @"push_custom";
+    
     [self pushViewController:vc customAnimation:^(id<UIViewControllerContextTransitioning>  _Nonnull transitionContext, BOOL isPush) {
         
         if (indexPath.row == 0) {
@@ -733,6 +746,7 @@
 #pragma mark TLAnimator(个人收集)
 - (void)pushByTLAnimation:(NSIndexPath *)indexPath {
     TLSecondViewController *vc = [[TLSecondViewController alloc] init];
+    vc.imgName = @"push_animator";
     
     TLAnimatorType type = [self.data[indexPath.section].rowsOfSubTitle[indexPath.row] integerValue];
    

@@ -11,7 +11,7 @@
 #import "TLFirstTableController.h"
 #import "TLRegisterInteractiveController.h"
 #import "TLSection.h"
-
+#import "TLCodeViewConroller.h"
 
 @interface TLMenuViewController ()<CAAnimationDelegate>{
     UIView *_frameView;
@@ -181,11 +181,13 @@
     textFiled.bounds = CGRectMake(0, 0, bView.bounds.size.width * 0.8f, 30.f);
     textFiled.center = CGPointMake(bView.bounds.size.width * 0.5, bView.bounds.size.height * 0.2);
     [bView addSubview:textFiled];
+    bView.tag = 1;
     
     if([self.tableView indexPathForCell:sender].row == 0) {
         [TLTransition showView:bView popType:TLPopTypeAlert];
     }else{
         [TLTransition showView:bView popType:TLPopTypeAlert2];
+        bView.tag = 2;
     }
 }
 
@@ -198,6 +200,7 @@
     if (_sheetView == nil) {
         CGRect bounds = CGRectMake(0, 0, self.view.bounds.size.width, 500.f);
         UIView *bView = [self creatViewWithBounds:bounds color:tl_Color(248, 218, 200)];
+        bView.tag = 3;
         
         UILabel *textLabel = [[UILabel alloc] init];
         textLabel.text = @"通过pan手势改变高度";
@@ -236,6 +239,7 @@
     CGRect bounds = CGRectMake(0, 0, self.view.bounds.size.width * 0.33f, 200.f);
     UIView *bView = [self creatViewWithBounds:bounds color:tl_Color(120, 248, 180)];
     [TLTransition showView:bView toPoint:CGPointMake(self.view.bounds.size.width * .667f - 10 , 64)];
+    bView.tag = 4;
 }
 
 // frame1->frame2
@@ -245,6 +249,8 @@
     UIView *bView = [self creatViewWithBounds:initialFrame color:tl_Color(250, 250, 250)];
     [TLTransition showView:bView initialFrame:initialFrame finalFrame:finalFrame];
     
+    bView.tag = 5;
+    _titleLabel.tag = 5;
     _frameView = bView;
     [bView addObserver:self forKeyPath:@"frame" options:NSKeyValueObservingOptionNew context:nil];
 }
@@ -255,6 +261,7 @@
     CGRect bounds = CGRectMake(0, 0, self.view.bounds.size.width * 0.8, 200.f);
     UIView *bView = [self creatViewWithBounds:bounds color:tl_Color(248, 218, 200)];
     _transition = [TLTransition showView:bView popType:TLPopTypeAlert];
+    bView.tag = 5;
     
     NSTimeInterval duration = _transition.transitionDuration;
     _transition.animateTransition = ^(id<UIViewControllerContextTransitioning> transitionContext) {
@@ -349,14 +356,59 @@
     titleLabel.textAlignment = NSTextAlignmentCenter;
     titleLabel.frame = BView.bounds;
 
+    UIButton *btn = [[UIButton alloc] initWithFrame:CGRectMake(bounds.size.width - 70, 0, 60, 30)];
+    [btn setTitle:@"查看代码" forState:UIControlStateNormal];
+    [btn setTitleColor:[UIColor blueColor] forState:UIControlStateNormal];
+    [btn setTitleColor:[UIColor lightGrayColor] forState:UIControlStateHighlighted];
+    [btn addTarget:self action:@selector(showCode:) forControlEvents:UIControlEventTouchUpInside];
+    btn.titleLabel.font = [UIFont systemFontOfSize:14];
+    [BView addSubview:btn];
+    
     return BView;
 }
 
 #pragma mark - Other
+- (void)showCode:(UIButton *)btn {
+    TLCodeViewConroller *codeVc = [TLCodeViewConroller new];
+    NSString *name = @"alert";
+    if (btn.superview.tag == 2) {
+        name = @"alert2";
+    }else if (btn.superview.tag == 3) {
+        name = @"actionsheet";
+    }else if (btn.superview.tag == 4) {
+        name = @"point";
+    }else if (btn.superview.tag == 5) {
+        name = @"frame";
+    }else if (btn.superview.tag == 6) {
+        name = @"custom";
+    }
+    codeVc.imgName = name;
+    
+    [[self viewControllerForView:btn] presentViewController:codeVc animated:YES completion:nil];
+}
+
+- (UIViewController *)viewControllerForView:(UIView *)view{
+    for (UIView *next = view; next; next = next.superview) {
+        UIResponder* nextResponder = [next nextResponder];
+        if ([nextResponder isKindOfClass:[UIViewController class]]) {
+            return (UIViewController*)nextResponder;
+        }
+    }
+    return nil;
+}
+
 /// KVO
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSKeyValueChangeKey,id> *)change context:(void *)context {
     if ([keyPath isEqualToString:@"frame"]) {
         _titleLabel.frame = _titleLabel.superview.bounds;
+        
+        for (UIButton *btn in _titleLabel.superview.subviews) {
+            if ([btn isMemberOfClass:[UIButton class]]){
+                btn.frame = CGRectMake(_titleLabel.superview.bounds.size.width - 70, 0, 60, 30);
+                [_titleLabel addSubview:btn];
+                _titleLabel.userInteractionEnabled = YES;
+            }
+        }
     }
 }
 

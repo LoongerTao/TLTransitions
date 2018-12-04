@@ -46,7 +46,7 @@ NS_ASSUME_NONNULL_BEGIN
  * present 转场控制器。
  * @param viewController 要转场的控制器
  * @param animator 转场动画管理对象
- *        目前提供“TLSwipeAnimator”、“TLCATransitionAnimator”、“TLCuStomAnimator”供选择，
+ *        目前提供“TLSystemAnimator”、“TLSwipeAnimator”、“TLCATransitionAnimator”、“TLCuStomAnimator” 、 “TLAnimator”供选择，
  *        也可以由开发者自己写一个这样的对象，需要 严格遵守 TLAnimatorProtocal协议（可以参考模版TLAnimatorTemplate）
  * @param completion 完成转场的回调
  */
@@ -58,7 +58,7 @@ NS_ASSUME_NONNULL_BEGIN
  * push 转场控制器。
  * @param viewController 要转场的控制器
  * @param animator 转场动画管理对象
- *        目前提供“TLSwipeAnimator”、“TLCATransitionAnimator”、“TLCuStomAnimator”供选择，
+ *        目前提供“TLSwipeAnimator”、“TLCATransitionAnimator”、“TLCuStomAnimator” 、 “TLAnimator”供选择，
  *        也可以由开发者自己写一个这样的对象，需要 严格遵守 TLAnimatorProtocal协议（可以参考模版TLAnimatorTemplate）
  */
 - (void)pushViewController:(UIViewController *)viewController animator:(id<TLAnimatorProtocol>)animator;
