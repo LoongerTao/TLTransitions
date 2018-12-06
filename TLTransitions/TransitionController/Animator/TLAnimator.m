@@ -152,7 +152,7 @@ typedef void(^TLAnimationCompletion)(BOOL flag);
     UIView *leftView = [tragetView resizableSnapshotViewFromRect:rect afterScreenUpdates:self.isPushOrPop withCapInsets:UIEdgeInsetsZero];
     rect.origin.y = tragetView.frame.origin.y;
     leftView.frame = rect;
-    
+  
     rect = CGRectOffset(rect, rect.size.width, 0.f);
     rect.origin.y = 0;
     UIView *rightView = [tragetView resizableSnapshotViewFromRect:rect afterScreenUpdates:self.isPushOrPop withCapInsets:UIEdgeInsetsZero];
@@ -174,20 +174,51 @@ typedef void(^TLAnimationCompletion)(BOOL flag);
         leftView.frame = CGRectOffset(leftView.frame, -leftView.frame.size.width, 0.f);
         rightView.frame = CGRectOffset(rightView.frame, rightView.frame.size.width, 0.f);
     }
+    
+    // 3d缩放效果
+    UIView *maskView;
+    if (_removeScaleAnimation == NO) {
+        maskView = [[UIView alloc] initWithFrame:containerView.bounds];
+        UIColor *backgroundColor = [UIApplication sharedApplication].keyWindow.backgroundColor; // 用来遮住tragetView
+        maskView.backgroundColor = backgroundColor ? backgroundColor : [UIColor blackColor];
+        [containerView addSubview:maskView];
+        [containerView sendSubviewToBack:maskView];
+        [containerView sendSubviewToBack:tragetView];
+        
+        if (isPresenting) {
+            CATransform3D transform3D = CATransform3DMakeTranslation(0, -30, -0);
+            toView.layer.transform = CATransform3DScale(transform3D, 0.8f, 0.8f, 1);
+        }
+    }
+    
     NSTimeInterval transitionDuration = [self transitionDuration:transitionContext];
     [UIView animateWithDuration:transitionDuration animations:^{
         if (isPresenting) {
             leftView.frame = CGRectOffset(leftView.frame, -leftView.frame.size.width, 0.f);
             rightView.frame = CGRectOffset(rightView.frame, rightView.frame.size.width, 0.f);
+            if (maskView) {
+                toView.layer.transform = CATransform3DIdentity;
+            }
         } else {
             leftView.frame = CGRectOffset(leftView.frame, leftView.frame.size.width, 0.f);
             rightView.frame = CGRectOffset(rightView.frame, -rightView.frame.size.width, 0.f);
+            if (maskView) {
+                CATransform3D transform3D = CATransform3DMakeTranslation(0, -30, -0);
+                fromView.layer.transform = CATransform3DScale(transform3D, 0.8f, 0.8f, 1);
+            }
         }
         
     } completion:^(BOOL finished) {
-
+        
         [leftView removeFromSuperview];
         [rightView removeFromSuperview];
+        
+        if (maskView) {
+            if (!isPresenting) {
+                fromView.layer.transform = CATransform3DIdentity;
+            }
+            [maskView removeFromSuperview];
+        }
         
         BOOL wasCancelled = [transitionContext transitionWasCancelled];
         [transitionContext completeTransition:!wasCancelled];
@@ -249,6 +280,24 @@ typedef void(^TLAnimationCompletion)(BOOL flag);
         leftBottomView.frame = CGRectOffset(leftBottomView.frame,  -W, H);
         rightBottomView.frame = CGRectOffset(rightBottomView.frame,  W, H);
     }
+    
+    // 3d缩放效果
+    _removeScaleAnimation = YES; // 效果不佳，暂时不开放
+    UIView *maskView;
+    if (_removeScaleAnimation == NO) {
+        maskView = [[UIView alloc] initWithFrame:containerView.bounds];
+        UIColor *backgroundColor = [UIApplication sharedApplication].keyWindow.backgroundColor; // 用来遮住tragetView
+        maskView.backgroundColor = backgroundColor ? backgroundColor : [UIColor blackColor];
+        [containerView addSubview:maskView];
+        [containerView sendSubviewToBack:maskView];
+        [containerView sendSubviewToBack:tragetView];
+        
+        if (isPresenting) {
+            CATransform3D transform3D = CATransform3DMakeTranslation(0, -30, -0);
+            toView.layer.transform = CATransform3DScale(transform3D, 0.8f, 0.8f, 1);
+        }
+    }
+    
     NSTimeInterval transitionDuration = [self transitionDuration:transitionContext];
     [UIView animateWithDuration:transitionDuration animations:^{
         if (isPresenting) {
@@ -256,11 +305,21 @@ typedef void(^TLAnimationCompletion)(BOOL flag);
             rightTopView.frame = CGRectOffset(rightTopView.frame,  W, -H);
             leftBottomView.frame = CGRectOffset(leftBottomView.frame,  -W, H);
             rightBottomView.frame = CGRectOffset(rightBottomView.frame,  W, H);
+            
+            if (maskView) {
+                toView.layer.transform = CATransform3DIdentity;
+            }
+            
         } else {
             leftTopView.frame = CGRectOffset(leftTopView.frame, W, H);
             rightTopView.frame = CGRectOffset(rightTopView.frame,  -W, H);
             leftBottomView.frame = CGRectOffset(leftBottomView.frame,  W, -H);
             rightBottomView.frame = CGRectOffset(rightBottomView.frame,  -W, -H);
+            
+            if (maskView) {
+                CATransform3D transform3D = CATransform3DMakeTranslation(0, -30, -0);
+                fromView.layer.transform = CATransform3DScale(transform3D, 0.8f, 0.8f, 1);
+            }
         }
         
     } completion:^(BOOL finished) {
@@ -269,6 +328,14 @@ typedef void(^TLAnimationCompletion)(BOOL flag);
         [rightTopView removeFromSuperview];
         [leftBottomView removeFromSuperview];
         [rightBottomView removeFromSuperview];
+        
+        if (maskView) {
+            if (!isPresenting) {
+                fromView.layer.transform = CATransform3DIdentity;
+            }
+            [maskView removeFromSuperview];
+        }
+        
         BOOL wasCancelled = [transitionContext transitionWasCancelled];
         [transitionContext completeTransition:!wasCancelled];
     }];
