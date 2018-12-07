@@ -64,32 +64,18 @@
             break;
         default:{
             title = @"个人动画收集";
-            if (_isPush) {
-                rows = @[@"开门",@"绽放",@"向右边倾斜旋转",@"向左边倾斜旋转",@"指定frame：initialFrame --> finalFrame",
-                         @"对指定rect范围，进行缩放和平移",@"对指定rect范围...2[纯净版]",@"圆形",@"翻转（还可以设置其他样式，见API）"];
-                rowsOfSubtitle = @[@(TLAnimatorTypeOpen), @(TLAnimatorTypeOpen2), @(TLAnimatorTypeTiltRight),
-                                   @(TLAnimatorTypeTiltLeft), @(TLAnimatorTypeFrame), @(TLAnimatorTypeRectScale),
-                                   @(TLAnimatorTypeRectScale), @(TLAnimatorTypeCircular),@(TLAnimatorTypeFlip)];
-            }else{
-                rows = @[@"开门",@"绽放", @"斜角切入",@"向右边倾斜旋转",@"向左边倾斜旋转",
-                         @"指定frame：initialFrame --> finalFrame", @"对指定rect范围，进行缩放和平移",
-                         @"对指定rect范围...2[纯净版]",@"圆形",@"抽屉效果",@"App Store Card(demo自定义案例，不在框架内)"
-                         ];
-                rowsOfSubtitle = @[@(TLAnimatorTypeOpen), @(TLAnimatorTypeOpen2),@(TLAnimatorTypeBevel),
-                                   @(TLAnimatorTypeTiltRight), @(TLAnimatorTypeTiltLeft), @(TLAnimatorTypeFrame),
-                                   @(TLAnimatorTypeRectScale), @(TLAnimatorTypeRectScale), @(TLAnimatorTypeCircular),
-                                   @(TLAnimatorTypeSlidingDrawer),@100];
-            }
+            rows = @[@"开门",@"绽放",@"向右边倾斜旋转",@"向左边倾斜旋转",@"指定frame：initialFrame --> finalFrame",
+                     @"对指定rect范围，进行缩放和平移",@"对指定rect范围...2[纯净版]",@"圆形",@"翻转（还可以设置其他样式，见API）"];
+            rowsOfSubtitle = @[@(TLAnimatorTypeOpen), @(TLAnimatorTypeOpen2), @(TLAnimatorTypeTiltRight),
+                               @(TLAnimatorTypeTiltLeft), @(TLAnimatorTypeFrame), @(TLAnimatorTypeRectScale),
+                               @(TLAnimatorTypeRectScale), @(TLAnimatorTypeCircular),@(TLAnimatorTypeFlip)];
         }
             break;
     }
 
     TLSection *section = [TLSection new];
-    if (_isPush) {
-        section.title = [NSString stringWithFormat:@"Push : %@",title];
-    }else {
-        section.title = [NSString stringWithFormat:@"Modal : %@",title];
-    }
+    section.title = [NSString stringWithFormat:@"Push : %@",title];
+    
     section.show = YES;
     section.rows = rows;
     section.rowsOfSubTitle = rowsOfSubtitle;
@@ -203,63 +189,28 @@
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-     if (_isPush == NO) {
-        if (_type == TLContentTypeSystemAnimator) {
-            [self presentBySystem:indexPath];
-        }else if (_type == TLContentTypeSwipeAnimator){
-            [self presentBySwipe:indexPath];
-        }else if (_type == TLContentTypeCATransitionAnimator){
-            [self presentByCATransition:indexPath];
-        }else if (_type == TLContentTypeCuStomAnimator){
-            [self presentByCustom:indexPath];
-        }else {
-            
-            NSString *text = self.data[indexPath.section].rows[indexPath.row];
-            if ([text containsString:@"App Store"]) {
-                TLAppStoreListController *vc = [TLAppStoreListController new];
-                [self presentViewController:vc swipeType:TLSwipeTypeIn presentDirection:TLDirectionToLeft dismissDirection:TLDirectionToLeft completion:nil];
-            }else {
-                [self presentByTLAnimator:indexPath];
-            }
-        }
+    
+    if (_type == TLContentTypeSwipeAnimator){
+        [self pushBySwipe:indexPath];
+    }else if (_type == TLContentTypeCATransitionAnimator){
+        [self pushByCATransition:indexPath];
+    }else if (_type == TLContentTypeCuStomAnimator){
+        [self pushByCustomAnimation:indexPath];
     }else {
-        if (_type == TLContentTypeSwipeAnimator){
-            [self pushBySwipe:indexPath];
-        }else if (_type == TLContentTypeCATransitionAnimator){
-            [self pushByCATransition:indexPath];
-        }else if (_type == TLContentTypeCuStomAnimator){
-            [self pushByCustomAnimation:indexPath];
-        }else {
-            [self pushByTLAnimation:indexPath];
-        }
+        [self pushByTLAnimation:indexPath];
     }
 }
 
-#pragma mark - Presenting Of View Controller
-#pragma mark 原生动画效果
-- (void)presentBySystem:(NSIndexPath *)indexPath {
-   
+#pragma mark - 
+#pragma mark - Push Of View Controller
+#pragma mark TLSwipeAnimator
+- (void)pushBySwipe:(NSIndexPath *)indexPath {
     TLSecondViewController *vc = [[TLSecondViewController alloc] init];
-    vc.imgName = @"modal_system_animator";
-    TLSystemAnimator *anm = [TLSystemAnimator animatorWithTransitionStyle:indexPath.row];
-    [self presentViewController:vc animator:anm completion:nil];
-    
-    
-    /* 简化版
-    TLSecondViewController *vc = [[TLSecondViewController alloc] init];
-    [self presentViewController:vc transitionStyle:indexPath.row completion:^{
-        NSLog(@"system : completion---%zi",indexPath.row);
-    }];*/
-}
-
-#pragma mark 平滑效果
-- (void)presentBySwipe:(NSIndexPath *)indexPath  {
- 
-    TLSecondViewController *vc = [[TLSecondViewController alloc] init];
-    vc.imgName = @"modal_swipe";
+    vc.imgName = @"push_swipe";
     
     // 关闭侧滑pop手势
 //    vc.disableInteractivePopGestureRecognizer = YES;
+
     TLWheelTableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
     TLSwipeType type;
     if (indexPath.row == 0) {
@@ -272,32 +223,35 @@
     
     /*
      typedef enum : NSUInteger {
-         TLDirectionToTop = 1 << 0,
-         TLDirectionToLeft = 1 << 1,
-         TLDirectionToBottom = 1 << 2,
-         TLDirectionToRight = 1 << 3,
+     TLDirectionToTop = 1 << 0,
+     TLDirectionToLeft = 1 << 1,
+     TLDirectionToBottom = 1 << 2,
+     TLDirectionToRight = 1 << 3,
      } TLDirection;
      */
     
     TLSwipeAnimator *anm = [TLSwipeAnimator animatorWithSwipeType:type
                                                     pushDirection:1<<cell.sgmtA.selectedSegmentIndex
                                                      popDirection:1<<cell.sgmtA.selectedSegmentIndex];
-    [self presentViewController:vc animator:anm completion:nil];
+    [self pushViewController:vc animator:anm];
     
-     /* 简化版
-    [self presentViewController:vc
-                      swipeType:type
-               presentDirection:1<<cell.sgmtA.selectedSegmentIndex
-               dismissDirection:1<<cell.sgmtB.selectedSegmentIndex
-                     completion:^
-    {
-        NSLog(@"system : completion---%zi",indexPath.row);
-    }];
+    /* 简化
+    [self pushViewController:vc swipeType:type pushDirection:cell.sgmtA.selectedSegmentIndex popDirection:cell.sgmtB.selectedSegmentIndex];
     */
 }
 
+#pragma mark TLCATransitonAnimator
+- (void)pushByCATransition:(NSIndexPath *)indexPath {
+    
+    TLSecondViewController *vc = [[TLSecondViewController alloc] init];
+    vc.imgName = @"push_catransition";
+    
+    TLCATransitonAnimator *animator = [self CATransitionAnimatorWithIndexPath:indexPath toViewController:vc];
+    animator.transitionDuration = 0.5;
+    [self pushViewController:vc animator:animator];
+    
+}
 
-#pragma mark CAtransion 类型动画效果
 - (TLCATransitonAnimator *)CATransitionAnimatorWithIndexPath:(NSIndexPath *)indexPath toViewController:(UIViewController *)vc {
     TLWheelTableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
     NSString *text = self.data[indexPath.section].rows[indexPath.row];
@@ -384,33 +338,21 @@
     return animator;
 }
 
-- (void)presentByCATransition:(NSIndexPath *)indexPath {
+#pragma mark TLCustomAnimator
+- (void)pushByCustomAnimation:(NSIndexPath *)indexPath {
     TLSecondViewController *vc = [[TLSecondViewController alloc] init];
-    vc.imgName = @"modal_catransition";
+    vc.imgName = @"push_custom";
     
-    TLCATransitonAnimator *animator = [self CATransitionAnimatorWithIndexPath:indexPath toViewController:vc];
-    [self presentViewController:vc animator:animator completion:^{
-        NSLog(@"CATransition : completion---%zi",indexPath.row);
-    }];
-}
-
-#pragma mark 自定义动画
-- (void)presentByCustom:(NSIndexPath *)indexPath {
-    TLSecondViewController *vc = [[TLSecondViewController alloc] init];
-    vc.imgName = @"modal_custom";
-    
-    [self presentViewController:vc customAnimation:^(id<UIViewControllerContextTransitioning>  _Nonnull transitionContext, BOOL isPresenting) {
+    [self pushViewController:vc customAnimation:^(id<UIViewControllerContextTransitioning>  _Nonnull transitionContext, BOOL isPush) {
         
         if (indexPath.row == 0) {
-            [self checkerboardAnimateTransition:transitionContext isPresenting:isPresenting isPush:NO];
+            [self checkerboardAnimateTransition:transitionContext isPresenting:isPush isPush:YES];
         }else if (indexPath.row == 1) {
-            [self heartbeatAnimateTransition:transitionContext isPresenting:isPresenting isPush:NO];
+            [self heartbeatAnimateTransition:transitionContext isPresenting:isPush isPush:YES];
         }else if (indexPath.row == 2) {
-            [self bounceAnimateTransition:transitionContext isPresenting:isPresenting];
+            //            [self bounceAnimateTransition:transitionContext isPresenting:isPush isPush:YES];
         }
         
-    } completion:^{
-        NSLog(@"Custom : completion---%zi",indexPath.row);
     }];
 }
 
@@ -441,53 +383,6 @@
     animation.delegate = self;
     _transitionContext = transitionContext;
     [targetView.window.layer addAnimation:animation forKey:nil];
-}
-
-/// 弹性动画
-- (void)bounceAnimateTransition:(id<UIViewControllerContextTransitioning>)transitionContext
-                   isPresenting:(BOOL)isPresenting
-{
-    UIView *fromView;
-    UIView *toView;
-    if ([transitionContext respondsToSelector:@selector(viewForKey:)]) { // iOS 8+ fromView/toView可能为nil
-        fromView = [transitionContext viewForKey:UITransitionContextFromViewKey];
-        toView = [transitionContext viewForKey:UITransitionContextToViewKey];
-    }
-    
-    if (isPresenting) {
-        [transitionContext.containerView addSubview:toView];
-    }
-    
-    UIView *targetView = isPresenting  ? toView : fromView;
-    if (isPresenting)
-        targetView.transform = CGAffineTransformMakeScale(0.5, 0.5);
-    else
-        targetView.transform = CGAffineTransformMakeScale(0.2, 0.2);
-    CGRect frame = targetView.frame;
-    frame.origin.y = -frame.size.height;
-    toView.frame = frame;
-    [UIView animateWithDuration:1.0f
-                          delay:0.0
-         usingSpringWithDamping:0.3
-          initialSpringVelocity:5.0
-                        options:0
-                     animations:^{
-                         CGRect frame = targetView.frame;
-                         if (isPresenting) {
-                             frame.origin.y = tl_ScreenH - 500;
-                         }else {
-                             frame.origin.y = 30;
-                         }
-                         
-                         targetView.frame = frame;
-                     }
-                     completion:^(BOOL finished) {
-                         CGRect frame = targetView.frame;
-                         //                         frame.origin.y = 0;
-                         targetView.frame = frame;
-                         [transitionContext completeTransition:YES];
-                         //                         targetView.transform = CGAffineTransformIdentity;
-                     }];
 }
 
 /// 官方demo动画
@@ -633,114 +528,6 @@
             }];
         }
     }
-}
-
-#pragma mark TLAnimator(个人收集)
-- (void)presentByTLAnimator:(NSIndexPath *)indexPath {
-    TLSecondViewController *vc = [[TLSecondViewController alloc] init];
-    vc.imgName = @"modal_animator";
-    
-    TLAnimatorType type = [self.data[indexPath.section].rowsOfSubTitle[indexPath.row] integerValue];
-    if (type == TLAnimatorTypeSlidingDrawer) {
-        type = TLAnimatorTypeTiltRight;
-        vc.isShowBtn = YES;
-        vc.disableInteractivePopGestureRecognizer = YES;
-    }
-    TLAnimator *animator = [TLAnimator animatorWithType:type];
-//    animator.transitionDuration = 1.f;
-    
-    if (type == TLAnimatorTypeFrame) {
-        
-        UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
-        CGRect frame = [self.tableView convertRect:cell.frame toView:[UIApplication sharedApplication].keyWindow];
-        animator.initialFrame = frame;
-        
-    }else if (type == TLAnimatorTypeRectScale) {
-        
-        UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
-        CGRect frame = [cell convertRect:cell.imageView.frame toView:[UIApplication sharedApplication].keyWindow];
-        animator.fromRect = frame;
-        animator.toRect = CGRectMake(0, tl_ScreenH - 210, tl_ScreenW, 210);
-        animator.isOnlyShowRangeForRect = indexPath.row > TLAnimatorTypeRectScale;
-        vc.isShowImage = YES;
-        
-    }else if (type == TLAnimatorTypeCircular) {
-        
-        UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
-        CGPoint center = [self.tableView convertPoint:cell.center toView:[UIApplication sharedApplication].keyWindow];
-        center.x = arc4random_uniform(cell.bounds.size.width - 40) + 20;
-        animator.center = center;
-    }
-    
-    [self presentViewController:vc animator:animator completion:^{
-        tl_LogFunc;
-    }];
-}
-
-
-#pragma mark - push Of View Controller
-- (void)pushBySwipe:(NSIndexPath *)indexPath {
-    TLSecondViewController *vc = [[TLSecondViewController alloc] init];
-    vc.imgName = @"push_swipe";
-    
-    // 关闭侧滑pop手势
-//    vc.disableInteractivePopGestureRecognizer = YES;
-
-    TLWheelTableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
-    TLSwipeType type;
-    if (indexPath.row == 0) {
-        type = TLSwipeTypeInAndOut;
-    }else if (indexPath.row == 1) {
-        type = TLSwipeTypeIn;
-    }else {
-        type = TLSwipeTypeOut;
-    }
-    
-    /*
-     typedef enum : NSUInteger {
-     TLDirectionToTop = 1 << 0,
-     TLDirectionToLeft = 1 << 1,
-     TLDirectionToBottom = 1 << 2,
-     TLDirectionToRight = 1 << 3,
-     } TLDirection;
-     */
-    
-    TLSwipeAnimator *anm = [TLSwipeAnimator animatorWithSwipeType:type
-                                                    pushDirection:1<<cell.sgmtA.selectedSegmentIndex
-                                                     popDirection:1<<cell.sgmtA.selectedSegmentIndex];
-    [self pushViewController:vc animator:anm];
-    
-    /* 简化
-    [self pushViewController:vc swipeType:type pushDirection:cell.sgmtA.selectedSegmentIndex popDirection:cell.sgmtB.selectedSegmentIndex];
-    */
-}
-
-- (void)pushByCATransition:(NSIndexPath *)indexPath {
-   
-    TLSecondViewController *vc = [[TLSecondViewController alloc] init];
-    vc.imgName = @"push_catransition";
-    
-    TLCATransitonAnimator *animator = [self CATransitionAnimatorWithIndexPath:indexPath toViewController:vc];
-    animator.transitionDuration = 0.5;
-    [self pushViewController:vc animator:animator];
-    
-}
-
-- (void)pushByCustomAnimation:(NSIndexPath *)indexPath {
-    TLSecondViewController *vc = [[TLSecondViewController alloc] init];
-    vc.imgName = @"push_custom";
-    
-    [self pushViewController:vc customAnimation:^(id<UIViewControllerContextTransitioning>  _Nonnull transitionContext, BOOL isPush) {
-        
-        if (indexPath.row == 0) {
-            [self checkerboardAnimateTransition:transitionContext isPresenting:isPush isPush:YES];
-        }else if (indexPath.row == 1) {
-            [self heartbeatAnimateTransition:transitionContext isPresenting:isPush isPush:YES];
-        }else if (indexPath.row == 2) {
-//            [self bounceAnimateTransition:transitionContext isPresenting:isPush isPush:YES];
-        }
-        
-    }];
 }
 
 #pragma mark TLAnimator(个人收集)

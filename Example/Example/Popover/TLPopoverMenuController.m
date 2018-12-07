@@ -1,19 +1,17 @@
 //
-//  TLMenuViewController.m
-//  https://github.com/LoongerTao/TLTransitions
+//  TLPopoverMenuController.m
+//  Example
 //
-//  Created by 故乡的云 on 2018/11/16.
+//  Created by 故乡的云 on 2018/12/6.
 //  Copyright © 2018 故乡的云. All rights reserved.
 //
 
-#import "TLMenuViewController.h"
+#import "TLPopoverMenuController.h"
 #import "TLTransitions.h"
-#import "TLFirstTableController.h"
-#import "TLRegisterInteractiveController.h"
 #import "TLSection.h"
 #import "TLCodeViewConroller.h"
 
-@interface TLMenuViewController ()<CAAnimationDelegate>{
+@interface TLPopoverMenuController ()<CAAnimationDelegate>{
     UIView *_frameView;
     UIView *_sheetView;
     UILabel *_titleLabel;
@@ -27,38 +25,18 @@
 
 @end
 
-@implementation TLMenuViewController
+@implementation TLPopoverMenuController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-//    self.navigationController.navigationBarHidden = YES;
-    self.navigationItem.title = @"Menu";
     
     TLSection *viewSection = [TLSection new];
     viewSection.title = @"Popover（View）";
-    viewSection.show = NO;
+    viewSection.show = YES;
     viewSection.rows = @[@"Alert",@"Alert2", @"Action Sheet", @"To Point",@"From Frame1 To Frame2" ,@"CuStom"];
     
-    TLSection *presentSection = [TLSection new];
-    presentSection.title = @"Modal";
-    presentSection.show = NO;
-    presentSection.rows = @[@"System Animator", @"Swipe Animator" ,@"CATransition Animator",
-                            @"CuStom Animator",@"个人动画案例收集（TLAnimator）"];
-    
-    TLSection *pushSection = [TLSection new];
-    pushSection.title = @"Push / pop";
-    pushSection.show = NO;
-    pushSection.rows = @[@"Swipe Animator", @"CATransition Animator" ,
-                         @"CuStom Animator", @"个人动画案例收集（TLAnimator）"];
-    
-    TLSection *registerInteractiveSection = [TLSection new];
-    registerInteractiveSection.title = @"注册手势进行push/presention";
-    registerInteractiveSection.show = NO;
-    registerInteractiveSection.rows = @[@"Modal", @"Push"];
-    _data = @[viewSection, presentSection, pushSection,registerInteractiveSection];
-    
+    _data = @[viewSection];
     self.tableView.tableFooterView = [UIView new];
-    
     self.automaticallyAdjustsScrollViewInsets = YES;
 }
 
@@ -75,7 +53,7 @@
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-
+    
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"ReuseIdentifier"];
     if (cell == nil) {
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:@"ReuseIdentifier"];
@@ -140,31 +118,6 @@
         }
         return;
     }
-    
-    UIViewController *viewController;
-    if (indexPath.section == 3) {
-        TLRegisterInteractiveController *vc = [TLRegisterInteractiveController new];
-        vc.isModal = indexPath.row == 0;
-        viewController = vc;
-    }else {
-        TLFirstTableController *vc = [TLFirstTableController new];
-        vc.isPush = indexPath.section == 2;
-        TLContentType type = TLContentTypeOther;
-        NSString *text = self.data[indexPath.section].rows[indexPath.row];
-        if ([text containsString:@"System"]) {
-            type = TLContentTypeSystemAnimator;
-        }else if ([text containsString:@"Swipe"]) {
-            type = TLContentTypeSwipeAnimator;
-        }else if ([text containsString:@"CATransition"]) {
-            type = TLContentTypeCATransitionAnimator;
-        }else if ([text containsString:@"CuStom"]) {
-            type = TLContentTypeCuStomAnimator;
-        }
-        vc.type = type;
-        viewController = vc;
-    }
-    
-    [self pushViewController:viewController transitionType:TLTransitionCube direction:TLDirectionToLeft dismissDirection:TLDirectionToRight];
 }
 
 #pragma mark - Transitions Of View
@@ -266,12 +219,6 @@
     NSTimeInterval duration = _transition.transitionDuration;
     _transition.animateTransition = ^(id<UIViewControllerContextTransitioning> transitionContext) {
         
-        // For a Presentation:
-        //      fromView = The presenting view.
-        //      toView   = The presented view.
-        // For a Dismissal:
-        //      fromView = The presented view.
-        //      toView   = The presenting view.
         UIView *fromView;
         UIView *toView;
         UIViewController *fromViewController = [transitionContext viewControllerForKey:UITransitionContextFromViewControllerKey];
@@ -291,20 +238,6 @@
             // 注意: 一定要将视图添加到容器上
             [containerView addSubview:toView];
             
-            // UIView动画
-            // 动画前的样式
-            // code...
-            //            [UIView animateWithDuration:duration animations:^{
-            //
-            //                // 最终的样式
-            //                // code...
-            //
-            //            } completion:^(BOOL finished) {
-            //                // 必须执行：告诉transitionContext 动画执行完毕
-            //                [transitionContext completeTransition:YES];
-            //            }];
-            
-            // 或CATransition
             self->_transitionContext = transitionContext;
             // 设置转场动画
             CATransition *anim = [CATransition animation];
@@ -317,19 +250,7 @@
         }else { // dismiss
             
             [containerView addSubview:fromView];
-            // UIView动画
-            // 动画前的样式
-            // code...
-            //            [UIView animateWithDuration:duration animations:^{
-            //
-            //                // 最终的样式
-            //                // code...
-            //
-            //            } completion:^(BOOL finished) {
-            //                [transitionContext completeTransition:YES];
-            //            }];
-            
-            // 或CATransition
+           
             self->_transitionContext = transitionContext;
             // 设置转场动画
             CATransition *anim = [CATransition animation];
@@ -355,7 +276,7 @@
     titleLabel.textColor = [UIColor orangeColor];
     titleLabel.textAlignment = NSTextAlignmentCenter;
     titleLabel.frame = BView.bounds;
-
+    
     UIButton *btn = [[UIButton alloc] initWithFrame:CGRectMake(bounds.size.width - 70, 0, 60, 30)];
     [btn setTitle:@"查看代码" forState:UIControlStateNormal];
     [btn setTitleColor:[UIColor blueColor] forState:UIControlStateNormal];
@@ -420,4 +341,5 @@
 - (void)dealloc {
     [_frameView removeObserver:self forKeyPath:@"frame"];
 }
+
 @end

@@ -7,19 +7,12 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "TLModalFirstController.h"
 
-typedef enum : NSUInteger {
-    TLContentTypeSystemAnimator,
-    TLContentTypeSwipeAnimator,
-    TLContentTypeCATransitionAnimator,
-    TLContentTypeCuStomAnimator,
-    TLContentTypeOther,
-} TLContentType;
 
 NS_ASSUME_NONNULL_BEGIN
 
 @interface TLFirstTableController : UITableViewController
-@property(nonatomic, assign) BOOL isPush;
 @property(nonatomic, assign) TLContentType type;
 @end
 

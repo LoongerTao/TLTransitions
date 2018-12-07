@@ -89,7 +89,7 @@ _bView.bounds = rect;
 - 图2.Swipe 
 - 图3.CATransition 
 - 图4.Cunstom
-- 图5.锦集 
+- 图5.锦集 (部分)
 - 图6.锦集-圆形缩放 
 - 图7.锦集-抽屉效果 
 - 图8.轻仿App store Card动画
@@ -157,3 +157,37 @@ completion:^ {
 */
 ```
 
+### 3. 特殊情况处理（如果您对以下问题其他好的的处理方法愿意分享，请通过发issue的方法告诉我）
+- 在push或pop时使用 `- hidesBottomBarWhenPushed`隐藏bottom bar 或 tabbar时，bar与view的转场动画不协调的情况（如下图所示）
+    - 问题由`happying`同学提出，并给出[他的处理方案](https://github.com/LoongerTao/TLTransitions/issues/7)
+    - 我的处理方法：在即将开始push时手动隐藏bar，pop完成后手动显示bar，以此取代 `toVC.hidesBottomBarWhenPushed = YES` 。（只在特殊情况下需要处理）
+```objc
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+
+    if (显示条件) {
+        self.tabBarController.tabBar.hidden = NO; // 如果是pop回来的，且需要显示bar，就手动将其显示
+    }
+}
+
+
+- (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
+    UIViewController *toVc = [UIViewController new];
+    toVc.view.backgroundColor = [UIColor redColor];
+
+    toVc.hidesBottomBarWhenPushed = NO; // 设置为NO
+    self.tabBarController.tabBar.hidden = YES; // push前手动隐藏bar
+    
+    TLSwipeAnimator *anm = [TLSwipeAnimator animatorWithSwipeType:TLSwipeTypeInAndOut pushDirection:TLDirectionToTop popDirection:TLDirectionToBottom];
+    [self pushViewController:toVc animator:anm];
+}
+```
+    
+    
+![scene1.gif](https://upload-images.jianshu.io/upload_images/3333500-5399a99ad999dfe7.gif?imageMogr2/auto-orient/strip)
+
+
+
+### 4. 参考
+- [官方文档：关于模态转场、自定义动画、手势等（英文不好的，可以使用谷歌浏览器，能自动翻译）](https://developer.apple.com/library/archive/featuredarticles/ViewControllerPGforiPhoneOS/PresentingaViewController.html#//apple_ref/doc/uid/TP40007457-CH14-SW1)  
+- [部分动画效果来源](https://github.com/ColinEberhardt/VCTransitionsLibrary)

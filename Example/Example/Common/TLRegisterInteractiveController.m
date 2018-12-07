@@ -23,9 +23,9 @@
     self.navigationItem.title = @"注册手势";
     UILabel *label = [[UILabel alloc] init];
     if (_isModal) {
-        label.text = @"右侧滑可以Presentation操作";
+        label.text = @"右边向左侧滑可以Presentation操作";
     }else {
-        label.text = @"右侧滑可以Push操作";
+        label.text = @"右边向左侧滑可以Push操作";
     }
     [label sizeToFit];
     label.center = self.view.layer.position;
@@ -43,6 +43,16 @@
     gradient.endPoint = CGPointMake(1, 1);
     gradient.locations = @[@0.0, @0.5, @1.0];
     [vc.view.layer addSublayer:gradient];
+    
+    UILabel *label2 = [[UILabel alloc] init];
+    if (_isModal) {
+        label2.text = @"左边向右侧滑可以Dismiss操作";
+    }else {
+        label2.text = @"左边向右滑可以Pop操作";
+    }
+    [label2 sizeToFit];
+    label2.center = vc.view.layer.position;
+    [vc.view addSubview:label2];
     
     
     // 注册手势
