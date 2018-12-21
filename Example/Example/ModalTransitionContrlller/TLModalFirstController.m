@@ -66,12 +66,16 @@
             title = @"个人动画收集";
             rows = @[@"开门",@"绽放", @"斜角切入",@"向右边倾斜旋转",@"向左边倾斜旋转",
                      @"指定frame：initialFrame --> finalFrame", @"对指定rect范围，进行缩放和平移",
-                     @"对指定rect范围...2[纯净版]",@"圆形",@"抽屉效果",@"App Store Card(demo自定义案例，不在框架内)"
+                     @"对指定rect范围...2[纯净版]",@"圆形",@"抽屉效果",@"发牌效果",
+                     
+                     @"App Store Card(demo自定义案例，不在框架内)" // 放到最后
                      ];
             rowsOfSubtitle = @[@(TLAnimatorTypeOpen), @(TLAnimatorTypeOpen2),@(TLAnimatorTypeBevel),
                                @(TLAnimatorTypeTiltRight), @(TLAnimatorTypeTiltLeft), @(TLAnimatorTypeFrame),
                                @(TLAnimatorTypeRectScale), @(TLAnimatorTypeRectScale), @(TLAnimatorTypeCircular),
-                               @(TLAnimatorTypeSlidingDrawer),@100];
+                               @(TLAnimatorTypeSlidingDrawer),@(TLAnimatorTypeCards),
+                               
+                               @100];
         }
             break;
     }
@@ -648,6 +652,8 @@
         CGPoint center = [self.tableView convertPoint:cell.center toView:[UIApplication sharedApplication].keyWindow];
         center.x = arc4random_uniform(cell.bounds.size.width - 40) + 20;
         animator.center = center;
+    }else if (type == TLAnimatorTypeCards) {
+        animator.transitionDuration = 1.f;
     }
     
     [self presentViewController:vc animator:animator completion:^{

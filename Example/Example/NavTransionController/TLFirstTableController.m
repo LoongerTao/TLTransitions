@@ -65,10 +65,12 @@
         default:{
             title = @"个人动画收集";
             rows = @[@"开门",@"绽放",@"向右边倾斜旋转",@"向左边倾斜旋转",@"指定frame：initialFrame --> finalFrame",
-                     @"对指定rect范围，进行缩放和平移",@"对指定rect范围...2[纯净版]",@"圆形",@"翻转（还可以设置其他样式，见API）"];
+                     @"对指定rect范围，进行缩放和平移",@"对指定rect范围...2[纯净版]",@"圆形",@"翻转（还可以设置其他样式，见API）",
+                     @"发牌效果"];
             rowsOfSubtitle = @[@(TLAnimatorTypeOpen), @(TLAnimatorTypeOpen2), @(TLAnimatorTypeTiltRight),
                                @(TLAnimatorTypeTiltLeft), @(TLAnimatorTypeFrame), @(TLAnimatorTypeRectScale),
-                               @(TLAnimatorTypeRectScale), @(TLAnimatorTypeCircular),@(TLAnimatorTypeFlip)];
+                               @(TLAnimatorTypeRectScale), @(TLAnimatorTypeCircular),@(TLAnimatorTypeFlip),
+                               @(TLAnimatorTypeCards)];
         }
             break;
     }
@@ -561,6 +563,9 @@
         center.x = arc4random_uniform(cell.bounds.size.width - 40) + 20;
         animator.center = center;
         animator.startRadius = cell.bounds.size.height / 2;
+        
+    }else if (type == TLAnimatorTypeCards) {
+        animator.transitionDuration = 1.f;
     }
     [self pushViewController:vc animator:animator];
 }

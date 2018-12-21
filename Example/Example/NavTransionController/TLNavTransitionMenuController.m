@@ -126,7 +126,7 @@
     viewController.hidesBottomBarWhenPushed = NO;
     self.tabBarController.tabBar.hidden = YES;
     
-    [self pushViewController:viewController transitionType:TLTransitionCube direction:TLDirectionToLeft dismissDirection:TLDirectionToRight];
+    [self pushViewController:viewController transitionType:TLTransitionRippleEffect direction:TLDirectionToLeft dismissDirection:TLDirectionToRight];
 }
 
 @end

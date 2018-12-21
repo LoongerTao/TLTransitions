@@ -132,6 +132,10 @@ typedef void(^TLAnimationCompletion)(BOOL flag);
         case TLAnimatorTypeSlidingDrawer:
             [self slidingDrawerTypeTransition:transitionContext presenting:isPresenting];
             break;
+        case TLAnimatorTypeCards:
+            [self cardsTypeTransition:transitionContext presenting:isPresenting];
+            break;
+            
         default:
             break;
     }
@@ -730,7 +734,7 @@ typedef void(^TLAnimationCompletion)(BOOL flag);
     }];
 }
 
-#pragma mark - 手势 Gesture Recognizer
+#pragma mark 手势 Gesture Recognizer
 - (void)dismissTapGestureRecognizerOfSlidingDrawerType:(UITapGestureRecognizer *)tap {
     if(_presentedViewController) {
         [_presentedViewController dismissViewControllerAnimated:YES completion:nil];
@@ -760,6 +764,65 @@ typedef void(^TLAnimationCompletion)(BOOL flag);
                 break;
         }
     }
+}
+
+#pragma mark - TLAnimatorCards
+- (void)cardsTypeTransition:(id<UIViewControllerContextTransitioning>)transitionContext presenting:(BOOL)isPresenting
+{
+    UIViewController *fromVC = [transitionContext viewControllerForKey:UITransitionContextFromViewControllerKey];
+    UIViewController *toVC = [transitionContext viewControllerForKey:UITransitionContextToViewControllerKey];
+    
+    UIView *containerView = transitionContext.containerView;
+    UIView *fromView = fromVC.view;
+    UIView *toView = toVC.view;
+    
+    CGRect frame = [transitionContext initialFrameForViewController:fromVC];
+    CGRect offScreenFrame = frame;
+    offScreenFrame.origin.y = containerView.bounds.size.height;
+    toView.frame = offScreenFrame;
+    
+    UIView *superView = nil;
+    if(!self.isPushOrPop && !isPresenting) {
+        superView = toView.superview;
+    }
+    [containerView insertSubview:toView aboveSubview:fromView];
+    
+    CATransform3D t1 = CATransform3DIdentity;
+    t1.m34 = 1.0/-900;
+    t1 = CATransform3DScale(t1, 0.95, 0.95, 1);
+    t1 = CATransform3DRotate(t1, 15.0f * M_PI/180.0f, 1, 0, 0);
+    
+    CATransform3D t2 = CATransform3DIdentity;
+    t2.m34 = t1.m34;
+    t2 = CATransform3DTranslate(t2, 0, -fromView.frame.size.height * 0.08, 0);
+    t2 = CATransform3DScale(t2, 0.8, 0.8, 1);
+    
+    NSTimeInterval duration = [self transitionDuration:transitionContext];
+    [UIView animateKeyframesWithDuration:duration delay:0.0 options:UIViewKeyframeAnimationOptionCalculationModeCubic animations:^{
+        
+        [UIView addKeyframeWithRelativeStartTime:0.0f relativeDuration:0.4f animations:^{
+            fromView.layer.transform = t1;
+            fromView.alpha = 0.6;
+        }];
+        [UIView addKeyframeWithRelativeStartTime:0.2f relativeDuration:0.4f animations:^{
+            fromView.layer.transform = t2;
+        }];
+        
+        [UIView addKeyframeWithRelativeStartTime:0.6f relativeDuration:0.2f animations:^{
+            toView.frame = CGRectOffset(toView.frame, 0.0, -30.0);
+        }];
+        [UIView addKeyframeWithRelativeStartTime:0.8f relativeDuration:0.2f animations:^{
+            toView.frame = frame;
+            fromView.layer.transform = CATransform3DIdentity;
+        }];
+        
+    } completion:^(BOOL finished) {
+        fromView.alpha = 1;
+        if(!self.isPushOrPop && !isPresenting) {
+            [superView  addSubview:toView];
+        }
+        [transitionContext completeTransition:![transitionContext transitionWasCancelled]];
+    }];
 }
 
 #pragma mark - CABasicAnimation delegate

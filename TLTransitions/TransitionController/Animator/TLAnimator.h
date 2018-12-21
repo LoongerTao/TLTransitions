@@ -24,6 +24,7 @@ typedef enum : NSUInteger {
     //  style 设置为：UIModalTransitionStyleFlipHorizontal
     
     TLAnimatorTypeSlidingDrawer,     // 抽屉效果（类似QQ个人信息页面）。初始化slidEnabled = NO，可以禁止toViewController滑动
+    TLAnimatorTypeCards,             // 发牌效果
 } TLAnimatorType;
 
 NS_ASSUME_NONNULL_BEGIN
