@@ -825,6 +825,84 @@ typedef void(^TLAnimationCompletion)(BOOL flag);
     }];
 }
 
+/* 可以modal / pop还存在bug
+#pragma mark - TLAnimatorCards2
+- (void)cardsTypeTransition2:(id<UIViewControllerContextTransitioning>)transitionContext presenting:(BOOL)isPresenting
+{
+    if(isPresenting){
+        [self cardsTypeTransition:transitionContext presenting:isPresenting];
+        return;
+    }
+    
+    UIViewController *fromVC = [transitionContext viewControllerForKey:UITransitionContextFromViewControllerKey];
+    UIViewController *toVC = [transitionContext viewControllerForKey:UITransitionContextToViewControllerKey];
+    
+    UIView *containerView = transitionContext.containerView;
+    UIView *fromView = fromVC.view;
+    UIView *toView = toVC.view;
+    
+    CGRect frame = [transitionContext initialFrameForViewController:fromVC];
+    CGRect offScreenFrame = frame;
+//    offScreenFrame.origin.y = containerView.bounds.size.height;
+    
+//    fromView.frame = offScreenFrame;
+    
+    UIView *superView = nil;
+    if(!self.isPushOrPop && !isPresenting) {
+        superView = toView.superview;
+    }
+    [containerView addSubview:fromView];
+    
+    CGPoint position = toView.layer.position;
+    
+    
+    
+    CATransform3D t = CATransform3DIdentity;
+    t.m34 = 1.0/-600;
+    t = CATransform3DTranslate (t, 0, 10, -120);
+//    t = CATransform3DScale(t, 1, 1, 1);
+    toView.layer.transform = t;
+    
+   
+    CATransform3D t2 = CATransform3DRotate(t, 10 * M_PI/180.0f, 1, 0, 0);
+    
+    
+    NSTimeInterval duration = [self transitionDuration:transitionContext];
+    [UIView animateKeyframesWithDuration:duration delay:0.0
+                                 options:UIViewKeyframeAnimationOptionCalculationModeCubic
+                              animations:^
+    {
+        [UIView addKeyframeWithRelativeStartTime:0.0f relativeDuration:.3f animations:^{
+            toView.layer.anchorPoint = CGPointMake(0.5, 0);
+            toView.layer.position = CGPointMake(position.x, 0);
+            toView.layer.transform = t2;
+
+        }];
+
+        [UIView addKeyframeWithRelativeStartTime:0.2f relativeDuration:0.2f animations:^{
+        
+            toView.layer.transform = CATransform3DIdentity;
+
+        }];
+
+        [UIView addKeyframeWithRelativeStartTime:0.0f relativeDuration:0.3f animations:^{
+          CGRect rect = offScreenFrame;
+          rect.origin.y = containerView.bounds.size.height;
+          fromView.frame = rect;
+        }];
+        
+        
+    } completion:^(BOOL finished) {
+        toView.layer.anchorPoint = CGPointMake(0.5, 0.5);
+        toView.layer.position = position;
+        if(!self.isPushOrPop && !isPresenting) {
+            [superView  addSubview:toView];
+        }
+        [transitionContext completeTransition:![transitionContext transitionWasCancelled]];
+    }];
+}
+*/
+
 #pragma mark - CABasicAnimation delegate
 - (void)animationDidStop:(CAAnimation *)anim finished:(BOOL)flag {
     if (self.animationCompletion) {
