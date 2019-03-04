@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name         = 'TLTransitions'
-  s.version      = '1.4.5'
+  s.version      = '1.4.6'
   s.license      = 'MIT'
   s.ios.deployment_target = '8.0'
   s.platform     = :ios, '8.0'
