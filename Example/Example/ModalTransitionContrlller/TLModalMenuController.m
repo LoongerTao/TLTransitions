@@ -31,7 +31,7 @@
     
     
     TLSection *registerInteractiveSection = [TLSection new];
-    registerInteractiveSection.title = @"注册手势进行push/presention";
+    registerInteractiveSection.title = @"注册手势进行presention";
     registerInteractiveSection.show = YES;
     registerInteractiveSection.rows = @[@"Modal"];
     _data = @[presentSection,registerInteractiveSection];

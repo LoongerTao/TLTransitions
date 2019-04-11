@@ -38,7 +38,7 @@
                          @"CuStom Animator", @"个人动画案例收集（TLAnimator）"];
     
     TLSection *registerInteractiveSection = [TLSection new];
-    registerInteractiveSection.title = @"注册手势进行push/presention";
+    registerInteractiveSection.title = @"注册手势进行push";
     registerInteractiveSection.show = YES;
     registerInteractiveSection.rows = @[@"Push"];
     _data = @[pushSection,registerInteractiveSection];

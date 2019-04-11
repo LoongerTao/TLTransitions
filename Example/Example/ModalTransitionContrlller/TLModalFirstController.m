@@ -66,14 +66,14 @@
             title = @"个人动画收集";
             rows = @[@"开门",@"绽放", @"斜角切入",@"向右边倾斜旋转",@"向左边倾斜旋转",
                      @"指定frame：initialFrame --> finalFrame", @"对指定rect范围，进行缩放和平移",
-                     @"对指定rect范围...2[纯净版]",@"圆形",@"抽屉效果",@"发牌效果",
+                     @"对指定rect范围...2[纯净版]",@"圆形",@"抽屉效果",@"发牌效果", @"轻缩放[类似小程序转场效果]",
                      
                      @"App Store Card(demo自定义案例，不在框架内)" // 放到最后
                      ];
             rowsOfSubtitle = @[@(TLAnimatorTypeOpen), @(TLAnimatorTypeOpen2),@(TLAnimatorTypeBevel),
                                @(TLAnimatorTypeTiltRight), @(TLAnimatorTypeTiltLeft), @(TLAnimatorTypeFrame),
                                @(TLAnimatorTypeRectScale), @(TLAnimatorTypeRectScale), @(TLAnimatorTypeCircular),
-                               @(TLAnimatorTypeSlidingDrawer),@(TLAnimatorTypeCards),
+                               @(TLAnimatorTypeSlidingDrawer),@(TLAnimatorTypeCards),@(TLAnimatorTypeScale),
                                
                                @100];
         }

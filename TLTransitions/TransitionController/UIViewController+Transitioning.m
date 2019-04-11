@@ -85,7 +85,7 @@
     [self.view addGestureRecognizer:interactiveTransitionRecognizer];
     
     if(animator.transitionDuration == 0){ // 默认值
-        animator.transitionDuration = 0.45f;
+        animator.transitionDuration = 0.35f;
     }
     
     TLTransitionDelegate *tDelegate = [TLTransitionDelegate sharedInstace];
@@ -210,7 +210,7 @@
     }
     
     if(animator.transitionDuration == 0){ // 默认值
-        animator.transitionDuration = 0.45f;
+        animator.transitionDuration = 0.35f;
     }
     
     TLDirection dir = TLDirectionToRight;
@@ -275,7 +275,7 @@
     
     animator.isPushOrPop = YES;
     if(animator.transitionDuration == 0){ // 默认值
-        animator.transitionDuration = 0.45f;
+        animator.transitionDuration = 0.35f;
     }
     
     TLDirection dir = TLDirectionToRight;

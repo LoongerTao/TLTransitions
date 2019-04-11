@@ -135,7 +135,9 @@ typedef void(^TLAnimationCompletion)(BOOL flag);
         case TLAnimatorTypeCards:
             [self cardsTypeTransition:transitionContext presenting:isPresenting];
             break;
-            
+        case TLAnimatorTypeScale:
+            [self scaleTypeTransition:transitionContext presenting:isPresenting];
+            break;
         default:
             break;
     }
@@ -143,12 +145,12 @@ typedef void(^TLAnimationCompletion)(BOOL flag);
 
 #pragma mark - TLAnimatorTypeOpen
 - (void)openTypeTransition:(id<UIViewControllerContextTransitioning>)transitionContext presenting:(BOOL)isPresenting {
-    
+
     UIViewController *fromViewController = [transitionContext viewControllerForKey:UITransitionContextFromViewControllerKey];
     UIViewController *toViewController = [transitionContext viewControllerForKey:UITransitionContextToViewControllerKey];
     UIView *fromView = fromViewController.view;
     UIView *toView = toViewController.view;;
-    
+
     UIView *tragetView = isPresenting ? fromView : toView;
     CGRect rect = tragetView.bounds;
     rect.size.width *= .5f;
@@ -156,12 +158,12 @@ typedef void(^TLAnimationCompletion)(BOOL flag);
     UIView *leftView = [tragetView resizableSnapshotViewFromRect:rect afterScreenUpdates:self.isPushOrPop withCapInsets:UIEdgeInsetsZero];
     rect.origin.y = tragetView.frame.origin.y;
     leftView.frame = rect;
-  
+
     rect = CGRectOffset(rect, rect.size.width, 0.f);
     rect.origin.y = 0;
     UIView *rightView = [tragetView resizableSnapshotViewFromRect:rect afterScreenUpdates:self.isPushOrPop withCapInsets:UIEdgeInsetsZero];
-    rightView.frame = CGRectOffset(leftView.frame, leftView.frame.size.width, 0.f);;
-    
+    rightView.frame = CGRectOffset(leftView.frame, leftView.frame.size.width, 0.f);
+
     UIView *containerView = transitionContext.containerView;
     // 注意层次关系
     if (isPresenting) {
@@ -173,12 +175,12 @@ typedef void(^TLAnimationCompletion)(BOOL flag);
     }
     [containerView addSubview:leftView];
     [containerView addSubview:rightView];
-    
+
     if (!isPresenting) {
         leftView.frame = CGRectOffset(leftView.frame, -leftView.frame.size.width, 0.f);
         rightView.frame = CGRectOffset(rightView.frame, rightView.frame.size.width, 0.f);
     }
-    
+
     // 3d缩放效果
     UIView *maskView;
     if (_removeScaleAnimation == NO) {
@@ -188,13 +190,13 @@ typedef void(^TLAnimationCompletion)(BOOL flag);
         [containerView addSubview:maskView];
         [containerView sendSubviewToBack:maskView];
         [containerView sendSubviewToBack:tragetView];
-        
+
         if (isPresenting) {
             CATransform3D transform3D = CATransform3DMakeTranslation(0, -30, -0);
             toView.layer.transform = CATransform3DScale(transform3D, 0.8f, 0.8f, 1);
         }
     }
-    
+
     NSTimeInterval transitionDuration = [self transitionDuration:transitionContext];
     [UIView animateWithDuration:transitionDuration animations:^{
         if (isPresenting) {
@@ -211,24 +213,81 @@ typedef void(^TLAnimationCompletion)(BOOL flag);
                 fromView.layer.transform = CATransform3DScale(transform3D, 0.8f, 0.8f, 1);
             }
         }
-        
+
     } completion:^(BOOL finished) {
-        
+
         [leftView removeFromSuperview];
         [rightView removeFromSuperview];
-        
+
         if (maskView) {
             if (!isPresenting) {
                 fromView.layer.transform = CATransform3DIdentity;
             }
             [maskView removeFromSuperview];
         }
-        
+
         BOOL wasCancelled = [transitionContext transitionWasCancelled];
         [transitionContext completeTransition:!wasCancelled];
     }];
 }
 
+- (void)scaleTypeTransition:(id<UIViewControllerContextTransitioning>)transitionContext presenting:(BOOL)isPresenting {
+    
+    UIViewController *fromViewController = [transitionContext viewControllerForKey:UITransitionContextFromViewControllerKey];
+    UIViewController *toViewController = [transitionContext viewControllerForKey:UITransitionContextToViewControllerKey];
+    UIView *fromView = fromViewController.view;
+    UIView *toView = toViewController.view;;
+    
+    UIView *containerView = transitionContext.containerView;
+    // 注意层次关系
+    if (isPresenting) {
+        [containerView addSubview:toView];
+    }else {
+        if (self.isPushOrPop) { // pop
+            [containerView insertSubview:toView atIndex:0];
+        }
+    }
+    
+    // 3d缩放效果
+    CATransform3D transform3D = CATransform3DMakeTranslation(0, 3, 0);
+    transform3D = CATransform3DScale(transform3D, 0.98f, 0.98f, 1);
+    
+    BOOL flag = self.isChangeMode ? !self.isPushOrPop : self.isPushOrPop;
+    CGFloat offsetX = flag ? toView.frame.size.width : 0.f;
+    CGFloat offsetY = flag ? 0.f : toView.frame.size.height;
+    
+    if (isPresenting) {
+        toView.frame = CGRectOffset(toView.frame, offsetX, offsetY);
+        fromView.layer.cornerRadius = 5;
+    }else {
+        toView.layer.transform = transform3D;
+        toView.layer.cornerRadius = 5;
+    }
+    
+    NSTimeInterval transitionDuration = [self transitionDuration:transitionContext];
+    [UIView animateWithDuration:transitionDuration animations:^{
+        if (isPresenting) {
+            toView.frame = CGRectOffset(toView.frame, -offsetX, -offsetY);
+            fromView.layer.transform = transform3D;
+            
+        } else {
+            fromView.frame = CGRectOffset(toView.frame, offsetX, offsetY);
+            toView.layer.transform = CATransform3DIdentity;
+        }
+        
+    } completion:^(BOOL finished) {
+        
+        if (isPresenting) {
+            fromView.layer.transform = CATransform3DIdentity;
+            fromView.layer.cornerRadius = 0;
+        }else {
+            toView.layer.cornerRadius = 0;
+        }
+        
+        BOOL wasCancelled = [transitionContext transitionWasCancelled];
+        [transitionContext completeTransition:!wasCancelled];
+    }];
+}
 
 #pragma mark - TLAnimatorTypeOpen2
 - (void)open2TypeTransition:(id<UIViewControllerContextTransitioning>)transitionContext presenting:(BOOL)isPresenting {
@@ -824,84 +883,6 @@ typedef void(^TLAnimationCompletion)(BOOL flag);
         [transitionContext completeTransition:![transitionContext transitionWasCancelled]];
     }];
 }
-
-/* 可以modal / pop还存在bug
-#pragma mark - TLAnimatorCards2
-- (void)cardsTypeTransition2:(id<UIViewControllerContextTransitioning>)transitionContext presenting:(BOOL)isPresenting
-{
-    if(isPresenting){
-        [self cardsTypeTransition:transitionContext presenting:isPresenting];
-        return;
-    }
-    
-    UIViewController *fromVC = [transitionContext viewControllerForKey:UITransitionContextFromViewControllerKey];
-    UIViewController *toVC = [transitionContext viewControllerForKey:UITransitionContextToViewControllerKey];
-    
-    UIView *containerView = transitionContext.containerView;
-    UIView *fromView = fromVC.view;
-    UIView *toView = toVC.view;
-    
-    CGRect frame = [transitionContext initialFrameForViewController:fromVC];
-    CGRect offScreenFrame = frame;
-//    offScreenFrame.origin.y = containerView.bounds.size.height;
-    
-//    fromView.frame = offScreenFrame;
-    
-    UIView *superView = nil;
-    if(!self.isPushOrPop && !isPresenting) {
-        superView = toView.superview;
-    }
-    [containerView addSubview:fromView];
-    
-    CGPoint position = toView.layer.position;
-    
-    
-    
-    CATransform3D t = CATransform3DIdentity;
-    t.m34 = 1.0/-600;
-    t = CATransform3DTranslate (t, 0, 10, -120);
-//    t = CATransform3DScale(t, 1, 1, 1);
-    toView.layer.transform = t;
-    
-   
-    CATransform3D t2 = CATransform3DRotate(t, 10 * M_PI/180.0f, 1, 0, 0);
-    
-    
-    NSTimeInterval duration = [self transitionDuration:transitionContext];
-    [UIView animateKeyframesWithDuration:duration delay:0.0
-                                 options:UIViewKeyframeAnimationOptionCalculationModeCubic
-                              animations:^
-    {
-        [UIView addKeyframeWithRelativeStartTime:0.0f relativeDuration:.3f animations:^{
-            toView.layer.anchorPoint = CGPointMake(0.5, 0);
-            toView.layer.position = CGPointMake(position.x, 0);
-            toView.layer.transform = t2;
-
-        }];
-
-        [UIView addKeyframeWithRelativeStartTime:0.2f relativeDuration:0.2f animations:^{
-        
-            toView.layer.transform = CATransform3DIdentity;
-
-        }];
-
-        [UIView addKeyframeWithRelativeStartTime:0.0f relativeDuration:0.3f animations:^{
-          CGRect rect = offScreenFrame;
-          rect.origin.y = containerView.bounds.size.height;
-          fromView.frame = rect;
-        }];
-        
-        
-    } completion:^(BOOL finished) {
-        toView.layer.anchorPoint = CGPointMake(0.5, 0.5);
-        toView.layer.position = position;
-        if(!self.isPushOrPop && !isPresenting) {
-            [superView  addSubview:toView];
-        }
-        [transitionContext completeTransition:![transitionContext transitionWasCancelled]];
-    }];
-}
-*/
 
 #pragma mark - CABasicAnimation delegate
 - (void)animationDidStop:(CAAnimation *)anim finished:(BOOL)flag {
