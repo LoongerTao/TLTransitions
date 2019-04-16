@@ -93,7 +93,7 @@ _bView.bounds = rect;
 - 图6.锦集-圆形缩放 
 - 图7.锦集-抽屉效果 
 - 图8.轻仿App store Card动画
-
+- 其它效果（见demo）：发牌效果、轻缩放（小程序转场效果）...
 ![system.gif](https://upload-images.jianshu.io/upload_images/3333500-40355d0619cbb726.gif?imageMogr2/auto-orient/strip)
 ![swipe.gif](https://upload-images.jianshu.io/upload_images/3333500-080df94e9d1cd8ec.gif?imageMogr2/auto-orient/strip)
 ![CATransition.gif](https://upload-images.jianshu.io/upload_images/3333500-6b16c504fca3dbca.gif?imageMogr2/auto-orient/strip)
