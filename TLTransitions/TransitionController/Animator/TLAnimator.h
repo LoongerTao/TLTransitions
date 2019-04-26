@@ -26,6 +26,7 @@ typedef enum : NSUInteger {
     TLAnimatorTypeSlidingDrawer, // 抽屉效果（类似QQ个人信息页面）。初始化slidEnabled = NO，可以禁止toViewController滑动
     TLAnimatorTypeCards,        // 发牌效果
     TLAnimatorTypeScale,        // 轻缩放，类似小程序转场，入场方向可设置：modal默认底部进出,push/pop默认右侧进出
+    TLAnimatorTypeNatGeo,       
 } TLAnimatorType;
 
 NS_ASSUME_NONNULL_BEGIN

@@ -20,6 +20,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+ 
     self.navigationItem.title = @"Controller B";
     
     self.imgView.hidden = !_isShowImage;

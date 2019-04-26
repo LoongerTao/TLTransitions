@@ -65,12 +65,12 @@
         default:{
             title = @"个人动画收集";
             rows = @[@"开门",@"绽放",@"向右边倾斜旋转",@"向左边倾斜旋转",@"指定frame：initialFrame --> finalFrame",
-                     @"对指定rect范围，进行缩放和平移",@"对指定rect范围...2[纯净版]",@"圆形"
-                     ,@"翻转（还可以设置其他样式，见API）",@"发牌效果", @"轻缩放[类似小程序转场效果]"];
+                     @"对指定rect范围，进行缩放和平移",@"对指定rect范围...2[纯净版]",@"圆形（x坐标随机）"
+                     ,@"翻转（还可以设置其他样式，见API）",@"发牌效果", @"轻缩放[类似小程序转场效果]", @"NatGeo"];
             rowsOfSubtitle = @[@(TLAnimatorTypeOpen), @(TLAnimatorTypeOpen2), @(TLAnimatorTypeTiltRight),
                                @(TLAnimatorTypeTiltLeft), @(TLAnimatorTypeFrame), @(TLAnimatorTypeRectScale),
                                @(TLAnimatorTypeRectScale), @(TLAnimatorTypeCircular),@(TLAnimatorTypeFlip),
-                               @(TLAnimatorTypeCards),@(TLAnimatorTypeScale)];
+                               @(TLAnimatorTypeCards),@(TLAnimatorTypeScale),@(TLAnimatorTypeNatGeo)];
         }
             break;
     }
@@ -89,7 +89,7 @@
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    self.navigationController.navigationBar.translucent = NO;
+//    self.navigationController.navigationBar.translucent = NO;
     tl_LogFunc
 }
 
@@ -559,7 +559,7 @@
         
     }else if (type == TLAnimatorTypeCircular) {
         UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
-        CGPoint center = [self.tableView convertPoint:cell.center toView:self.view];
+        CGPoint center = [self.tableView convertPoint:cell.center toView:[UIApplication sharedApplication].keyWindow];
         center.x = arc4random_uniform(cell.bounds.size.width - 40) + 20;
         animator.center = center;
         animator.startRadius = cell.bounds.size.height / 2;

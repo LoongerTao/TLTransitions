@@ -61,7 +61,7 @@
                     </connections>
                 </button>
             </subviews>
-            <color key="backgroundColor" red="0.99831825494766235" green="0.90161246061325073" blue="0.90066510438919067" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
             <viewLayoutGuide key="safeArea" id="Q5M-cg-NOt"/>
             <point key="canvasLocation" x="138.40000000000001" y="125.4872563718141"/>
         </view>
