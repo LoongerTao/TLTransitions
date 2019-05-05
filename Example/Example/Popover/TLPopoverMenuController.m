@@ -71,7 +71,7 @@
     
     NSString *text = self.data[indexPath.section].rows[indexPath.row];
     cell.textLabel.text = text;
-    cell.backgroundColor = tl_Color(255, 255, 230);;
+//    cell.backgroundColor = tl_Color(255, 255, 230);
     return cell;
 }
 

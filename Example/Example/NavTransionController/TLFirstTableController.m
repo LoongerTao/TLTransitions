@@ -113,13 +113,13 @@
         cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
         cell.titleLabel.text = text;
         
-        UIColor *color = tl_Color(255, 255, 230);
-        if ([text containsString:@"平滑:"]){
-            color = tl_Color(255, 254, 226);
-        }else if ([text containsString:@"CATransition:"]){
-            color = tl_Color(211, 240, 211);
-        }
-        cell.backgroundColor = color;
+//        UIColor *color = tl_Color(255, 255, 230);
+//        if ([text containsString:@"平滑:"]){
+//            color = tl_Color(255, 254, 226);
+//        }else if ([text containsString:@"CATransition:"]){
+//            color = tl_Color(211, 240, 211);
+//        }
+//        cell.backgroundColor = color;
         return cell;
     }
     
@@ -141,16 +141,16 @@
     
     UIColor *color = tl_Color(255, 255, 230);
     cell.detailTextLabel.text = nil;
-    if ([text containsString:@"原生:"]) {
-        color = tl_Color(255, 224, 235);
-    }else if ([text containsString:@"平滑:"]){
-        color = tl_Color(255, 254, 226);
-    }else if ([text containsString:@"CATransition:"]){
-        color = tl_Color(211, 240, 211);
-    }else if ([text containsString:@"Custom:"]){
-        color = tl_Color(224, 255, 200);
-    }
-    cell.backgroundColor = color;
+//    if ([text containsString:@"原生:"]) {
+//        color = tl_Color(255, 224, 235);
+//    }else if ([text containsString:@"平滑:"]){
+//        color = tl_Color(255, 254, 226);
+//    }else if ([text containsString:@"CATransition:"]){
+//        color = tl_Color(211, 240, 211);
+//    }else if ([text containsString:@"Custom:"]){
+//        color = tl_Color(224, 255, 200);
+//    }
+//    cell.backgroundColor = color;
     return cell;
 }
 
