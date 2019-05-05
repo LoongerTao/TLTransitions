@@ -30,6 +30,7 @@
 		142D340F21BA462A00A606A2 /* TLModalFirstController.m in Sources */ = {isa = PBXBuildFile; fileRef = 142D340E21BA462A00A606A2 /* TLModalFirstController.m */; };
 		14469F8721A52C4A007525BA /* TLAnimator.m in Sources */ = {isa = PBXBuildFile; fileRef = 14469F8621A52C4A007525BA /* TLAnimator.m */; };
 		1466E7E221AFC14D001DC6FE /* TLSystemAnimator.m in Sources */ = {isa = PBXBuildFile; fileRef = 1466E7E121AFC14D001DC6FE /* TLSystemAnimator.m */; };
+		148C5789227E7F2C00B9A052 /* TLLoadingView.m in Sources */ = {isa = PBXBuildFile; fileRef = 148C5788227E7F2C00B9A052 /* TLLoadingView.m */; };
 		149AA6B321955F2600F03EE6 /* TLPercentDrivenInteractiveTransition.m in Sources */ = {isa = PBXBuildFile; fileRef = 149AA6B221955F2600F03EE6 /* TLPercentDrivenInteractiveTransition.m */; };
 		14A539CA219C139B00DB5CE6 /* TLCATransitonAnimator.m in Sources */ = {isa = PBXBuildFile; fileRef = 14A539C9219C139B00DB5CE6 /* TLCATransitonAnimator.m */; };
 		14B08832218FEE4B0001B3EB /* TLWheelTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 14B08830218FEE4B0001B3EB /* TLWheelTableViewCell.m */; };
@@ -110,6 +111,8 @@
 		14469F8621A52C4A007525BA /* TLAnimator.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TLAnimator.m; sourceTree = "<group>"; };
 		1466E7E021AFC14D001DC6FE /* TLSystemAnimator.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TLSystemAnimator.h; sourceTree = "<group>"; };
 		1466E7E121AFC14D001DC6FE /* TLSystemAnimator.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TLSystemAnimator.m; sourceTree = "<group>"; };
+		148C5787227E7F2C00B9A052 /* TLLoadingView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TLLoadingView.h; sourceTree = "<group>"; };
+		148C5788227E7F2C00B9A052 /* TLLoadingView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TLLoadingView.m; sourceTree = "<group>"; };
 		149AA6B121955F2600F03EE6 /* TLPercentDrivenInteractiveTransition.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TLPercentDrivenInteractiveTransition.h; sourceTree = "<group>"; };
 		149AA6B221955F2600F03EE6 /* TLPercentDrivenInteractiveTransition.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TLPercentDrivenInteractiveTransition.m; sourceTree = "<group>"; };
 		14A539C8219C139B00DB5CE6 /* TLCATransitonAnimator.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TLCATransitonAnimator.h; sourceTree = "<group>"; };
@@ -243,6 +246,7 @@
 		142741BC2186E18B0047EE09 /* SceneTemplate */ = {
 			isa = PBXGroup;
 			children = (
+				148C5786227E7EAF00B9A052 /* LoadingView */,
 				1466E79E21AF6E44001DC6FE /* SheetPicker */,
 			);
 			path = SceneTemplate;
@@ -320,10 +324,19 @@
 		1466E79E21AF6E44001DC6FE /* SheetPicker */ = {
 			isa = PBXGroup;
 			children = (
-				142741BD2186E18B0047EE09 /* TLSheetPicker.m */,
 				142741BE2186E18B0047EE09 /* TLSheetPicker.h */,
+				142741BD2186E18B0047EE09 /* TLSheetPicker.m */,
 			);
 			path = SheetPicker;
+			sourceTree = "<group>";
+		};
+		148C5786227E7EAF00B9A052 /* LoadingView */ = {
+			isa = PBXGroup;
+			children = (
+				148C5787227E7F2C00B9A052 /* TLLoadingView.h */,
+				148C5788227E7F2C00B9A052 /* TLLoadingView.m */,
+			);
+			path = LoadingView;
 			sourceTree = "<group>";
 		};
 		14BD4D3121B935C70004B738 /* Popover */ = {
@@ -521,6 +534,7 @@
 				14BD4D3F21B937B00004B738 /* TLPopoverMenuController.m in Sources */,
 				14BD4D4221B938220004B738 /* TLNavTransitionMenuController.m in Sources */,
 				14BC7FF521B0D41F00B982EC /* TLAnimatorTemplate.m in Sources */,
+				148C5789227E7F2C00B9A052 /* TLLoadingView.m in Sources */,
 				142741C32186E18B0047EE09 /* TLPopViewController.m in Sources */,
 				14D3941A219EB0C200F61677 /* TLSection.m in Sources */,
 				149AA6B321955F2600F03EE6 /* TLPercentDrivenInteractiveTransition.m in Sources */,

@@ -10,6 +10,8 @@
 #import "TLTransitions.h"
 #import "TLSection.h"
 #import "TLCodeViewConroller.h"
+#import "TLSheetPicker.h"
+#import "TLLoadingView.h"
 
 @interface TLPopoverMenuController ()<CAAnimationDelegate>{
     UIView *_frameView;
@@ -33,9 +35,14 @@
     TLSection *viewSection = [TLSection new];
     viewSection.title = @"Popover（View）";
     viewSection.show = YES;
-    viewSection.rows = @[@"Alert",@"Alert2", @"Action Sheet", @"To Point",@"From Frame1 To Frame2" ,@"CuStom"];
+    viewSection.rows = @[@"Alert",@"Alert2", @"Action Sheet", @"To Point",@"From Frame1 To Frame2" ,@"Custom"];
     
-    _data = @[viewSection];
+    TLSection *componetSection = [TLSection new];
+    componetSection.title = @"Componet";
+    componetSection.show = YES;
+    componetSection.rows = @[@"Picker", @"Loading"];
+    
+    _data = @[viewSection,componetSection];
     self.tableView.tableFooterView = [UIView new];
     self.automaticallyAdjustsScrollViewInsets = YES;
 }
@@ -117,10 +124,30 @@
                 break;
         }
         return;
+    }else if (indexPath.section == 1) {
+        
+        switch (indexPath.row) {
+            case 0:
+            {
+                NSArray *items = @[@"选项一", @"选项二", @"选项三", @"选项四", @"选项五",@"选项六", @"选项七", @"选项八", @"选项九", @"选项十"];
+                [TLSheetPicker showPickerWithItems:items defaultSelectRow:0 didSelectHnadler:^(NSInteger row) {
+                    tl_Log(@"TLSheetPicker: did selected %@", items[row]);
+                }];
+            }
+                break;
+            case 1:
+            {
+                [TLLoadingView show];
+            }
+                break;
+            default:
+                break;
+        }
+        return;
     }
 }
 
-#pragma mark - Transitions Of View
+#pragma mark - action of cell
 // TLPopTypeAlert
 - (void)alertType:(UITableViewCell *)sender {
     CGRect bounds = CGRectMake(0, 0, self.view.bounds.size.width * 0.8f, 200.f);

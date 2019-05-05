@@ -29,7 +29,7 @@
     
     picker.transition = [TLTransition showView:picker popType:TLPopTypeActionSheet];
     picker.transition.cornerRadius = 0;
-//    picker.transition.hideShadowLayer = YES;
+    picker.transition.hideShadowLayer = YES;
     return picker;
 }
 
@@ -45,7 +45,7 @@
     
     picker.transition = [TLTransition showView:picker popType:TLPopTypeActionSheet];
     picker.transition.cornerRadius = 0;
-    //    picker.transition.hideShadowLayer = YES;
+        picker.transition.hideShadowLayer = YES;
     return picker;
 }
 
@@ -147,7 +147,7 @@
     cell.textLabel.textColor = tl_TextTintColor;
 }
 
-- (void)dealloc{
-    tl_LogFunc
-}
+//- (void)dealloc{
+//    tl_LogFunc
+//}
 @end
