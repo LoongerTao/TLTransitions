@@ -180,7 +180,15 @@ typedef enum : NSUInteger {
 }
 
 - (void)dismiss {
-    [self.presentedViewController dismissViewControllerAnimated:YES completion:nil];
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+- (void)dismissWithCompletion: (void (^ __nullable)(void))completion {
+    [self dismissViewControllerAnimated:YES completion:completion];
+}
+
+- (void)dismissViewControllerAnimated: (BOOL)flag completion: (void (^ __nullable)(void))completion {
+    [self.presentedViewController dismissViewControllerAnimated:flag completion:completion];
 }
 
 

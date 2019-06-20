@@ -89,6 +89,8 @@ typedef void(^TLAnimateForTransition)(id <UIViewControllerContextTransitioning> 
  * 如果popView没有被引用，在隐藏后也会自动释放
  */
 - (void)dismiss;
+- (void)dismissWithCompletion: (void (^ __nullable)(void))completion;
+- (void)dismissViewControllerAnimated: (BOOL)flag completion: (void (^ __nullable)(void))completion;
 
 /**
  * 实时更新view的size ，显示后也可以更新
