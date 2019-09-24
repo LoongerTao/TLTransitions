@@ -141,7 +141,7 @@ NSString * getType(TLTransitionType type) {
             text =  @"oglFlip";
             break;
         case TLTransitionRippleEffect:
-            text =  @"RippleEffect";
+            text =  @"rippleEffect";
             break;
         case TLTransitionPageCurl:
             text =  @"pageCurl";
