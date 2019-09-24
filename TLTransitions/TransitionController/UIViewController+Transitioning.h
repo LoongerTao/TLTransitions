@@ -20,7 +20,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 /// 转场动画(面向present/push To View Controller)
 @property(nonatomic, weak, readonly) TLTransitionDelegate *transitionDelegate;
-
+///  注册push/present手势后，要转场的控制器
 @property(nonatomic, weak, readonly) UIViewController *willPresentViewController;
 
 /** 侧滑pop/dismiss交互手势启用开关。默认开启（NO）
@@ -44,7 +44,7 @@ NS_ASSUME_NONNULL_BEGIN
 // NOTE：下面不同类型的Animator实现的转场效果有些类似，只是实现方案有所差异
 /**
  * present 转场控制器。
- * @param viewController 要转场的控制器
+ * @param viewController 要转场的控制器 对应 willPresentViewController 属性
  * @param animator 转场动画管理对象
  *        目前提供“TLSystemAnimator”、“TLSwipeAnimator”、“TLCATransitionAnimator”、“TLCuStomAnimator” 、 “TLAnimator”供选择，
  *        也可以由开发者自己写一个这样的对象，需要 严格遵守 TLAnimatorProtocal协议（可以参考模版TLAnimatorTemplate）

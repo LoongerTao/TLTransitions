@@ -118,7 +118,7 @@
 - (void)interactivePushRecognizerAction:(UIPanGestureRecognizer *)gestureRecognizer {
     if (gestureRecognizer.state == UIGestureRecognizerStateBegan) {
         
-        if (self.transitionDelegate == nil) {
+        if (self.willPresentViewController.transitionDelegate == nil) {
             return;
         }
         

@@ -40,6 +40,9 @@
     self.tableView.tableFooterView = [UIView new];
     
     self.automaticallyAdjustsScrollViewInsets = YES;
+    
+    
+    [self testRegisterInteractiveTransition];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -47,6 +50,29 @@
     
     // 手动恢复tabbar的显示
     self.tabBarController.tabBar.hidden = NO;
+}
+
+- (void)testRegisterInteractiveTransition {
+    UIViewController *vc = [[UIViewController alloc] init];
+    CAGradientLayer *gradient = [CAGradientLayer layer];
+    gradient.frame = vc.view.bounds;
+    gradient.colors = [NSArray arrayWithObjects:
+                       (id)[UIColor redColor].CGColor,
+                       (id)[UIColor greenColor].CGColor,
+                       (id)[UIColor blueColor].CGColor, nil];
+    gradient.startPoint = CGPointMake(0, 0);
+    gradient.endPoint = CGPointMake(1, 1);
+    gradient.locations = @[@0.0, @0.5, @1.0];
+    [vc.view.layer addSublayer:gradient];
+    
+    // 注册手势
+    TLSwipeAnimator *animator = [TLSwipeAnimator animatorWithSwipeType:TLSwipeTypeInAndOut pushDirection:TLDirectionToLeft popDirection:TLDirectionToRight];
+    animator.transitionDuration = 0.35f;
+    // 必须初始化的属性
+    animator.isPushOrPop = NO;
+    animator.interactiveDirectionOfPush = TLDirectionToLeft;
+    
+    [self registerInteractiveTransitionToViewController:vc animator:animator];
 }
 
 #pragma mark - Table view data source and delegate
