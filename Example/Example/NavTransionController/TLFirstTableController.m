@@ -331,6 +331,22 @@
             break;
     }
     
+    if (@available(iOS 13.0, *)) {
+        BOOL flag = transitionType == TLTransitionSuckEffect ||
+                    transitionType == TLTransitionRippleEffect ||
+                    transitionType == TLTransitionCameraIrisHollowOpen ||
+                    transitionType == TLTransitionCameraIrisHollowClose ||
+                    transitionTypeOfDismiss == TLTransitionSuckEffect ||
+                    transitionTypeOfDismiss == TLTransitionRippleEffect ||
+                    transitionTypeOfDismiss == TLTransitionCameraIrisHollowOpen ||
+                    transitionTypeOfDismiss == TLTransitionCameraIrisHollowClose;
+        
+        if (flag) {
+            transitionType = TLTransitionFade;
+            transitionTypeOfDismiss = TLTransitionFade;
+        }
+    }
+    
     TLCATransitonAnimator *animator;
     animator = [TLCATransitonAnimator animatorWithTransitionType:transitionType
                                                        direction:direction

@@ -78,9 +78,9 @@
 - (IBAction)showCode:(UIButton *)sender {
     TLCodeViewConroller *codeVc = [TLCodeViewConroller new];
     codeVc.imgName = @"registerInteractive";
-    TLCATransitonAnimator *anm = [TLCATransitonAnimator animatorWithTransitionType:TLTransitionRippleEffect
+    TLCATransitonAnimator *anm = [TLCATransitonAnimator animatorWithTransitionType:TLTransitionFade
                                                                          direction:TLDirectionToLeft
-                                                           transitionTypeOfDismiss:TLTransitionRippleEffect
+                                                           transitionTypeOfDismiss:TLTransitionFade
                                                                 directionOfDismiss:TLDirectionToRight];
     [self presentViewController:codeVc animator:anm completion:nil];
 }

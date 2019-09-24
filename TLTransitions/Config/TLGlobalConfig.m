@@ -29,7 +29,6 @@ UIImage * snapshotImage(UIView *view) {
     [view.layer renderInContext:contextRef];
     UIImage *snapshot = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
-    
     return snapshot;
 }
 

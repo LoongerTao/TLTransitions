@@ -67,18 +67,32 @@ NS_ASSUME_NONNULL_BEGIN
 //====================== 👇下面的API是👆上面两个的简化使用 ==========================//
 #pragma mark - Present / Dismiss
 /**
- * 转场控制器(官方原生类型)。 对应TLSystemAnimator类型
+ * present转场控制器。
+ * @param vc 要转场的控制器
+ * @param animation 自定义动画（分presenting和dismiss）
+ *        isPresenting = YES，Present；isPresenting = NO，Dismiss，
+ *        ⚠️ 动画结束一定要调用[transitionContext completeTransition:YES];
+ *
+ * @param completion 完成转场的回调
+ * NOTE: 由于自定义情况下，系统不会将当前c控制器（self）从窗口移除，所以dismiss后，系统不会调用`- viewDidAppear:`和`- viewWillAppear:`等方法
+ */
+- (void)presentViewController:(UIViewController *)vc
+              customAnimation:(void (^)( id<UIViewControllerContextTransitioning> transitionContext, BOOL isPresenting))animation
+                   completion:(void (^ __nullable)(void))completion;
+
+/**
+ * 转场控制器(官方原生类型)。 对应TLSystemAnimator类型  全屏模式
  * @param vc 要转场的控制器
  * @param style 转场动画类型
  *          `UIModalTransitionStyleCoverVertical=0, 默认方式，竖向上推`
  *          `UIModalTransitionStyleFlipHorizontal, 水平反转`
  *          `UIModalTransitionStyleCrossDissolve, 隐出隐现`
- *          `UIModalTransitionStylePartialCurl, 部分翻页效果`
+ *          `UIModalTransitionStylePartialCurl, 部分翻页效果`  不支持iOS 13+
  * @param completion 完成转场的回调
  */
 - (void)presentViewController:(UIViewController *)vc
               transitionStyle:(UIModalTransitionStyle)style
-                   completion:(void (^ __nullable)(void))completion;
+                   completion:(void (^ __nullable)(void))completion TL_DEPRECATED("请使用‘- presentViewController: animator: completion:’");
 
 /**
  * 以滑动的方式present转场控制器。
@@ -92,7 +106,7 @@ NS_ASSUME_NONNULL_BEGIN
                     swipeType:(TLSwipeType)swipeType
                 presentDirection:(TLDirection)presentDirection
                  dismissDirection:(TLDirection)dismissDirection
-                   completion:(void (^ __nullable)(void))completion;
+                   completion:(void (^ __nullable)(void))completion TL_DEPRECATED("请使用‘- presentViewController: animator: completion:’");
 
 /**
  * present转场控制器。
@@ -107,21 +121,7 @@ NS_ASSUME_NONNULL_BEGIN
                transitionType:(TLTransitionType)tType
                     direction:(TLDirection)direction
              dismissDirection:(TLDirection)directionOfDismiss
-                   completion:(void (^ __nullable)(void))completion;
-
-/**
- * present转场控制器。
- * @param vc 要转场的控制器
- * @param animation 自定义动画（分presenting和dismiss）
- *        isPresenting = YES，Present；isPresenting = NO，Dismiss，
- *        ⚠️ 动画结束一定要调用[transitionContext completeTransition:YES];
- *
- * @param completion 完成转场的回调
- * NOTE: 由于自定义情况下，系统不会将当前c控制器（self）从窗口移除，所以dismiss后，系统不会调用`- viewDidAppear:`和`- viewWillAppear:`等方法
- */
-- (void)presentViewController:(UIViewController *)vc
-              customAnimation:(void (^)( id<UIViewControllerContextTransitioning> transitionContext, BOOL isPresenting))animation
-                   completion:(void (^ __nullable)(void))completion;
+                   completion:(void (^ __nullable)(void))completion TL_DEPRECATED("请使用‘- presentViewController: animator: completion:’");
 
 
 #pragma mark - Push / Pop
@@ -135,7 +135,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)pushViewController:(UIViewController *)vc
                  swipeType:(TLSwipeType)swipeType
              pushDirection:(TLDirection)pushDirection
-              popDirection:(TLDirection)popDirection;
+              popDirection:(TLDirection)popDirection TL_DEPRECATED("请使用‘- pushViewController:animator:’");
 
 /**
  * push 转场控制器。
@@ -148,7 +148,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)pushViewController:(UIViewController *)vc
             transitionType:(TLTransitionType)tType
                  direction:(TLDirection)direction
-          dismissDirection:(TLDirection)directionOfPop;
+          dismissDirection:(TLDirection)directionOfPop TL_DEPRECATED("请使用‘- pushViewController:animator:’");
 
 /**
  * push 转场控制器。

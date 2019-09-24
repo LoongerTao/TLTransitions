@@ -37,6 +37,19 @@
                    transitionTypeOfDismiss:(TLTransitionType)tTypeOfDismiss
                         directionOfDismiss:(TLDirection)directionOfDismiss
 {
+    if (@available(iOS 13.0, *)) {
+        BOOL flag = tType != TLTransitionSuckEffect &&
+                    tType != TLTransitionRippleEffect &&
+                    tType != TLTransitionCameraIrisHollowOpen &&
+                    tType != TLTransitionCameraIrisHollowClose &&
+                    tTypeOfDismiss != TLTransitionSuckEffect &&
+                    tTypeOfDismiss != TLTransitionRippleEffect &&
+                    tTypeOfDismiss != TLTransitionCameraIrisHollowOpen &&
+                    tTypeOfDismiss != TLTransitionCameraIrisHollowClose;
+        
+        NSAssert(flag, @"TLCATransitonAnimator：您使用了在iOS 13+ 无效TLTransitionType");
+    }
+    
     TLCATransitonAnimator *animator = [self new];
     animator.tType = tType;
     animator.direction = direction;
@@ -128,7 +141,7 @@ NSString * getType(TLTransitionType type) {
             text =  @"oglFlip";
             break;
         case TLTransitionRippleEffect:
-            text =  @"rippleEffect";
+            text =  @"RippleEffect";
             break;
         case TLTransitionPageCurl:
             text =  @"pageCurl";

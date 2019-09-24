@@ -16,6 +16,21 @@
     return anmt;
 }
 
++ (instancetype)animatorWithStyle:(UIModalTransitionStyle)style fullScreen:(BOOL)isFullScreen {
+    TLSystemAnimator *anmt = [self new];
+    anmt.style = style;
+    if (@available(iOS 13.0, *)) {
+        anmt.isFullScreen = isFullScreen;
+        NSAssert(
+                 style != UIModalTransitionStylePartialCurl,
+                 @"%s iOS 13+ 不支持 UIModalTransitionStylePartialCurl", __func__
+                 );
+    }else {
+        anmt.isFullScreen = YES;
+    }
+    
+    return anmt;
+}
 
 
 #pragma mark - TLAnimatorProtocol

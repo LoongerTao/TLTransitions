@@ -14,6 +14,7 @@
 #import "TLCustomAnimator.h"
 #import "TLAnimatorProtocol.h"
 #import "TLSystemAnimator.h"
+#import "TLScreenEdgePanGestureRecognizer.h"
 
 #pragma mark-
 #pragma mark UIViewController (Transitioning)
@@ -80,7 +81,12 @@
     }
     SEL sel = @selector(interactivePushRecognizerAction:);
     UIScreenEdgePanGestureRecognizer *interactiveTransitionRecognizer;
-    interactiveTransitionRecognizer = [[UIScreenEdgePanGestureRecognizer alloc] initWithTarget:self action:sel];
+    if (@available(iOS 13.0, *)) {
+        // UIScreenEdgePanGestureRecognizer 在iOS 13 好像失效，暂时用自定义手势代替
+        interactiveTransitionRecognizer = (UIScreenEdgePanGestureRecognizer *)[[TLScreenEdgePanGestureRecognizer alloc] initWithTarget:self action:sel];
+    }else {
+        interactiveTransitionRecognizer = [[UIScreenEdgePanGestureRecognizer alloc] initWithTarget:self action:sel];
+    }
     interactiveTransitionRecognizer.edges = [self getEdgeWithDirection:direction];
     [self.view addGestureRecognizer:interactiveTransitionRecognizer];
     
@@ -147,7 +153,14 @@
     
     SEL sel = @selector(interactivePopRecognizerAction:);
     UIScreenEdgePanGestureRecognizer *interactiveTransitionRecognizer;
-    interactiveTransitionRecognizer = [[UIScreenEdgePanGestureRecognizer alloc] initWithTarget:self action:sel];
+    
+    if (@available(iOS 13.0, *)) {
+        // UIScreenEdgePanGestureRecognizer 在iOS 13 好像失效，暂时用自定义手势代替
+        interactiveTransitionRecognizer = (UIScreenEdgePanGestureRecognizer *)[[TLScreenEdgePanGestureRecognizer alloc] initWithTarget:self action:sel];
+    }else {
+        interactiveTransitionRecognizer = [[UIScreenEdgePanGestureRecognizer alloc] initWithTarget:self action:sel];
+    }
+    
     interactiveTransitionRecognizer.edges = [self getEdgeWithDirection:direction];
     [self.view addGestureRecognizer:interactiveTransitionRecognizer];
     return interactiveTransitionRecognizer;
@@ -192,11 +205,31 @@
               transitionStyle:(UIModalTransitionStyle)style
                    completion:(void (^ __nullable)(void))completion
 {
+    [self presentViewController:vc transitionStyle:style fullScreen:YES completion:completion];
+}
+
+/// 非全屏模式，只支持iOS 13+
+- (void)presentViewController:(UIViewController *)vc
+              transitionStyle:(UIModalTransitionStyle)style
+                   fullScreen:(BOOL)isFullScreen
+               completion:(void (^ __nullable)(void))completion
+{
+    if (@available(iOS 13.0, *)) {
+        NSAssert(
+                 style != UIModalTransitionStylePartialCurl,
+                 @"%s iOS 13+ 不支持 UIModalTransitionStylePartialCurl",
+                 __func__
+                 );
+    }
+    
+    vc.modalPresentationStyle = isFullScreen ?  0 : -2;
     vc.modalTransitionStyle = style;
+    
     [self presentViewController:vc animated:YES completion:completion];
     
     [vc registerInteractivePopRecognizerWithDirection:TLDirectionToBottom];
 }
+
 
 - (void)presentViewController:(UIViewController *)viewController
                      animator:(id<TLAnimatorProtocol>)animator
@@ -205,7 +238,10 @@
     animator.isPushOrPop = NO;
     if([animator isMemberOfClass:[TLSystemAnimator class]]) {
         TLSystemAnimator *anim = (TLSystemAnimator *)animator;
-        [self presentViewController:viewController transitionStyle:anim.style completion:completion];
+        [self presentViewController:viewController
+                    transitionStyle:anim.style
+                         fullScreen:anim.isFullScreen
+                         completion:completion];
         return;
     }
     

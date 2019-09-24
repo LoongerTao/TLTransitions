@@ -11,6 +11,7 @@
 #import "TLRegisterInteractiveController.h"
 #import "TLSection.h"
 #import "TLModalFirstController.h"
+#import "TestViewController.h"
 
 @interface TLModalMenuController ()
 @property(nonatomic, strong) NSArray <TLSection *>*data;
@@ -102,6 +103,17 @@
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+//    TestViewController *vc = [[TestViewController alloc] init];
+//    if (@available(iOS 13.0, *)) {
+//        vc.modalPresentationStyle = 0;
+//    } else {
+//        // Fallback on earlier versions
+//    }
+//    [self presentViewController:vc animated:YES completion:nil];
+////    [self.navigationController pushViewController:vc animated:YES];
+//    return;
+    
     UIViewController *viewController;
     if (indexPath.section == 1) {
         TLRegisterInteractiveController *vc = [TLRegisterInteractiveController new];
@@ -127,7 +139,8 @@
     // 手动隐藏tabbar，解决tabbar和VC动画不统一的问题他
     viewController.hidesBottomBarWhenPushed = NO;
     self.tabBarController.tabBar.hidden = YES;
-    [self pushViewController:viewController transitionType:TLTransitionCube direction:TLDirectionToLeft dismissDirection:TLDirectionToRight];
+    TLCATransitonAnimator *amn = [ TLCATransitonAnimator animatorWithTransitionType:TLTransitionCube direction:TLDirectionToLeft transitionTypeOfDismiss:TLTransitionCube directionOfDismiss:TLDirectionToRight];
+    [self pushViewController:viewController animator:amn];
 }
 
 @end

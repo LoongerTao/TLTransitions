@@ -31,14 +31,14 @@ typedef enum : NSUInteger {
     TLTransitionReveal,
     
     // 以下是官方未公开的API（私有，可能影响上架）
-    TLTransitionCube,
-    TLTransitionSuckEffect,
-    TLTransitionOglFlip,
-    TLTransitionRippleEffect,
-    TLTransitionPageCurl,
-    TLTransitionPageUnCurl,
-    TLTransitionCameraIrisHollowOpen,
-    TLTransitionCameraIrisHollowClose,
+    TLTransitionCube,                       // 立体翻转
+    TLTransitionSuckEffect,                 // 收缩效果.如一块布被抽走 （iOS 13 失效）
+    TLTransitionOglFlip,                    // 翻转
+    TLTransitionRippleEffect,               // 波纹涟漪 （iOS 13 失效）
+    TLTransitionPageCurl,                   // 上翻页
+    TLTransitionPageUnCurl,                 // 下翻页
+    TLTransitionCameraIrisHollowOpen,       // 开镜头 （iOS 13 失效）
+    TLTransitionCameraIrisHollowClose,      // 关镜头 （iOS 13 失效）
 } TLTransitionType;
 
 

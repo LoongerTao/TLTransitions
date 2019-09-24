@@ -32,6 +32,9 @@
 		1466E7E221AFC14D001DC6FE /* TLSystemAnimator.m in Sources */ = {isa = PBXBuildFile; fileRef = 1466E7E121AFC14D001DC6FE /* TLSystemAnimator.m */; };
 		148C5789227E7F2C00B9A052 /* TLLoadingView.m in Sources */ = {isa = PBXBuildFile; fileRef = 148C5788227E7F2C00B9A052 /* TLLoadingView.m */; };
 		149AA6B321955F2600F03EE6 /* TLPercentDrivenInteractiveTransition.m in Sources */ = {isa = PBXBuildFile; fileRef = 149AA6B221955F2600F03EE6 /* TLPercentDrivenInteractiveTransition.m */; };
+		14A2C9AA2339AAA500F751AE /* TestViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 14A2C9A92339AAA500F751AE /* TestViewController.m */; };
+		14A2C9AD2339B78B00F751AE /* TestView.m in Sources */ = {isa = PBXBuildFile; fileRef = 14A2C9AC2339B78B00F751AE /* TestView.m */; };
+		14A2C9B02339BD0B00F751AE /* TLScreenEdgePanGestureRecognizer.m in Sources */ = {isa = PBXBuildFile; fileRef = 14A2C9AF2339BD0B00F751AE /* TLScreenEdgePanGestureRecognizer.m */; };
 		14A539CA219C139B00DB5CE6 /* TLCATransitonAnimator.m in Sources */ = {isa = PBXBuildFile; fileRef = 14A539C9219C139B00DB5CE6 /* TLCATransitonAnimator.m */; };
 		14B08832218FEE4B0001B3EB /* TLWheelTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 14B08830218FEE4B0001B3EB /* TLWheelTableViewCell.m */; };
 		14B08833218FEE4B0001B3EB /* TLWheelTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 14B08831218FEE4B0001B3EB /* TLWheelTableViewCell.xib */; };
@@ -115,6 +118,12 @@
 		148C5788227E7F2C00B9A052 /* TLLoadingView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TLLoadingView.m; sourceTree = "<group>"; };
 		149AA6B121955F2600F03EE6 /* TLPercentDrivenInteractiveTransition.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TLPercentDrivenInteractiveTransition.h; sourceTree = "<group>"; };
 		149AA6B221955F2600F03EE6 /* TLPercentDrivenInteractiveTransition.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TLPercentDrivenInteractiveTransition.m; sourceTree = "<group>"; };
+		14A2C9A82339AAA500F751AE /* TestViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TestViewController.h; sourceTree = "<group>"; };
+		14A2C9A92339AAA500F751AE /* TestViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TestViewController.m; sourceTree = "<group>"; };
+		14A2C9AB2339B78B00F751AE /* TestView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TestView.h; sourceTree = "<group>"; };
+		14A2C9AC2339B78B00F751AE /* TestView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TestView.m; sourceTree = "<group>"; };
+		14A2C9AE2339BD0B00F751AE /* TLScreenEdgePanGestureRecognizer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TLScreenEdgePanGestureRecognizer.h; sourceTree = "<group>"; };
+		14A2C9AF2339BD0B00F751AE /* TLScreenEdgePanGestureRecognizer.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TLScreenEdgePanGestureRecognizer.m; sourceTree = "<group>"; };
 		14A539C8219C139B00DB5CE6 /* TLCATransitonAnimator.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TLCATransitonAnimator.h; sourceTree = "<group>"; };
 		14A539C9219C139B00DB5CE6 /* TLCATransitonAnimator.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TLCATransitonAnimator.m; sourceTree = "<group>"; };
 		14A539CB219C1BF400DB5CE6 /* TLAnimatorProtocol.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TLAnimatorProtocol.h; sourceTree = "<group>"; };
@@ -297,6 +306,8 @@
 				14D39406219D0D1000F61677 /* TLTransitionDelegate.m */,
 				149AA6B121955F2600F03EE6 /* TLPercentDrivenInteractiveTransition.h */,
 				149AA6B221955F2600F03EE6 /* TLPercentDrivenInteractiveTransition.m */,
+				14A2C9AE2339BD0B00F751AE /* TLScreenEdgePanGestureRecognizer.h */,
+				14A2C9AF2339BD0B00F751AE /* TLScreenEdgePanGestureRecognizer.m */,
 			);
 			path = TransitionController;
 			sourceTree = "<group>";
@@ -387,6 +398,10 @@
 				142741C6218861CC0047EE09 /* TLSecondViewController.xib */,
 				14BC7FF621B0E7A900B982EC /* TLRegisterInteractiveController.h */,
 				14BC7FF721B0E7A900B982EC /* TLRegisterInteractiveController.m */,
+				14A2C9A82339AAA500F751AE /* TestViewController.h */,
+				14A2C9A92339AAA500F751AE /* TestViewController.m */,
+				14A2C9AB2339B78B00F751AE /* TestView.h */,
+				14A2C9AC2339B78B00F751AE /* TestView.m */,
 			);
 			path = Common;
 			sourceTree = "<group>";
@@ -523,8 +538,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				14A2C9AD2339B78B00F751AE /* TestView.m in Sources */,
 				142D0F1621AD221B00257EF1 /* TLAppStoreListController.m in Sources */,
 				14A539CA219C139B00DB5CE6 /* TLCATransitonAnimator.m in Sources */,
+				14A2C9AA2339AAA500F751AE /* TestViewController.m in Sources */,
 				142741C12186E18B0047EE09 /* TLTransition.m in Sources */,
 				14469F8721A52C4A007525BA /* TLAnimator.m in Sources */,
 				1402DFBE21B624DA00E875C0 /* TLCodeViewConroller.m in Sources */,
@@ -552,6 +569,7 @@
 				14BD4D3921B937420004B738 /* TLModalMenuController.m in Sources */,
 				142741DB218BFBE40047EE09 /* TLFirstTableController.m in Sources */,
 				142741D8218BEBD70047EE09 /* TLSwipeAnimator.m in Sources */,
+				14A2C9B02339BD0B00F751AE /* TLScreenEdgePanGestureRecognizer.m in Sources */,
 				14BC7FF821B0E7A900B982EC /* TLRegisterInteractiveController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -717,6 +735,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 2.1;
 				DEVELOPMENT_TEAM = DA3ZJPDSKE;
 				INFOPLIST_FILE = Example/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
@@ -724,7 +743,8 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.gxdy.Example;
+				MARKETING_VERSION = 2.1;
+				PRODUCT_BUNDLE_IDENTIFIER = com.gxdy.TLTransitionsExample;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "Example/Example-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -739,6 +759,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 2.1;
 				DEVELOPMENT_TEAM = DA3ZJPDSKE;
 				INFOPLIST_FILE = Example/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
@@ -746,7 +767,8 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.gxdy.Example;
+				MARKETING_VERSION = 2.1;
+				PRODUCT_BUNDLE_IDENTIFIER = com.gxdy.TLTransitionsExample;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "Example/Example-Bridging-Header.h";
 				SWIFT_VERSION = 4.2;

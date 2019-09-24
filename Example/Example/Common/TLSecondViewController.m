@@ -78,10 +78,7 @@
 - (IBAction)showCode:(UIButton *)sender {
     TLCodeViewConroller *codeVc = [TLCodeViewConroller new];
     codeVc.imgName = _imgName;
-    TLCATransitonAnimator *anm = [TLCATransitonAnimator animatorWithTransitionType:TLTransitionRippleEffect
-                                                                         direction:TLDirectionToLeft
-                                                           transitionTypeOfDismiss:TLTransitionRippleEffect
-                                                                directionOfDismiss:TLDirectionToRight];
+    TLSystemAnimator *anm = [TLSystemAnimator animatorWithStyle:0 fullScreen:NO];
     [self presentViewController:codeVc animator:anm completion:nil];
 }
 

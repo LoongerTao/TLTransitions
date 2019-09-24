@@ -42,7 +42,12 @@
     switch (_type) {
         case TLContentTypeSystemAnimator:
             title = @"System Animator";
-            rows = @[@"Cover Vertical", @"Flip Horizontal", @"Cross Dissolve",@"Partial Curl"];
+            rows = @[
+                @"·Cover Vertical",
+                @"·Flip Horizontal",
+                @"·Cross Dissolve",
+                @"Partial Curl (不支持iOS 13+)"
+            ];
             break;
         case TLContentTypeSwipeAnimator:
             title = @"Swipe Animator";
@@ -54,9 +59,9 @@
             title = @"CATransition Animator";
             rows = @[@"Fade", @"·Move in", @"·Push",
                      @"·Reveal", @"·Cube (私有API)",
-                     @"·Suck Effect (私有API)", @"·Ogl Flip (私有API)",
-                     @"Ripple Effect (私有API)", @"·Page Curl (私有API)",
-                     @"Camera Iris Hollow (私有API)",];
+                     @"Suck Effect (私有API 不支持iOS 13+)", @"·Ogl Flip (私有API)",
+                     @"Ripple Effect (私有API 不支持iOS 13+)", @"·Page Curl (私有API)",
+                     @"Camera Iris Hollow (私有API 不支持iOS 13+)",];
             break;
         case TLContentTypeCuStomAnimator:
             title = @"CuStom Animator";;
@@ -117,15 +122,18 @@
     if ([text hasPrefix:@"·"]) {
         TLWheelTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"TLWheelTableViewCell"];
         cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-        cell.titleLabel.text = text;
+        cell.titleLabel.text = [text substringWithRange:NSMakeRange(1, text.length - 1)];
         
-//        UIColor *color = tl_Color(255, 255, 230);
-//        if ([text containsString:@"平滑:"]){
-//            color = tl_Color(255, 254, 226);
-//        }else if ([text containsString:@"CATransition:"]){
-//            color = tl_Color(211, 240, 211);
-//        }
-//        cell.backgroundColor = color;
+        if([self.data[indexPath.section].title containsString:@"System Animator"]) {
+            cell.sgmtB.hidden = YES;
+            if (cell.sgmtA.numberOfSegments == 4) {
+                [cell.sgmtA removeAllSegments];
+                [cell.sgmtA insertSegmentWithTitle:@"YES" atIndex:0 animated:NO];
+                [cell.sgmtA insertSegmentWithTitle:@"NO (iOS 13+ 有效)" atIndex:1 animated:NO];
+                cell.sgmtA.selectedSegmentIndex = 0;
+            }
+        }
+        
         return cell;
     }
     
@@ -144,19 +152,7 @@
     }
     
     cell.textLabel.text = self.data[indexPath.section].rows[indexPath.row];
-    
-//    UIColor *color = tl_Color(255, 255, 230);
-//    cell.detailTextLabel.text = nil;
-//    if ([text containsString:@"原生:"]) {
-//        color = tl_Color(255, 224, 235);
-//    }else if ([text containsString:@"平滑:"]){
-//        color = tl_Color(255, 254, 226);
-//    }else if ([text containsString:@"CATransition:"]){
-//        color = tl_Color(211, 240, 211);
-//    }else if ([text containsString:@"Custom:"]){
-//        color = tl_Color(224, 255, 200);
-//    }
-//    cell.backgroundColor = color;
+
     return cell;
 }
 
@@ -222,18 +218,22 @@
 #pragma mark - Presenting Of View Controller
 #pragma mark 原生动画效果 TLSystemAnimator
 - (void)presentBySystem:(NSIndexPath *)indexPath {
+    if (@available(iOS 13.0, *)) {
+        if (indexPath.row == 3) {
+            return;
+        }
+    }
     
     TLSecondViewController *vc = [[TLSecondViewController alloc] init];
     vc.imgName = @"modal_system_animator";
-    TLSystemAnimator *anm = [TLSystemAnimator animatorWithTransitionStyle:indexPath.row];
+    BOOL isFullScreen = YES;
+    if(indexPath.row < 3) {
+        TLWheelTableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
+        isFullScreen = cell.sgmtA.selectedSegmentIndex != 1;
+    }
+    
+    TLSystemAnimator *anm = [TLSystemAnimator animatorWithStyle:indexPath.row fullScreen:isFullScreen];
     [self presentViewController:vc animator:anm completion:nil];
-    
-    
-    /* 简化版
-     TLSecondViewController *vc = [[TLSecondViewController alloc] init];
-     [self presentViewController:vc transitionStyle:indexPath.row completion:^{
-     NSLog(@"system : completion---%zi",indexPath.row);
-     }];*/
 }
 
 #pragma mark 平滑效果 TLSwipeAnimator
@@ -283,6 +283,7 @@
 
 #pragma mark TLCATransitonAnimator
 - (TLCATransitonAnimator *)CATransitionAnimatorWithIndexPath:(NSIndexPath *)indexPath toViewController:(UIViewController *)vc {
+    
     TLWheelTableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
     NSString *text = self.data[indexPath.section].rows[indexPath.row];
     
@@ -331,6 +332,7 @@
             transitionType = TLTransitionSuckEffect;
             transitionTypeOfDismiss = TLTransitionSuckEffect;
         }
+            break;
         case 6:
         {
             transitionType =TLTransitionOglFlip;
@@ -357,6 +359,22 @@
             break;
         default:
             break;
+    }
+    
+    if (@available(iOS 13.0, *)) {
+        BOOL flag = transitionType == TLTransitionSuckEffect ||
+                    transitionType == TLTransitionRippleEffect ||
+                    transitionType == TLTransitionCameraIrisHollowOpen ||
+                    transitionType == TLTransitionCameraIrisHollowClose ||
+                    transitionTypeOfDismiss == TLTransitionSuckEffect ||
+                    transitionTypeOfDismiss == TLTransitionRippleEffect ||
+                    transitionTypeOfDismiss == TLTransitionCameraIrisHollowOpen ||
+                    transitionTypeOfDismiss == TLTransitionCameraIrisHollowClose;
+        
+        if (flag) {
+            transitionType = TLTransitionFade;
+            transitionTypeOfDismiss = TLTransitionFade;
+        }
     }
     
     TLCATransitonAnimator *animator;

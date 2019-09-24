@@ -20,8 +20,13 @@ typedef NS_ENUM(NSInteger, UIModalTransitionStyle) {
 };
  */
 @property(nonatomic, assign) UIModalTransitionStyle style;
+/// isFullScreen default is YES，isFullScreen = NO只有iOS 13+ 才有效
+@property(nonatomic, assign) BOOL isFullScreen;
 
-+ (instancetype)animatorWithTransitionStyle:(UIModalTransitionStyle)style;
++ (instancetype)animatorWithTransitionStyle:(UIModalTransitionStyle)style TL_DEPRECATED("请使用‘- animatorWithStyle: fullScreen:’");
+
+
++ (instancetype)animatorWithStyle:(UIModalTransitionStyle)style fullScreen:(BOOL)isFullScreen;
 @end
 
 NS_ASSUME_NONNULL_END
