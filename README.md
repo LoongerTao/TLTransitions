@@ -3,7 +3,7 @@
 ### pod支持
 ##### 1. 版本 
 ```
-pod 'TLTransitions', '~> 1.5.0'
+pod 'TLTransitions', '~> 1.5.1'
 ```
 
 ##### 2. CocoaPods获取不到最新的`TLTransitions`版本问题
